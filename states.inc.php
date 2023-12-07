@@ -2,12 +2,12 @@
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * IncalInfinite implementation : © <Your name here> <Your email address here>
+ * IncalInfinite implementation : © Evan Pulgino <Your email address here>
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
- * 
+ *
  * states.inc.php
  *
  * IncalInfinite game states description
@@ -49,63 +49,38 @@
 
 //    !! It is not a good idea to modify this file when a game is running !!
 
- 
-$machinestates = array(
-
+$machinestates = [
     // The initial state. Please do not modify.
-    1 => array(
-        "name" => "gameSetup",
+    STATE_GAME_SETUP => [
+        "name" => STATE_NAME_GAME_SETUP,
         "description" => "",
-        "type" => "manager",
-        "action" => "stGameSetup",
-        "transitions" => array( "" => 2 )
-    ),
-    
+        "type" => STATE_TYPE_MANAGER,
+        "action" => STATE_ACTION_GAME_SETUP,
+        "transitions" => ["" => STATE_PLAYER_TURN],
+    ],
+
     // Note: ID=2 => your first state
 
-    2 => array(
-    		"name" => "playerTurn",
-    		"description" => clienttranslate('${actplayer} must play a card or pass'),
-    		"descriptionmyturn" => clienttranslate('${you} must play a card or pass'),
-    		"type" => "activeplayer",
-    		"possibleactions" => array( "playCard", "pass" ),
-    		"transitions" => array( "playCard" => 2, "pass" => 2 )
-    ),
-    
-/*
-    Examples:
-    
-    2 => array(
-        "name" => "nextPlayer",
-        "description" => '',
-        "type" => "game",
-        "action" => "stNextPlayer",
-        "updateGameProgression" => true,   
-        "transitions" => array( "endGame" => 99, "nextPlayer" => 10 )
-    ),
-    
-    10 => array(
-        "name" => "playerTurn",
-        "description" => clienttranslate('${actplayer} must play a card or pass'),
-        "descriptionmyturn" => clienttranslate('${you} must play a card or pass'),
-        "type" => "activeplayer",
-        "possibleactions" => array( "playCard", "pass" ),
-        "transitions" => array( "playCard" => 2, "pass" => 2 )
-    ), 
+    STATE_PLAYER_TURN => [
+        "name" => STATE_NAME_PLAYER_TURN,
+        "description" => clienttranslate(
+            '${actplayer} must play a card or pass'
+        ),
+        "descriptionmyturn" => clienttranslate(
+            '${you} must play a card or pass'
+        ),
+        "type" => STATE_TYPE_ACTIVE_PLAYER,
+        "possibleactions" => ["playCard", "pass"],
+        "transitions" => ["playCard" => 2, "pass" => 2],
+    ],
 
-*/    
-   
     // Final state.
     // Please do not modify (and do not overload action/args methods).
-    99 => array(
-        "name" => "gameEnd",
+    STATE_GAME_END => [
+        "name" => STATE_NAME_GAME_END,
         "description" => clienttranslate("End of game"),
-        "type" => "manager",
-        "action" => "stGameEnd",
-        "args" => "argGameEnd"
-    )
-
-);
-
-
-
+        "type" => STATE_TYPE_MANAGER,
+        "action" => STATE_ACTION_GAME_END,
+        "args" => STATE_ARGUMENTS_GAME_END,
+    ],
+];
