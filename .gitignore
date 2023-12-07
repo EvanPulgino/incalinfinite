@@ -1,0 +1,5 @@
+.prettierignore
+.vscode
+fonts
+img
+node_modules
