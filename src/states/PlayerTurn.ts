@@ -24,9 +24,7 @@ class PlayerTurn implements State {
     this.game = game;
   }
 
-  onEnteringState(stateArgs: StateArgs): void {
-    console.log("Entering PlayerTurn state", stateArgs);
-  }
+  onEnteringState(stateArgs: StateArgs): void {}
   onLeavingState(): void {}
   onUpdateActionButtons(stateArgs: StateArgs): void {}
 }
