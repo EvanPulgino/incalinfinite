@@ -391,9 +391,7 @@ var PlayerTurn = /** @class */ (function () {
         this.name = "PlayerTurn";
         this.game = game;
     }
-    PlayerTurn.prototype.onEnteringState = function (stateArgs) {
-        console.log("Entering PlayerTurn state", stateArgs);
-    };
+    PlayerTurn.prototype.onEnteringState = function (stateArgs) { };
     PlayerTurn.prototype.onLeavingState = function () { };
     PlayerTurn.prototype.onUpdateActionButtons = function (stateArgs) { };
     return PlayerTurn;
