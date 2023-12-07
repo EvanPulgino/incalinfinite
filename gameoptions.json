@@ -1,1 +1,37 @@
-{}
+{
+  "100": {
+    "name": "Enemy",
+    "values": {
+      "1": {
+        "name": "The Bergs - Depleted",
+        "tmdisplay": "The Bergs - Depleted"
+      },
+      "2": {
+        "name": "The Bergs",
+        "tmdisplay": "The Bergs",
+        "nobeginner": true
+      },
+      "3": {
+        "name": "The President's Hunchbacks",
+        "tmdisplay": "The President's Hunchbacks",
+        "nobeginner": true
+      },
+      "4": {
+        "name": "Gorgo-the-dirty",
+        "tmdisplay": "Gorgo-the-dirty",
+        "nobeginner": true
+      },
+      "5": {
+        "name": "The Necrobot",
+        "tmdisplay": "The Necrobot",
+        "nobeginner": true
+      },
+      "6": {
+        "name": "The Darkness",
+        "tmdisplay": "The Darkness",
+        "nobeginner": true
+      }
+    },
+    "default": "1"
+  }
+}
