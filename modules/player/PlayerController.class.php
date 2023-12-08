@@ -15,7 +15,6 @@
  */
 
 class PlayerController extends APP_GameClass {
-
     /**
      * Setup the players for the game
      *
@@ -44,5 +43,21 @@ class PlayerController extends APP_GameClass {
 
         $sql .= implode(",", $values);
         self::DbQuery($sql);
+    }
+
+    /**
+     * Get all players in the game
+     *
+     * @return Player[] An array of players
+     */
+    public function getAllPlayers() {
+        $sql = "SELECT * FROM player";
+        $playersData = self::getObjectListFromDb($sql);
+        $playerObjects = [];
+        foreach ($playersData as $playerData) {
+            array_push($playerObjects, new Player($playerData));
+        }
+
+        return $playerObjects;
     }
 }

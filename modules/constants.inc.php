@@ -14,15 +14,15 @@
  * @EvanPulgino
  */
 
-/** Card IDs */
-define("CARD_ANIMAH", 1);
-define("CARD_DEEPO", 2);
-define("CARD_KILL", 3);
-define("CARD_METABARON", 4);
-define("CARD_SOLUNE", 5);
-define("CARD_TANATA", 6);
-define("CARD_JOHN_DIFOOL", 7);
-define("CARD_DAMAGE", 10);
+/** Card Types */
+define("CARD_ANIMAH", "animah");
+define("CARD_DAMAGE", "damage");
+define("CARD_DEEPO", "deepo");
+define("CARD_JOHN_DIFOOL", "john_difool");
+define("CARD_KILL", "kill");
+define("CARD_METABARON", "metabaron");
+define("CARD_SOLUNE", "solune");
+define("CARD_TANATA", "tanata");
 
 /** Card Names */
 define("CARD_NAME_ANIMAH", clienttranslate("Animah"));
@@ -45,6 +45,14 @@ define("CARDS", [
     CARD_SOLUNE => CARD_NAME_SOLUNE,
     CARD_TANATA => CARD_NAME_TANATA,
 ]);
+
+/** Card Locations */
+define("CARD_LOCATION_DECK", "deck");
+define("CARD_LOCATION_DISCARD", "discard");
+define("CARD_LOCATION_DAMAGE_SUPPLY", "damageSupply");
+define("CARD_LOCATION_HAND", "hand");
+define("CARD_LOCATION_LOCATION_TILE", "locationTile");
+define("CARD_LOCATION_UNUSED_CARDS", "unusedCards");
 
 /** Enemy IDs */
 define("ENEMY_BERGS_DEPLETED", 1);
@@ -78,6 +86,7 @@ define("ENEMIES", [
 define("GAME_STATE_LABEL_ENEMY", "enemy");
 define("GAME_STATE_LABEL_ENEMY_LOCATION", "enemyLocation");
 define("GAME_STATE_LABEL_METANAVE_LOCATION", "metanaveLocation");
+define("GAME_STATE_LABEL_PLAYER_COUNT", "playerCount");
 define("GAME_STATE_LABEL_POWER_DESTROY_AVAILABLE", "powerDestroyAvailable");
 define("GAME_STATE_LABEL_POWER_DISCARD_AVAILABLE", "powerDiscardAvailable");
 define("GAME_STATE_LABEL_POWER_MOVE_AVAILABLE", "powerMoveAvailable");
@@ -86,10 +95,11 @@ define("GAME_STATE_LABEL_POWER_TALK_AVAILABLE", "powerTalkAvailable");
 /** Game State Label IDs */
 define("GAME_STATE_LABEL_ID_ENEMY_LOCATION", 1);
 define("GAME_STATE_LABEL_ID_METANAVE_LOCATION", 2);
-define("GAME_STATE_LABEL_ID_POWER_DESTROY_AVAILABLE", 3);
-define("GAME_STATE_LABEL_ID_POWER_DISCARD_AVAILABLE", 4);
-define("GAME_STATE_LABEL_ID_POWER_MOVE_AVAILABLE", 5);
-define("GAME_STATE_LABEL_ID_POWER_TALK_AVAILABLE", 6);
+define("GAME_STATE_LABEL_ID_PLAYER_COUNT", 3);
+define("GAME_STATE_LABEL_ID_POWER_DESTROY_AVAILABLE", 4);
+define("GAME_STATE_LABEL_ID_POWER_DISCARD_AVAILABLE", 5);
+define("GAME_STATE_LABEL_ID_POWER_MOVE_AVAILABLE", 6);
+define("GAME_STATE_LABEL_ID_POWER_TALK_AVAILABLE", 7);
 define("GAME_STATE_LABEL_ID_ENEMY", 100);
 
 /** Location IDs */

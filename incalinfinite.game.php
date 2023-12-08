@@ -21,6 +21,7 @@ require_once "modules/constants.inc.php";
 require_once APP_GAMEMODULE_PATH . "module/table/table.game.php";
 
 class IncalInfinite extends Table {
+    protected $cardController;
     protected $locationController;
     protected $playerController;
 
@@ -34,6 +35,9 @@ class IncalInfinite extends Table {
         parent::__construct();
 
         self::initGameStateLabels([
+            GAME_STATE_LABEL_ENEMY_LOCATION => GAME_STATE_LABEL_ID_ENEMY_LOCATION,
+            GAME_STATE_LABEL_METANAVE_LOCATION => GAME_STATE_LABEL_ID_METANAVE_LOCATION,
+            GAME_STATE_LABEL_PLAYER_COUNT => GAME_STATE_LABEL_ID_PLAYER_COUNT,
             GAME_STATE_LABEL_POWER_DESTROY_AVAILABLE => GAME_STATE_LABEL_ID_POWER_DESTROY_AVAILABLE,
             GAME_STATE_LABEL_POWER_DISCARD_AVAILABLE => GAME_STATE_LABEL_ID_POWER_DISCARD_AVAILABLE,
             GAME_STATE_LABEL_POWER_MOVE_AVAILABLE => GAME_STATE_LABEL_ID_POWER_MOVE_AVAILABLE,
@@ -41,6 +45,9 @@ class IncalInfinite extends Table {
             GAME_STATE_LABEL_ENEMY => GAME_STATE_LABEL_ID_ENEMY,
         ]);
 
+        $this->cardController = new CardController(
+            self::getNew("module.common.deck")
+        );
         $this->locationController = new LocationController();
         $this->playerController = new PlayerController();
     }
@@ -67,9 +74,18 @@ class IncalInfinite extends Table {
         );
         self::reloadPlayersBasicInfos();
 
-        /************ Start the game initialization *****/
-
-        // Init global values with their initial values
+        self::setGameStateInitialValue(
+            GAME_STATE_LABEL_ENEMY_LOCATION,
+            $this->getEnemyStartLocation()
+        );
+        self::setGameStateInitialValue(
+            GAME_STATE_LABEL_METANAVE_LOCATION,
+            0
+        );
+        self::setGameStateInitialValue(
+            GAME_STATE_LABEL_PLAYER_COUNT,
+            count($players)
+        );
         self::setGameStateInitialValue(
             GAME_STATE_LABEL_POWER_DESTROY_AVAILABLE,
             1
@@ -94,6 +110,12 @@ class IncalInfinite extends Table {
 
         // Setup locations
         $this->locationController->setupLocations($this->getEnemy());
+
+        // Setup cards
+        $this->cardController->setupCards(
+            $this->playerController->getAllPlayers(),
+            $this->getEnemy()
+        );
 
         // Activate first player (which is in general a good idea :) )
         $this->activeNextPlayer();
@@ -161,6 +183,24 @@ class IncalInfinite extends Table {
      */
     public function getEnemyName() {
         return ENEMIES[$this->getEnemy()];
+    }
+
+    public function getEnemyLocation() {
+        return self::getGameStateValue(GAME_STATE_LABEL_ENEMY_LOCATION);
+    }
+
+    public function getEnemyStartLocation() {
+        // The President's Hunchbacks start at location tile counter-clockwise from Suicide Alley
+        if ($this->getEnemy() == ENEMY_PRESIDENTS_HUNCHBACKS) {
+            return 10;
+        }
+
+        // All other enemies start between Suicide Alley and counter-clockwise location
+        return 11;
+    }
+
+    public function getPlayerCount() {
+        return self::getGameStateValue(GAME_STATE_LABEL_PLAYER_COUNT);
     }
 
     //////////////////////////////////////////////////////////////////////////////
