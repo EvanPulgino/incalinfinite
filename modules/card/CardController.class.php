@@ -22,6 +22,19 @@ class CardController extends APP_GameClass {
         $this->cards->init("card");
     }
 
+    /**
+     * Setup the cards for the game
+     *
+     * 1. Create the damage supply of 18 damage
+     * 2. Create the initial deck of cards (without damage cards or John Difool)
+     * 3. Deal opening hands to all players
+     * 4. Seed each location (except Suicide Alley) with a character card
+     * 5. Create John Difool and add him to the deck
+     * 6. Add damage cards to the deck based on the selected enemy
+     *
+     * @param Player[] $players An array of players
+     * @param int $enemy The ID of the enemy
+     */
     public function setupCards($players, $enemy) {
         $this->createDamageSupply();
         $this->createInitialDeck(count($players));
@@ -155,7 +168,11 @@ class CardController extends APP_GameClass {
 
         // Pick 1 card for each location
         foreach ($locations as $location) {
-            $this->cards->pickCardForLocation(CARD_LOCATION_DECK, CARD_LOCATION_LOCATION_TILE, $location);
+            $this->cards->pickCardForLocation(
+                CARD_LOCATION_DECK,
+                CARD_LOCATION_LOCATION_TILE,
+                $location
+            );
         }
     }
 }

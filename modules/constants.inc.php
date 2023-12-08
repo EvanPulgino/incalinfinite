@@ -61,6 +61,7 @@ define("ENEMY_PRESIDENTS_HUNCHBACKS", 3);
 define("ENEMY_GORGO_THE_DIRTY", 4);
 define("ENEMY_NECROBOT", 5);
 define("ENEMY_DARKNESS", 6);
+define("ENEMY_RANDOM", 7);
 
 /** Enemy Names */
 define("ENEMY_NAME_BERGS", clienttranslate("The Bergs"));

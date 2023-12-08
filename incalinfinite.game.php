@@ -74,6 +74,11 @@ class IncalInfinite extends Table {
         );
         self::reloadPlayersBasicInfos();
 
+        // If random enemy option was chose, randomize enemy
+        if ($this->getEnemy() == ENEMY_RANDOM) {
+            $this->randomizeEnemy();
+        }
+
         self::setGameStateInitialValue(
             GAME_STATE_LABEL_ENEMY_LOCATION,
             $this->getEnemyStartLocation()
@@ -141,6 +146,7 @@ class IncalInfinite extends Table {
         // Note: you can retrieve some extra field you added for "player" table in "dbmodel.sql" if you need it.
         $sql = "SELECT player_id id, player_score score FROM player ";
         $result["players"] = self::getCollectionFromDb($sql);
+        $result["enemyName"] = $this->getEnemyName();
 
         // TODO: Gather all information about current game situation (visible by player $current_player_id).
 
@@ -201,6 +207,21 @@ class IncalInfinite extends Table {
 
     public function getPlayerCount() {
         return self::getGameStateValue(GAME_STATE_LABEL_PLAYER_COUNT);
+    }
+
+    private function randomizeEnemy() {
+        $enemyOptions = [
+            ENEMY_BERGS,
+            ENEMY_PRESIDENTS_HUNCHBACKS,
+            ENEMY_GORGO_THE_DIRTY,
+            ENEMY_NAME_NECROBOT,
+            ENEMY_DARKNESS,
+        ];
+        shuffle($enemyOptions);
+        self::setGameStateValue(
+            GAME_STATE_LABEL_ENEMY,
+            array_pop($enemyOptions)
+        );
     }
 
     //////////////////////////////////////////////////////////////////////////////

@@ -30,6 +30,12 @@
         "name": "The Darkness",
         "tmdisplay": "The Darkness",
         "nobeginner": true
+      },
+      "7": {
+        "name": "Random",
+        "tmdisplay": "Random",
+        "description": "A randomly selected enemy (excluding the depleted version of The Bergs)",
+        "nobeginner": true
       }
     },
     "default": "1"
