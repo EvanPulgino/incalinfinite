@@ -14,6 +14,148 @@
  * @EvanPulgino
  */
 
+/** Card IDs */
+define("CARD_ANIMAH", 1);
+define("CARD_DEEPO", 2);
+define("CARD_KILL", 3);
+define("CARD_METABARON", 4);
+define("CARD_SOLUNE", 5);
+define("CARD_TANATA", 6);
+define("CARD_JOHN_DIFOOL", 7);
+define("CARD_DAMAGE", 10);
+
+/** Card Names */
+define("CARD_NAME_ANIMAH", clienttranslate("Animah"));
+define("CARD_NAME_DAMAGE", clienttranslate("Damage"));
+define("CARD_NAME_DEEPO", clienttranslate("Deepo"));
+define("CARD_NAME_JOHN_DIFOOL", clienttranslate("John Difool"));
+define("CARD_NAME_KILL", clienttranslate("Kill"));
+define("CARD_NAME_METABARON", clienttranslate("Metabaron"));
+define("CARD_NAME_SOLUNE", clienttranslate("Solune"));
+define("CARD_NAME_TANATA", clienttranslate("Tanata"));
+
+/** Card Map */
+define("CARDS", [
+    CARD_ANIMAH => CARD_NAME_ANIMAH,
+    CARD_DAMAGE => CARD_NAME_DAMAGE,
+    CARD_DEEPO => CARD_NAME_DEEPO,
+    CARD_JOHN_DIFOOL => CARD_NAME_JOHN_DIFOOL,
+    CARD_KILL => CARD_NAME_KILL,
+    CARD_METABARON => CARD_NAME_METABARON,
+    CARD_SOLUNE => CARD_NAME_SOLUNE,
+    CARD_TANATA => CARD_NAME_TANATA,
+]);
+
+/** Enemy IDs */
+define("ENEMY_BERGS_DEPLETED", 1);
+define("ENEMY_BERGS", 2);
+define("ENEMY_PRESIDENTS_HUNCHBACKS", 3);
+define("ENEMY_GORGO_THE_DIRTY", 4);
+define("ENEMY_NECROBOT", 5);
+define("ENEMY_DARKNESS", 6);
+
+/** Enemy Names */
+define("ENEMY_NAME_BERGS", clienttranslate("The Bergs"));
+define(
+    "ENEMY_NAME_PRESIDENTS_HUNCHBACKS",
+    clienttranslate("The President's Hunchbacks")
+);
+define("ENEMY_NAME_GORGO_THE_DIRTY", clienttranslate("Gorgo-the-dirty"));
+define("ENEMY_NAME_NECROBOT", clienttranslate("The Necrobot"));
+define("ENEMY_NAME_DARKNESS", clienttranslate("The Darkness"));
+
+/** Enemy Map */
+define("ENEMIES", [
+    ENEMY_BERGS_DEPLETED => ENEMY_NAME_BERGS,
+    ENEMY_BERGS => ENEMY_NAME_BERGS,
+    ENEMY_PRESIDENTS_HUNCHBACKS => ENEMY_NAME_PRESIDENTS_HUNCHBACKS,
+    ENEMY_GORGO_THE_DIRTY => ENEMY_NAME_GORGO_THE_DIRTY,
+    ENEMY_NECROBOT => ENEMY_NAME_NECROBOT,
+    ENEMY_DARKNESS => ENEMY_NAME_DARKNESS,
+]);
+
+/** Game State Labels */
+define("GAME_STATE_LABEL_ENEMY", "enemy");
+define("GAME_STATE_LABEL_ENEMY_LOCATION", "enemyLocation");
+define("GAME_STATE_LABEL_METANAVE_LOCATION", "metanaveLocation");
+define("GAME_STATE_LABEL_POWER_DESTROY_AVAILABLE", "powerDestroyAvailable");
+define("GAME_STATE_LABEL_POWER_DISCARD_AVAILABLE", "powerDiscardAvailable");
+define("GAME_STATE_LABEL_POWER_MOVE_AVAILABLE", "powerMoveAvailable");
+define("GAME_STATE_LABEL_POWER_TALK_AVAILABLE", "powerTalkAvailable");
+
+/** Game State Label IDs */
+define("GAME_STATE_LABEL_ID_ENEMY_LOCATION", 1);
+define("GAME_STATE_LABEL_ID_METANAVE_LOCATION", 2);
+define("GAME_STATE_LABEL_ID_POWER_DESTROY_AVAILABLE", 3);
+define("GAME_STATE_LABEL_ID_POWER_DISCARD_AVAILABLE", 4);
+define("GAME_STATE_LABEL_ID_POWER_MOVE_AVAILABLE", 5);
+define("GAME_STATE_LABEL_ID_POWER_TALK_AVAILABLE", 6);
+define("GAME_STATE_LABEL_ID_ENEMY", 100);
+
+/** Location IDs */
+define("LOCATION_ACID_LAKE", 1);
+define("LOCATION_AQUAEND", 2);
+define("LOCATION_CENTRAL_CALCULATOR", 3);
+define("LOCATION_CRYSTAL_FOREST", 4);
+define("LOCATION_OURGAR_GAN", 5);
+define("LOCATION_PSYCHORATS_DUMP", 6);
+define("LOCATION_TECHNO_CITY", 7);
+define("LOCATION_UNDERGROUND_RIVER", 8);
+define("LOCATION_SUICIDE_ALLEY", 9);
+
+/** Location Names */
+define("LOCATION_NAME_ACID_LAKE", clienttranslate("Acid Lake"));
+define("LOCATION_NAME_AQUAEND", clienttranslate("Aquaend"));
+define(
+    "LOCATION_NAME_CENTRAL_CALCULATOR",
+    clienttranslate("The Central Calculator")
+);
+define("LOCATION_NAME_CRYSTAL_FOREST", clienttranslate("The Crystal Forest"));
+define("LOCATION_NAME_OURGAR_GAN", clienttranslate("Ourgar-gan"));
+define(
+    "LOCATION_NAME_PSYCHORATS_DUMP",
+    clienttranslate("The Psychorats' Dump")
+);
+define("LOCATION_NAME_SUICIDE_ALLEY", clienttranslate("Suicide Alley"));
+define("LOCATION_NAME_TECHNO_CITY", clienttranslate("Techno City"));
+define(
+    "LOCATION_NAME_UNDERGROUND_RIVER",
+    clienttranslate("The Underground River")
+);
+
+/** Location Map */
+define("LOCATIONS", [
+    LOCATION_ACID_LAKE => LOCATION_NAME_ACID_LAKE,
+    LOCATION_AQUAEND => LOCATION_NAME_AQUAEND,
+    LOCATION_CENTRAL_CALCULATOR => LOCATION_NAME_CENTRAL_CALCULATOR,
+    LOCATION_CRYSTAL_FOREST => LOCATION_NAME_CRYSTAL_FOREST,
+    LOCATION_OURGAR_GAN => LOCATION_NAME_OURGAR_GAN,
+    LOCATION_PSYCHORATS_DUMP => LOCATION_NAME_PSYCHORATS_DUMP,
+    LOCATION_SUICIDE_ALLEY => LOCATION_NAME_SUICIDE_ALLEY,
+    LOCATION_TECHNO_CITY => LOCATION_NAME_TECHNO_CITY,
+    LOCATION_UNDERGROUND_RIVER => LOCATION_NAME_UNDERGROUND_RIVER,
+]);
+
+/** Power IDs */
+define("POWER_DESTROY", 1);
+define("POWER_DISCARD", 2);
+define("POWER_MOVE", 3);
+define("POWER_TALK", 4);
+
+/** Power Names */
+define("POWER_NAME_DESTROY", clienttranslate("Destroy"));
+define("POWER_NAME_DISCARD", clienttranslate("Discard"));
+define("POWER_NAME_MOVE", clienttranslate("Move"));
+define("POWER_NAME_TALK", clienttranslate("Talk"));
+
+/** Power Map */
+define("POWERS", [
+    POWER_DESTROY => POWER_NAME_DESTROY,
+    POWER_DISCARD => POWER_NAME_DISCARD,
+    POWER_MOVE => POWER_NAME_MOVE,
+    POWER_TALK => POWER_NAME_TALK,
+]);
+
 /** State Actions */
 define("STATE_ACTION_GAME_END", "stGameEnd");
 define("STATE_ACTION_GAME_SETUP", "stGameSetup");

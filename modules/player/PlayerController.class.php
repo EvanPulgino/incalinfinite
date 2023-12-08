@@ -1,0 +1,48 @@
+<?php
+
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * IncalInfinite implementation : © Evan Pulgino <evan.pulgino@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ *
+ * Player controller class, handles all player related logic
+ *
+ * @EvanPulgino
+ */
+
+class PlayerController extends APP_GameClass {
+
+    /**
+     * Setup the players for the game
+     *
+     * @param array $players An array of players
+     * @param array $gameInfo An array of game info
+     * @return void
+     */
+    public function setupPlayers($players, $gameInfo) {
+        $defaultColors = $gameInfo["player_colors"];
+        $sql =
+            "INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES ";
+        $values = [];
+        foreach ($players as $playerId => $player) {
+            $color = array_shift($defaultColors);
+            $values[] =
+                "('" .
+                $playerId .
+                "','$color','" .
+                $player["player_canal"] .
+                "','" .
+                addslashes($player["player_name"]) .
+                "','" .
+                addslashes($player["player_avatar"]) .
+                "')";
+        }
+
+        $sql .= implode(",", $values);
+        self::DbQuery($sql);
+    }
+}
