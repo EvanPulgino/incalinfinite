@@ -48,16 +48,31 @@ class PlayerController extends APP_GameClass {
     /**
      * Get all players in the game
      *
-     * @return Player[] An array of players
+     * @return IncalInfinitePlayer[] - An array of players
      */
     public function getAllPlayers() {
         $sql = "SELECT * FROM player";
         $playersData = self::getObjectListFromDb($sql);
         $playerObjects = [];
         foreach ($playersData as $playerData) {
-            array_push($playerObjects, new Player($playerData));
+            $playerObjects[] = new IncalInfinitePlayer($playerData);
         }
 
         return $playerObjects;
+    }
+
+    /**
+     * Get all players in the game formatted for the UI
+     *
+     * @return array - An array of players formatted for the UI
+     */
+    public function getAllPlayersUiData() {
+        $players = $this->getAllPlayers();
+        $playersUiData = [];
+        foreach ($players as $player) {
+            $playersUiData[] = $player->getUiData();
+        }
+
+        return $playersUiData;
     }
 }

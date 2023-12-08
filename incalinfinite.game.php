@@ -83,10 +83,7 @@ class IncalInfinite extends Table {
             GAME_STATE_LABEL_ENEMY_LOCATION,
             $this->getEnemyStartLocation()
         );
-        self::setGameStateInitialValue(
-            GAME_STATE_LABEL_METANAVE_LOCATION,
-            0
-        );
+        self::setGameStateInitialValue(GAME_STATE_LABEL_METANAVE_LOCATION, 0);
         self::setGameStateInitialValue(
             GAME_STATE_LABEL_PLAYER_COUNT,
             count($players)
@@ -142,13 +139,16 @@ class IncalInfinite extends Table {
 
         $current_player_id = self::getCurrentPlayerId(); // !! We must only return informations visible by this player !!
 
-        // Get information about players
-        // Note: you can retrieve some extra field you added for "player" table in "dbmodel.sql" if you need it.
-        $sql = "SELECT player_id id, player_score score FROM player ";
-        $result["players"] = self::getCollectionFromDb($sql);
+        $result["cards"] = $this->cardController->getAllCardsUiData();
+        $result["enemyLocation"] = $this->getEnemyLocation();
         $result["enemyName"] = $this->getEnemyName();
-
-        // TODO: Gather all information about current game situation (visible by player $current_player_id).
+        $result[
+            "incalInfinitePlayers"
+        ] = $this->playerController->getAllPlayersUiData();
+        $result["locations"] = $this->locationController->getAllLocationsUiData();
+        $result["metanaveLocation"] = $this->getMetanaveLocation();
+        $result["metanaveName"] = METANAVE_NAME;
+        $result["powers"] = $this->getPowers();
 
         return $result;
     }
@@ -172,6 +172,39 @@ class IncalInfinite extends Table {
     //////////////////////////////////////////////////////////////////////////////
     //////////// Utility functions
     ////////////
+
+    public function getPowers() {
+        $powers = [];
+        $powers[] = [
+            "id" => POWER_DESTROY,
+            "name" => POWER_NAME_DESTROY,
+            "available" => self::getGameStateValue(
+                GAME_STATE_LABEL_POWER_DESTROY_AVAILABLE
+            ),
+        ];
+        $powers[] = [
+            "id" => POWER_DISCARD,
+            "name" => POWER_NAME_DISCARD,
+            "available" => self::getGameStateValue(
+                GAME_STATE_LABEL_POWER_DISCARD_AVAILABLE
+            ),
+        ];
+        $powers[] = [
+            "id" => POWER_MOVE,
+            "name" => POWER_NAME_MOVE,
+            "available" => self::getGameStateValue(
+                GAME_STATE_LABEL_POWER_MOVE_AVAILABLE
+            ),
+        ];
+        $powers[] = [
+            "id" => POWER_TALK,
+            "name" => POWER_NAME_TALK,
+            "available" => self::getGameStateValue(
+                GAME_STATE_LABEL_POWER_TALK_AVAILABLE
+            ),
+        ];
+        return $powers;
+    }
 
     /**
      * Get the enemy being used in this game
@@ -205,22 +238,18 @@ class IncalInfinite extends Table {
         return 11;
     }
 
+    public function getMetanaveLocation() {
+        return self::getGameStateValue(GAME_STATE_LABEL_METANAVE_LOCATION);
+    }
+
     public function getPlayerCount() {
         return self::getGameStateValue(GAME_STATE_LABEL_PLAYER_COUNT);
     }
 
     private function randomizeEnemy() {
-        $enemyOptions = [
-            ENEMY_BERGS,
-            ENEMY_PRESIDENTS_HUNCHBACKS,
-            ENEMY_GORGO_THE_DIRTY,
-            ENEMY_NAME_NECROBOT,
-            ENEMY_DARKNESS,
-        ];
-        shuffle($enemyOptions);
         self::setGameStateValue(
             GAME_STATE_LABEL_ENEMY,
-            array_pop($enemyOptions)
+            rand(ENEMY_BERGS, ENEMY_DARKNESS)
         );
     }
 

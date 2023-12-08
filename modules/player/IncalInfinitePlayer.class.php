@@ -9,7 +9,7 @@
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
  *
- * Object class for a Player that represents a player in the game.
+ * Object class for an IncalInfinitePlayer that represents a player in the game.
  * Contains:
  * - The player's ID
  * - The player's natural order
@@ -19,7 +19,7 @@
  * @EvanPulgino
  */
 
- class Player {
+class IncalInfinitePlayer {
     /**
      * @var int $id The database ID of the player
      */
@@ -41,10 +41,10 @@
     protected $color;
 
     public function __construct($data) {
-        $this->id = $data['player_id'];
-        $this->naturalOrder = $data['player_no'];
-        $this->name = $data['player_name'];
-        $this->color = $data['player_color'];
+        $this->id = $data["player_id"];
+        $this->naturalOrder = $data["player_no"];
+        $this->name = $data["player_name"];
+        $this->color = $data["player_color"];
     }
 
     /**
@@ -82,4 +82,18 @@
     public function getColor() {
         return $this->color;
     }
- }
+
+    /**
+     * Get the player's data in a format that can be sent to the UI
+     *
+     * @return array
+     */
+    public function getUiData() {
+        return [
+            "id" => $this->getId(),
+            "naturalOrder" => $this->getNaturalOrder(),
+            "name" => $this->getName(),
+            "color" => $this->getColor(),
+        ];
+    }
+}

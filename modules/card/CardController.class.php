@@ -32,7 +32,7 @@ class CardController extends APP_GameClass {
      * 5. Create John Difool and add him to the deck
      * 6. Add damage cards to the deck based on the selected enemy
      *
-     * @param Player[] $players An array of players
+     * @param IncalInfinitePlayer[] $players An array of players
      * @param int $enemy The ID of the enemy
      */
     public function setupCards($players, $enemy) {
@@ -43,6 +43,35 @@ class CardController extends APP_GameClass {
         $this->createJohnDifool();
         $this->seedInitialDamage($enemy);
         $this->cards->shuffle(CARD_LOCATION_DECK);
+    }
+
+    /**
+     * Get all cards
+     *
+     * @return Card[] - An array of cards
+     */
+    public function getAllCards() {
+        $sql = "SELECT * FROM card";
+        $cardsData = self::getObjectListFromDB($sql);
+        $cardObjects = [];
+        foreach ($cardsData as $cardData) {
+            $cardObjects[] = new Card($cardData);
+        }
+        return $cardObjects;
+    }
+
+    /**
+     * Get all cards in the game formatted for the UI
+     *
+     * @return array - An array of cards formatted for the UI
+     */
+    public function getAllCardsUiData() {
+        $cards = $this->getAllCards();
+        $cardsUiData = [];
+        foreach ($cards as $card) {
+            $cardsUiData[] = $card->getUiData();
+        }
+        return $cardsUiData;
     }
 
     /**
@@ -115,7 +144,7 @@ class CardController extends APP_GameClass {
     /**
      * Deal opening hands to all players
      *
-     * @param Player[] $players An array of players
+     * @param IncalInfinitePlayer[] $players An array of players
      */
     private function dealOpeningHands($players) {
         foreach ($players as $player) {

@@ -93,9 +93,9 @@ class Location {
     }
 
     /**
-     * Get the UI data for the location
+     * Get the location's data formatted for the UI
      *
-     * @return array
+     * @return array - The location's data formatted for the UI
      */
     public function getUiData() {
         return [

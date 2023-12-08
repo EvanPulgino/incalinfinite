@@ -101,4 +101,14 @@ class Card {
     public function getLocationArg() {
         return $this->locationArg;
     }
+
+    public function getUiData() {
+        return [
+            "id" => $this->id,
+            "type" => $this->type,
+            "value" => $this->value,
+            "location" => $this->location,
+            "locationArg" => $this->locationArg,
+        ];
+    }
 }

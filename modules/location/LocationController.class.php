@@ -41,6 +41,30 @@ class LocationController extends APP_GameClass {
     }
 
     /**
+     * Get all locations in the game
+     *
+     * @return Location[] - An array of locations
+     */
+    public function getAllLocations() {
+        $sql = "SELECT * FROM location";
+        $locationsData = self::getObjectListFromDB($sql);
+        $locationObjects = [];
+        foreach ($locationsData as $locationData) {
+            $locationObjects[] = new Location($locationData);
+        }
+        return $locationObjects;
+    }
+
+    public function getAllLocationsUiData() {
+        $locations = $this->getAllLocations();
+        $locationUiData = [];
+        foreach ($locations as $location) {
+            $locationUiData[] = $location->getUiData();
+        }
+        return $locationUiData;
+    }
+
+    /**
      * Create a location record
      *
      * @param int $tileId - Id of the location tile
