@@ -7,23 +7,24 @@
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
  *
- * GameState.ts
+ * NextPlayer.ts
  *
- * Class that holds all game states
+ * Incal Infinite next player state
  *
  */
 
-class GameState {
-  gameEnd: GameEnd;
-  gameSetup: GameSetup;
-  nextPlayer: NextPlayer;
-  passTurn: PassTurn;
-  playerTurn: PlayerTurn;
+class NextPlayer implements State {
+  id: number;
+  name: string;
+  game: any;
+
   constructor(game: any) {
-    this.gameEnd = new GameEnd(game);
-    this.gameSetup = new GameSetup(game);
-    this.nextPlayer = new NextPlayer(game);
-    this.passTurn = new PassTurn(game);
-    this.playerTurn = new PlayerTurn(game);
+    this.id = 20;
+    this.name = "nextPlayer";
+    this.game = game;
   }
+
+  onEnteringState(stateArgs: StateArgs): void {}
+  onLeavingState(): void {}
+  onUpdateActionButtons(stateArgs: StateArgs): void {}
 }

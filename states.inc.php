@@ -59,19 +59,69 @@ $machinestates = [
         "transitions" => ["" => STATE_PLAYER_TURN],
     ],
 
-    // Note: ID=2 => your first state
-
     STATE_PLAYER_TURN => [
         "name" => STATE_NAME_PLAYER_TURN,
         "description" => clienttranslate(
-            '${actplayer} must play a card or pass'
+            '${actplayer} must move the Meta-Nave, pass, or attempt the Transfiguration Ritual'
         ),
         "descriptionmyturn" => clienttranslate(
-            '${you} must play a card or pass'
+            '${you} must move the Meta-Nave, pass, or attempt the Transfiguration Ritual'
         ),
         "type" => STATE_TYPE_ACTIVE_PLAYER,
-        "possibleactions" => ["playCard", "pass"],
-        "transitions" => ["playCard" => 2, "pass" => 2],
+        "args" => STATE_ARGUMENTS_PLAYER_TURN,
+        "possibleactions" => [
+            ACTION_BEGIN_TRANSFIGURATION_RITUAL,
+            ACTION_MOVE_METANAVE,
+            ACTION_PASS,
+        ],
+        "transitions" => [
+            TRANSITION_BEGIN_TRANSFIGURATION_RITUAL => STATE_GAME_END,
+            TRANSITION_BEGIN_TRANSFIGURATION_RITUAL_DARKNESS => STATE_GAME_END,
+            TRANSITION_PASS_TURN => STATE_PASS_TURN,
+            TRANSITION_EXPLORE_LOCATION => STATE_EXPLORE,
+        ],
+    ],
+
+    STATE_EXPLORE => [
+        "name" => STATE_NAME_EXPLORE,
+        "description" => clienttranslate(
+            '${actplayer} must explore the ${location}'
+        ),
+        "descriptionmyturn" => clienttranslate(
+            '${you} must explore the ${location}'
+        ),
+        "type" => STATE_TYPE_ACTIVE_PLAYER,
+        "args" => STATE_ARGUMENTS_EXPLORE,
+        "possibleactions" => [ACTION_EXPLORE_LOCATION],
+        "transitions" => [
+            TRANSITION_END_TURN => STATE_NEXT_PLAYER,
+        ],
+    ],
+
+    STATE_PASS_TURN => [
+        "name" => STATE_NAME_PASS_TURN,
+        "description" => clienttranslate(
+            '${actplayer} must discard 1 non-damaged card from their hand'
+        ),
+        "descriptionmyturn" => clienttranslate(
+            '${you} must discard 1 non-damage card from your hand'
+        ),
+        "type" => STATE_TYPE_ACTIVE_PLAYER,
+        "possibleactions" => [ACTION_DISCARD_CARD],
+        "transitions" => [
+            TRANSITION_END_TURN => STATE_NEXT_PLAYER,
+        ],
+    ],
+
+    STATE_NEXT_PLAYER => [
+        "name" => STATE_NAME_NEXT_PLAYER,
+        "description" => "",
+        "type" => STATE_TYPE_GAME,
+        "action" => "stNextPlayer",
+        "updateGameProgression" => true,
+        "transitions" => [
+            TRANSITION_NEXT_PLAYER => STATE_PLAYER_TURN,
+        ],
     ],
 
     // Final state.

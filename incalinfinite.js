@@ -295,6 +295,8 @@ var GameState = /** @class */ (function () {
     function GameState(game) {
         this.gameEnd = new GameEnd(game);
         this.gameSetup = new GameSetup(game);
+        this.nextPlayer = new NextPlayer(game);
+        this.passTurn = new PassTurn(game);
         this.playerTurn = new PlayerTurn(game);
     }
     return GameState;
@@ -380,6 +382,56 @@ var GameSetup = /** @class */ (function () {
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
  *
+ * NextPlayer.ts
+ *
+ * Incal Infinite next player state
+ *
+ */
+var NextPlayer = /** @class */ (function () {
+    function NextPlayer(game) {
+        this.id = 20;
+        this.name = "nextPlayer";
+        this.game = game;
+    }
+    NextPlayer.prototype.onEnteringState = function (stateArgs) { };
+    NextPlayer.prototype.onLeavingState = function () { };
+    NextPlayer.prototype.onUpdateActionButtons = function (stateArgs) { };
+    return NextPlayer;
+}());
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * IncalInfinite implementation : © Evan Pulgino <evan.pulgino@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ *
+ * PassTurn.ts
+ *
+ * Incal Infinite pass turn state
+ *
+ */
+var PassTurn = /** @class */ (function () {
+    function PassTurn(game) {
+        this.id = 12;
+        this.name = "passTurn";
+        this.game = game;
+    }
+    PassTurn.prototype.onEnteringState = function (stateArgs) { };
+    PassTurn.prototype.onLeavingState = function () { };
+    PassTurn.prototype.onUpdateActionButtons = function (stateArgs) { };
+    return PassTurn;
+}());
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * IncalInfinite implementation : © Evan Pulgino <evan.pulgino@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ *
  * PlayerTurn.ts
  *
  * Incal Infinite player turn state
@@ -387,12 +439,33 @@ var GameSetup = /** @class */ (function () {
  */
 var PlayerTurn = /** @class */ (function () {
     function PlayerTurn(game) {
-        this.id = 2;
-        this.name = "PlayerTurn";
+        this.id = 10;
+        this.name = "playerTurn";
         this.game = game;
     }
     PlayerTurn.prototype.onEnteringState = function (stateArgs) { };
     PlayerTurn.prototype.onLeavingState = function () { };
-    PlayerTurn.prototype.onUpdateActionButtons = function (stateArgs) { };
+    PlayerTurn.prototype.onUpdateActionButtons = function (stateArgs) {
+        var _this = this;
+        if (stateArgs.isCurrentPlayerActive) {
+            // Create action button for Pass action
+            gameui.addActionButton("pass-button", _("Pass"), function () {
+                _this.pass();
+            });
+            // Create action button for Transfiguration Ritual action
+            gameui.addActionButton("transfiguration-ritual-button", _("Attempt Transfiguration Ritual"), function () {
+                _this.transfigurationRitual();
+            });
+        }
+    };
+    PlayerTurn.prototype.pass = function () {
+        // Pass turn
+        console.log("Passing turn");
+        this.game.ajaxcallwrapper("pass", {});
+    };
+    PlayerTurn.prototype.transfigurationRitual = function () {
+        // Perform transfiguration ritual
+        console.log("Performing transfiguration ritual");
+    };
     return PlayerTurn;
 }());

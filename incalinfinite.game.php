@@ -24,6 +24,7 @@ class IncalInfinite extends Table {
     protected $cardController;
     protected $locationController;
     protected $playerController;
+    public $states;
 
     function __construct() {
         // Your global variables labels:
@@ -50,6 +51,10 @@ class IncalInfinite extends Table {
         );
         $this->locationController = new LocationController();
         $this->playerController = new PlayerController();
+
+        $this->states[STATE_NEXT_PLAYER] = new NextPlayerState($this);
+        $this->states[STATE_PASS_TURN] = new PassTurnState($this);
+        $this->states[STATE_PLAYER_TURN] = new PlayerTurnState($this);
     }
 
     protected function getGameName() {
@@ -145,7 +150,9 @@ class IncalInfinite extends Table {
         $result[
             "incalInfinitePlayers"
         ] = $this->playerController->getAllPlayersUiData();
-        $result["locations"] = $this->locationController->getAllLocationsUiData();
+        $result[
+            "locations"
+        ] = $this->locationController->getAllLocationsUiData();
         $result["metanaveLocation"] = $this->getMetanaveLocation();
         $result["metanaveName"] = METANAVE_NAME;
         $result["powers"] = $this->getPowers();
@@ -167,6 +174,22 @@ class IncalInfinite extends Table {
         // TODO: compute and return the game progression
 
         return 0;
+    }
+
+    /**
+     * This method is called everytime the system tries to call an undefined method.
+     * It will look for functions that are defined in the states and call them if they exist:
+     *
+     * @param string $name The name of the function being called
+     * @param array $args The arguments passed to the function
+     * @return void
+     */
+    function __call($name, $args) {
+        foreach ($this->states as $state) {
+            if (in_array($name, get_class_methods($state))) {
+                call_user_func([$state, $name], $args);
+            }
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -253,89 +276,9 @@ class IncalInfinite extends Table {
         );
     }
 
-    //////////////////////////////////////////////////////////////////////////////
-    //////////// Player actions
-    ////////////
-
-    /*
-        Each time a player is doing some game action, one of the methods below is called.
-        (note: each method below must match an input method in incalinfinite.action.php)
-    */
-
-    /*
-    
-    Example:
-
-    function playCard( $card_id )
-    {
-        // Check that this is the player's turn and that it is a "possible action" at this game state (see states.inc.php)
-        self::checkAction( 'playCard' ); 
-        
-        $player_id = self::getActivePlayerId();
-        
-        // Add your game logic to play a card there 
-        ...
-        
-        // Notify all players about the card played
-        self::notifyAllPlayers( "cardPlayed", clienttranslate( '${player_name} plays ${card_name}' ), array(
-            'player_id' => $player_id,
-            'player_name' => self::getActivePlayerName(),
-            'card_name' => $card_name,
-            'card_id' => $card_id
-        ) );
-          
+    public function argPlayerTurn() {
+        return $this->states[STATE_PLAYER_TURN]->getArgs();
     }
-    
-    */
-
-    //////////////////////////////////////////////////////////////////////////////
-    //////////// Game state arguments
-    ////////////
-
-    /*
-        Here, you can create methods defined as "game state arguments" (see "args" property in states.inc.php).
-        These methods function is to return some additional information that is specific to the current
-        game state.
-    */
-
-    /*
-    
-    Example for game state "MyGameState":
-    
-    function argMyGameState()
-    {
-        // Get some values from the current game situation in database...
-    
-        // return values:
-        return array(
-            'variable1' => $value1,
-            'variable2' => $value2,
-            ...
-        );
-    }    
-    */
-
-    //////////////////////////////////////////////////////////////////////////////
-    //////////// Game state actions
-    ////////////
-
-    /*
-        Here, you can create methods defined as "game state actions" (see "action" property in states.inc.php).
-        The action method of state X is called everytime the current game state is set to X.
-    */
-
-    /*
-    
-    Example for game state "MyGameState":
-
-    function stMyGameState()
-    {
-        // Do some stuff ...
-        
-        // (very often) go to another gamestate
-        $this->gamestate->nextState( 'some_gamestate_transition' );
-    }    
-    */
 
     //////////////////////////////////////////////////////////////////////////////
     //////////// Zombie

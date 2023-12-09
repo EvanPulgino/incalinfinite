@@ -19,12 +19,39 @@ class PlayerTurn implements State {
   game: any;
 
   constructor(game: any) {
-    this.id = 2;
-    this.name = "PlayerTurn";
+    this.id = 10;
+    this.name = "playerTurn";
     this.game = game;
   }
 
   onEnteringState(stateArgs: StateArgs): void {}
   onLeavingState(): void {}
-  onUpdateActionButtons(stateArgs: StateArgs): void {}
+  onUpdateActionButtons(stateArgs: StateArgs): void {
+    if (stateArgs.isCurrentPlayerActive) {
+      // Create action button for Pass action
+      gameui.addActionButton("pass-button", _("Pass"), () => {
+        this.pass();
+      });
+
+      // Create action button for Transfiguration Ritual action
+      gameui.addActionButton(
+        "transfiguration-ritual-button",
+        _("Attempt Transfiguration Ritual"),
+        () => {
+          this.transfigurationRitual();
+        }
+      );
+    }
+  }
+
+  pass(): void {
+    // Pass turn
+    console.log("Passing turn");
+    this.game.ajaxcallwrapper("pass", {});
+  }
+
+  transfigurationRitual(): void {
+    // Perform transfiguration ritual
+    console.log("Performing transfiguration ritual");
+  }
 }
