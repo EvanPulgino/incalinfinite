@@ -15,10 +15,12 @@
 
 // @ts-ignore
 class GameBody extends GameBasics {
+  locationController: LocationController;
 
   constructor() {
     super();
-    console.log('incalInfinite constructor');
+
+    this.locationController = new LocationController(this);
   }
 
   /**
@@ -28,6 +30,7 @@ class GameBody extends GameBasics {
    */
   setup(gamedata: any) {
     super.setup(gamedata);
+    this.locationController.setupLocations(gamedata.locations);
     this.setupNotifications();
   }
 
@@ -48,5 +51,4 @@ class GameBody extends GameBasics {
    * @param {object} notif - notification data
    */
   notif_message(notif: any): void {}
-
 }

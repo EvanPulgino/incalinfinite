@@ -247,7 +247,7 @@ var GameBody = /** @class */ (function (_super) {
     __extends(GameBody, _super);
     function GameBody() {
         var _this = _super.call(this) || this;
-        console.log('incalInfinite constructor');
+        _this.locationController = new LocationController(_this);
         return _this;
     }
     /**
@@ -257,6 +257,7 @@ var GameBody = /** @class */ (function (_super) {
      */
     GameBody.prototype.setup = function (gamedata) {
         _super.prototype.setup.call(this, gamedata);
+        this.locationController.setupLocations(gamedata.locations);
         this.setupNotifications();
     };
     /**
@@ -323,6 +324,47 @@ define([
 ], function (dojo, declare) {
     return declare("bgagame.incalinfinite", ebg.core.gamegui, new GameBody());
 });
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * IncalInfinite implementation : © Evan Pulgino <evan.pulgino@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ *
+ * LocationController.ts
+ *
+ * Handles all front end interactions with the location tiles
+ *
+ */
+var LocationController = /** @class */ (function () {
+    function LocationController(ui) {
+        this.ui = ui;
+    }
+    LocationController.prototype.setupLocations = function (locations) {
+        for (var _i = 0, locations_1 = locations; _i < locations_1.length; _i++) {
+            var location_1 = locations_1[_i];
+            this.createLocation(location_1);
+        }
+    };
+    /**
+     * Creates a location tile
+     *
+     * @param location
+     */
+    LocationController.prototype.createLocation = function (location) {
+        // Create the div
+        var locationDiv = '<div id="' +
+            location.key +
+            '" class="locationtile ' +
+            location.key +
+            '"></div>';
+        var spaceDivId = "incal-space-" + location.tilePosition;
+        this.ui.createHtml(locationDiv, spaceDivId);
+    };
+    return LocationController;
+}());
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>

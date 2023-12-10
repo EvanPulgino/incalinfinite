@@ -25,18 +25,24 @@
     Please REMOVE this comment before publishing your game on BGA
 -->
 
+<div id="incal-table-grid">
+    <div id="incal-space-4" class="grid-item"></div>
+    <div id="incal-space-5" class="grid-item"></div>
+    <div id="incal-space-6" class="grid-item"></div>
+    <div id="incal-space-7" class="grid-item"></div>
+    <div id="incal-space-8" class="grid-item"></div>
+    <div id="incal-space-3" class=" grid-item"></div>
+    <div id="incal-space-empty-1" class="grid-item"></div>
+    <div id="incal-space-decks" class="grid-item"></div>
+    <div id="incal-space-empty-2" class="grid-item"></div>
+    <div id="incal-space-9" class="grid-item"></div>
+    <div id="incal-space-2" class="grid-item"></div>
+    <div id="incal-space-1" class="grid-item"></div>
+    <div id="incal-space-0" class="grid-item"></div>
+    <div id="incal-space-11" class="grid-item"></div>
+    <div id="incal-space-10" class="grid-item"></div>
+</div>
 
-This is your game interface. You can edit this HTML in your ".tpl" file.
 
-
-<script type="text/javascript">
-    // Javascript HTML templates
-
-    /*
-// Example:
-var jstpl_some_game_item='<div class="my_game_item" id="my_game_item_${MY_ITEM_ID}"></div>';
-
-    */
-</script>
 
 {OVERALL_GAME_FOOTER}

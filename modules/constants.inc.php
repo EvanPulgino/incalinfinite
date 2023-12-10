@@ -154,6 +154,18 @@ define("LOCATIONS", [
     LOCATION_UNDERGROUND_RIVER => LOCATION_NAME_UNDERGROUND_RIVER,
 ]);
 
+define("LOCATION_KEYS", [
+    LOCATION_ACID_LAKE => "acidlake",
+    LOCATION_AQUAEND => "aquaend",
+    LOCATION_CENTRAL_CALCULATOR => "centralcalculator",
+    LOCATION_CRYSTAL_FOREST => "crystalforest",
+    LOCATION_OURGAR_GAN => "ourgargan",
+    LOCATION_PSYCHORATS_DUMP => "psychoratsdump",
+    LOCATION_SUICIDE_ALLEY => "suicidealley",
+    LOCATION_TECHNO_CITY => "technocity",
+    LOCATION_UNDERGROUND_RIVER => "undergroundriver",
+]);
+
 define("METANAVE_NAME", clienttranslate("Meta-Nave"));
 
 /** Power IDs */

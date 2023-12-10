@@ -1,0 +1,55 @@
+/**
+ *
+ * Location styles
+ *
+ */
+
+#suicidealley {
+  background-image: url(./img/suicidealley.png);
+  background-repeat: no-repeat;
+  filter: drop-shadow(2px 2px 2px black);
+  -webkit-filter: drop-shadow(2px 2px 3px #000);
+  height: 310px;
+  width: 506px;
+}
+
+.locationtile {
+  background-image: url(./img/locationtiles.png);
+  background-repeat: no-repeat;
+  filter: drop-shadow(2px 2px 2px black);
+  -webkit-filter: drop-shadow(2px 2px 3px #000);
+  height: 307px;
+  width: 506px;
+}
+
+.acidlake {
+  background-position: -0 -0;
+}
+
+.aquaend {
+  background-position: -507px -0;
+}
+
+.centralcalculator {
+  background-position: -0 -307px;
+}
+
+.crystalforest {
+  background-position: -507px -307px;
+}
+
+.ourgargan {
+  background-position: -0 -614px;
+}
+
+.psychoratsdump {
+  background-position: -507px -614px;
+}
+
+.technocity {
+  background-position: -1024px -0;
+}
+
+.undergroundriver {
+  background-position: -1014px -307px;
+}

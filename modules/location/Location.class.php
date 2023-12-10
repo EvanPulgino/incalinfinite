@@ -92,6 +92,10 @@ class Location {
         return $this->incalChit;
     }
 
+    public function getKey() {
+        return LOCATION_KEYS[$this->tileId];
+    }
+
     /**
      * Get the location's data formatted for the UI
      *
@@ -104,6 +108,7 @@ class Location {
             "tileId" => $this->tileId,
             "tilePosition" => $this->tilePosition,
             "incalChit" => $this->incalChit,
+            "key" => $this->getKey(),
         ];
     }
 }

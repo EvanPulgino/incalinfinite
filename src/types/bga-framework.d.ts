@@ -148,6 +148,15 @@ declare class IncalInfinitePlayer {
   naturalOrder: string;
 }
 
+declare class LocationTile {
+  id: number;
+  incalChit: number;
+  key: string;
+  name: string;
+  tileId: number;
+  tilePosition: number;
+}
+
 declare class GameGui {
   page_is_unloading: any;
   game_name: string;
