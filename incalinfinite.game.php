@@ -21,9 +21,9 @@ require_once "modules/constants.inc.php";
 require_once APP_GAMEMODULE_PATH . "module/table/table.game.php";
 
 class IncalInfinite extends Table {
-    protected $cardController;
-    protected $locationController;
-    protected $playerController;
+    public $cardController;
+    public $locationController;
+    public $playerController;
     public $states;
 
     function __construct() {
@@ -120,7 +120,7 @@ class IncalInfinite extends Table {
 
         // Setup cards
         $this->cardController->setupCards(
-            $this->playerController->getAllPlayers(),
+            $this->playerController->getPlayers(),
             $this->getEnemy()
         );
 
@@ -144,17 +144,23 @@ class IncalInfinite extends Table {
 
         $current_player_id = self::getCurrentPlayerId(); // !! We must only return informations visible by this player !!
 
-        $result["cards"] = $this->cardController->getAllCardsUiData();
+        $result["deck"] = $this->cardController->getDeckUiData();
+        $result["discard"] = $this->cardController->getDiscardUiData();
         $result["enemyLocation"] = $this->getEnemyLocation();
         $result["enemyName"] = $this->getEnemyName();
         $result[
             "incalInfinitePlayers"
-        ] = $this->playerController->getAllPlayersUiData();
+        ] = $this->playerController->getPlayersUiData();
         $result[
             "locations"
         ] = $this->locationController->getAllLocationsUiData();
         $result["metanaveLocation"] = $this->getMetanaveLocation();
         $result["metanaveName"] = METANAVE_NAME;
+        $result[
+            "playerHandCounts"
+        ] = $this->cardController->getPlayerHandsCount(
+            $this->playerController->getPlayers()
+        );
         $result["powers"] = $this->getPowers();
 
         return $result;
@@ -195,6 +201,15 @@ class IncalInfinite extends Table {
     //////////////////////////////////////////////////////////////////////////////
     //////////// Utility functions
     ////////////
+
+    /**
+     * Get the active player object
+     *
+     * @return IncalInfinitePlayer - The active player object
+     */
+    public function getActivePlayer() {
+        return $this->playerController->getPlayer(self::getActivePlayerId());
+    }
 
     public function getPowers() {
         $powers = [];

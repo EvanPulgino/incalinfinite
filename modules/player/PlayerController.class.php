@@ -46,12 +46,26 @@ class PlayerController extends APP_GameClass {
     }
 
     /**
-     * Get all players in the game
+     * Gets an IncalInfinitePlayer object for a specific player ID
      *
-     * @return IncalInfinitePlayer[] - An array of players
+     * @param int $playerId The ID of the player
+     * @return IncalInfinitePlayer - A player object
      */
-    public function getAllPlayers() {
+    public function getPlayer($playerId) {
+        return $this->getPlayers([$playerId])[0];
+    }
+
+    /**
+     * Gets an array of IncalInfinitePlayer objects for all/specifed player IDs
+     *
+     * @param array $playerIds An array of player IDs
+     * @return IncalInfinitePlayer[] - An array of player objects
+     */
+    public function getPlayers($playerIds = null) {
         $sql = "SELECT * FROM player";
+        if ($playerIds) {
+            $sql .= " WHERE player_id IN (" . implode(",", $playerIds) . ")";
+        }
         $playersData = self::getObjectListFromDb($sql);
         $playerObjects = [];
         foreach ($playersData as $playerData) {
@@ -62,12 +76,12 @@ class PlayerController extends APP_GameClass {
     }
 
     /**
-     * Get all players in the game formatted for the UI
+     * Gets an array of player data formatted for the UI for all/specifed player IDs
      *
      * @return array - An array of players formatted for the UI
      */
-    public function getAllPlayersUiData() {
-        $players = $this->getAllPlayers();
+    public function getPlayersUiData($playerIds = null) {
+        $players = $this->getPlayers($playerIds);
         $playersUiData = [];
         foreach ($players as $player) {
             $playersUiData[] = $player->getUiData();

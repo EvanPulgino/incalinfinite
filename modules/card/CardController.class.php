@@ -46,32 +46,193 @@ class CardController extends APP_GameClass {
     }
 
     /**
-     * Get all cards
+     * Get a card by ID
      *
-     * @return Card[] - An array of cards
+     * @param int $cardId The ID of the card
+     * @return Card|null - A card object or null if not found
      */
-    public function getAllCards() {
-        $sql = "SELECT * FROM card";
-        $cardsData = self::getObjectListFromDB($sql);
+    public function getCard($cardId) {
+        $card = $this->cards->getCard($cardId);
+        if (!$card) {
+            return null;
+        }
+        return new Card($card);
+    }
+
+    /**
+     * Move a card to the discard pile
+     *
+     * @param int $cardId The ID of the card
+     * @return void
+     */
+    public function discardCard($cardId) {
+        $this->cards->playCard($cardId);
+    }
+
+    /**
+     * Draw a card from the deck into a player's hand
+     * If the deck is empty, shuffle the discard pile into the deck before drawing
+     *
+     * @param IncalInfinitePlayer $player The player objectof the player drawing the card
+     * @param IncalInfinite $game The game object
+     * @return void
+     */
+    public function drawCard($player, $game) {
+        // If the deck is empty, shuffle the discard pile into the deck
+        if ($this->isDeckEmpty()) {
+            if ($this->isDiscardEmpty()) {
+                // If the discard pile is empty, the players lose
+                $game->notifyAllPlayers(
+                    "gameEndCantDraw",
+                    clienttranslate(
+                        '${player_name} can\'t draw a card. Players lose!'
+                    ),
+                    [
+                        "player_name" => $player->getName(),
+                    ]
+                );
+                $game->gamestate->nextState(TRANSITION_END_GAME);
+            } else {
+                $this->shuffleDiscardIntoDeck($game);
+            }
+        }
+        $drawnCard = new Card(
+            $this->cards->pickCard(CARD_LOCATION_DECK, $player->getId())
+        );
+
+        $damageInHand = $this->cards->getCardsOfTypeInLocation(
+            CARD_DAMAGE,
+            0,
+            CARD_LOCATION_HAND,
+            $player->getId()
+        );
+
+        if (count($damageInHand) > 2) {
+            // If the player has 3 or more damage cards in their hand, the players lose
+            $game->notifyAllPlayers(
+                "gameEndTooMuchDamage",
+                clienttranslate(
+                    '${player_name} has 3 damage cards. Players lose!'
+                ),
+                [
+                    "player_name" => $player->getName(),
+                ]
+            );
+        }
+
+        $game->notifyAllPlayers(
+            "cardDrawn",
+            clienttranslate('${player_name} draws a card'),
+            [
+                "player_name" => $player->getName(),
+                "player_id" => $player->getId(),
+                "card" => $drawnCard->getUiData(),
+            ]
+        );
+    }
+
+    /**
+     * Get all cards in the deck
+     *
+     * @return Card[]|null - An array of cards or null if no cards left
+     */
+    public function getDeck() {
+        $deck = $this->cards->getCardsInLocation(CARD_LOCATION_DECK);
+        if (!$deck) {
+            return null;
+        }
         $cardObjects = [];
-        foreach ($cardsData as $cardData) {
-            $cardObjects[] = new Card($cardData);
+        foreach ($deck as $card) {
+            $cardObjects[] = new Card($card);
         }
         return $cardObjects;
     }
 
     /**
-     * Get all cards in the game formatted for the UI
+     * Get all cards in the deck formatted for the UI
      *
      * @return array - An array of cards formatted for the UI
      */
-    public function getAllCardsUiData() {
-        $cards = $this->getAllCards();
-        $cardsUiData = [];
-        foreach ($cards as $card) {
-            $cardsUiData[] = $card->getUiData();
+    public function getDeckUiData() {
+        $deck = $this->getDeck();
+        $deckUiData = [];
+        foreach ($deck as $card) {
+            $deckUiData[] = $card->getUiData();
         }
-        return $cardsUiData;
+        return $deckUiData;
+    }
+
+    /**
+     * Get all cards in the discard pile
+     *
+     * @return Card[]|null - An array of cards or null if no cards left
+     */
+    public function getDiscard() {
+        $discard = $this->cards->getCardsInLocation(CARD_LOCATION_DISCARD);
+        if (!$discard) {
+            return null;
+        }
+        $cardObjects = [];
+        foreach ($discard as $card) {
+            $cardObjects[] = new Card($card);
+        }
+        return $cardObjects;
+    }
+
+    /**
+     * Get all cards in the discard pile formatted for the UI
+     *
+     * @return array - An array of cards formatted for the UI
+     */
+    public function getDiscardUiData() {
+        $discard = $this->getDiscard();
+        if (!$discard) {
+            return [];
+        }
+        $discardUiData = [];
+        foreach ($discard as $card) {
+            $discardUiData[] = $card->getUiData();
+        }
+        return $discardUiData;
+    }
+
+    /**
+     * Get the number of cards in a player's hand
+     *
+     * @param int $playerId The ID of the player
+     * @return int - The number of cards in the player's hand
+     */
+    public function getPlayerHandCount($playerId) {
+        return $this->cards->countCardInLocation(CARD_LOCATION_HAND, $playerId);
+    }
+
+    /**
+     * Get the number of cards in each player's hand
+     *
+     * @param IncalInfinitePlayer[] $players An array of player objects
+     * @return int[] - An array of player IDs mapped to the number of cards in their hand
+     */
+    public function getPlayerHandsCount($players) {
+        $handCounts = [];
+        foreach ($players as $player) {
+            $handCounts[$player->getId()] = $this->getPlayerHandCount(
+                $player->getId()
+            );
+        }
+        return $handCounts;
+    }
+
+    /**
+     * Add a damage card to the discard pile
+     *
+     * @return Card - The card that was added to the discard pile
+     */
+    public function moveDamageToDiscard() {
+        $damageCard = new Card(
+            $this->cards->getCardOnTop(CARD_LOCATION_DAMAGE_SUPPLY)
+        );
+        $this->cards->moveCard($damageCard->getId(), CARD_LOCATION_DISCARD);
+        return new Card($this->cards->getCard($damageCard->getId()));
     }
 
     /**
@@ -153,6 +314,24 @@ class CardController extends APP_GameClass {
     }
 
     /**
+     * Check if the deck is empty
+     *
+     * @return bool - True if the deck is empty, false otherwise
+     */
+    private function isDeckEmpty() {
+        return $this->cards->countCardInLocation(CARD_LOCATION_DECK) == 0;
+    }
+
+    /**
+     * Check if the discard pile is empty
+     *
+     * @return bool - True if the discard pile is empty, false otherwise
+     */
+    private function isDiscardEmpty() {
+        return $this->cards->countCardInLocation(CARD_LOCATION_DISCARD) == 0;
+    }
+
+    /**
      * Seed damage cards to deck based on enemy
      *
      * @param int $enemy The ID of the enemy
@@ -203,5 +382,30 @@ class CardController extends APP_GameClass {
                 $location
             );
         }
+    }
+
+    /**
+     * Shuffle the discard pile into the deck - notifies players
+     *
+     * @param IncalInfinite $game The game object
+     * @return void
+     */
+    private function shuffleDiscardIntoDeck($game) {
+        $this->cards->moveAllCardsInLocation(
+            CARD_LOCATION_DISCARD,
+            CARD_LOCATION_DECK
+        );
+        $this->cards->shuffle(CARD_LOCATION_DECK);
+
+        $game->notifyAllPlayers(
+            "discardShuffled",
+            clienttranslate(
+                "The discard pile has been shuffled to make a new deck"
+            ),
+            [
+                "discard" => $this->getDiscardUiData(),
+                "deck" => $this->getDeckUiData(),
+            ]
+        );
     }
 }

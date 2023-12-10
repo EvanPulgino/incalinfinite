@@ -221,6 +221,7 @@ define(
     "TRANSITION_BEGIN_TRANSFIGURATION_RITUAL_DARKNESS",
     "beginTransfigurationRitualDarkness"
 );
+define("TRANSITION_END_GAME", "endGame");
 define("TRANSITION_END_TURN", "endTurn");
 define("TRANSITION_EXPLORE_LOCATION", "exploreLocation");
 define("TRANSITION_NEXT_PLAYER", "nextPlayer");

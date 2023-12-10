@@ -109,6 +109,7 @@ $machinestates = [
         "type" => STATE_TYPE_ACTIVE_PLAYER,
         "possibleactions" => [ACTION_DISCARD_CARD],
         "transitions" => [
+            TRANSITION_END_GAME => STATE_GAME_END,
             TRANSITION_END_TURN => STATE_NEXT_PLAYER,
         ],
     ],

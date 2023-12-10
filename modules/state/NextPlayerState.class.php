@@ -28,6 +28,8 @@ class NextPlayerState {
     }
 
     public function stNextPlayer() {
+        // Activate the next player
+        $this->game->activeNextPlayer();
         $this->game->gamestate->nextState(TRANSITION_NEXT_PLAYER);
     }
 }

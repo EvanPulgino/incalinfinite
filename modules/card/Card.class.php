@@ -50,11 +50,11 @@ class Card {
     protected $locationArg;
 
     public function __construct($data) {
-        $this->id = $data["card_id"];
-        $this->type = $data["card_type"];
-        $this->value = $data["card_type_arg"];
-        $this->location = $data["card_location"];
-        $this->locationArg = $data["card_location_arg"];
+        $this->id = $data["id"];
+        $this->type = $data["type"];
+        $this->value = $data["type_arg"];
+        $this->location = $data["location"];
+        $this->locationArg = $data["location_arg"];
     }
 
     /**
@@ -102,6 +102,20 @@ class Card {
         return $this->locationArg;
     }
 
+    public function getName() {
+        switch ($this->type) {
+            case CARD_DAMAGE:
+                return clienttranslate("a Damage card");
+            case CARD_JOHN_DIFOOL:
+                return CARDS[$this->type];
+            default:
+                return clienttranslate("a value-") .
+                    $this->value .
+                    " " .
+                    CARDS[$this->type];
+        }
+    }
+
     public function getUiData() {
         return [
             "id" => $this->id,
@@ -109,6 +123,7 @@ class Card {
             "value" => $this->value,
             "location" => $this->location,
             "locationArg" => $this->locationArg,
+            "name" => $this->getName(),
         ];
     }
 }
