@@ -116,16 +116,6 @@ html {
  * Location styles
  *
  */
-#suicidealley {
-  background-image: url(./img/suicidealley.png);
-  background-repeat: no-repeat;
-  filter: drop-shadow(2px 2px 2px black);
-  -webkit-filter: drop-shadow(2px 2px 3px #000);
-  height: 307px;
-  width: 506px;
-  position: absolute;
-}
-
 .locationtile {
   background-image: url(./img/locationtiles.png);
   background-repeat: no-repeat;
@@ -137,31 +127,35 @@ html {
 }
 
 .acidlake {
-  background-position: 0 0;
-}
-
-.aquaend {
   background-position: -507px 0;
 }
 
-.centralcalculator {
-  background-position: 0 -307px;
-}
-
-.crystalforest {
+.aquaend {
   background-position: -507px -307px;
 }
 
-.ourgargan {
+.centralcalculator {
   background-position: 0 -614px;
 }
 
-.psychoratsdump {
+.crystalforest {
   background-position: -507px -614px;
 }
 
-.technocity {
+.ourgargan {
+  background-position: 0 -307px;
+}
+
+.psychoratsdump {
   background-position: -1014px 0;
+}
+
+.suicidealley {
+  background-position: -1014px -614px;
+}
+
+.technocity {
+  background-position: 0 0;
 }
 
 .undergroundriver {
