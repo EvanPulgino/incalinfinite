@@ -211,39 +211,6 @@ class IncalInfinite extends Table {
         return $this->playerController->getPlayer(self::getActivePlayerId());
     }
 
-    public function getPowers() {
-        $powers = [];
-        $powers[] = [
-            "id" => POWER_DESTROY,
-            "name" => POWER_NAME_DESTROY,
-            "available" => self::getGameStateValue(
-                GAME_STATE_LABEL_POWER_DESTROY_AVAILABLE
-            ),
-        ];
-        $powers[] = [
-            "id" => POWER_DISCARD,
-            "name" => POWER_NAME_DISCARD,
-            "available" => self::getGameStateValue(
-                GAME_STATE_LABEL_POWER_DISCARD_AVAILABLE
-            ),
-        ];
-        $powers[] = [
-            "id" => POWER_MOVE,
-            "name" => POWER_NAME_MOVE,
-            "available" => self::getGameStateValue(
-                GAME_STATE_LABEL_POWER_MOVE_AVAILABLE
-            ),
-        ];
-        $powers[] = [
-            "id" => POWER_TALK,
-            "name" => POWER_NAME_TALK,
-            "available" => self::getGameStateValue(
-                GAME_STATE_LABEL_POWER_TALK_AVAILABLE
-            ),
-        ];
-        return $powers;
-    }
-
     /**
      * Get the enemy being used in this game
      *
@@ -282,6 +249,31 @@ class IncalInfinite extends Table {
 
     public function getPlayerCount() {
         return self::getGameStateValue(GAME_STATE_LABEL_PLAYER_COUNT);
+    }
+
+    public function getPowers() {
+        $powers = [];
+        $powers[] = $this->buildPowerObject(POWER_DESTROY);
+        $powers[] = $this->buildPowerObject(POWER_DISCARD);
+        $powers[] = $this->buildPowerObject(POWER_MOVE);
+        $powers[] = $this->buildPowerObject(POWER_TALK);
+        return $powers;
+    }
+
+    private function buildPowerObject($powerId) {
+        $powerAvailable = self::getGameStateValue(
+            POWER_GAME_STATE_KEYS[$powerId]
+        );
+        return [
+            "id" => $powerId,
+            "name" => POWERS[$powerId],
+            "key" => POWER_KEYS[$powerId],
+            "cssClass" =>
+                $powerAvailable == 1
+                    ? POWER_KEYS[$powerId]
+                    : "used-" . POWER_KEYS[$powerId],
+            "available" => $powerAvailable,
+        ];
     }
 
     private function randomizeEnemy() {

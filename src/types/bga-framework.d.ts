@@ -141,22 +141,6 @@ declare interface State {
   onUpdateActionButtons: (stateArgs: StateArgs) => void;
 }
 
-declare class IncalInfinitePlayer {
-  id: string;
-  name: string;
-  color: string;
-  naturalOrder: string;
-}
-
-declare class LocationTile {
-  id: number;
-  incalChit: number;
-  key: string;
-  name: string;
-  tileId: number;
-  tilePosition: number;
-}
-
 declare class GameGui {
   page_is_unloading: any;
   game_name: string;

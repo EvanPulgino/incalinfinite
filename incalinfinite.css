@@ -19,8 +19,64 @@
  */
 html {
   background-image: url(./img/incalbg.jpg);
-  background-size: cover;
+  background-size: contain;
   font-size: calc(15px + 0.390625vw);
+}
+
+/**
+ *
+ * Incal Chit styles
+ *
+ */
+.incalchit {
+  background-image: url(./img/incalchits.png);
+  background-repeat: no-repeat;
+  filter: drop-shadow(2px 2px 2px black);
+  -webkit-filter: drop-shadow(2px 2px 3px #000);
+  height: 115px;
+  width: 115px;
+  position: absolute;
+}
+
+.incalchit-1 {
+  background-position: -115px 0;
+}
+
+.incalchit-2 {
+  background-position: -230px 0;
+}
+
+.incalchit-3 {
+  background-position: -345px 0;
+}
+
+.incalchit-4 {
+  background-position: -460px 0;
+}
+
+.incalchit-5 {
+  background-position: -575px 0;
+}
+
+.incalchit-6 {
+  background-position: -690px 0;
+}
+
+.incalchit-7 {
+  background-position: -805px 0;
+}
+
+.incalchit-8 {
+  background-position: -920px 0;
+}
+
+.incalchit-9 {
+  background-position: -1035px 0;
+}
+
+.incal-location-container .incalchit {
+  top: 95px;
+  left: -55px;
 }
 
 /**
@@ -39,6 +95,22 @@ html {
   justify-content: center;
 }
 
+.incal-location-container {
+  position: relative;
+  height: 406px;
+  width: 575px;
+}
+
+#power-chit-container {
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  height: 110px;
+  width: 387px;
+  top: 295px;
+  left: 66px;
+}
+
 /**
  *
  * Location styles
@@ -49,8 +121,9 @@ html {
   background-repeat: no-repeat;
   filter: drop-shadow(2px 2px 2px black);
   -webkit-filter: drop-shadow(2px 2px 3px #000);
-  height: 310px;
+  height: 307px;
   width: 506px;
+  position: absolute;
 }
 
 .locationtile {
@@ -60,6 +133,7 @@ html {
   -webkit-filter: drop-shadow(2px 2px 3px #000);
   height: 307px;
   width: 506px;
+  position: absolute;
 }
 
 .acidlake {
@@ -92,4 +166,51 @@ html {
 
 .undergroundriver {
   background-position: -1014px -307px;
+}
+
+/**
+ *
+ * Power Chit styles
+ *
+ */
+.power {
+  background-image: url(./img/powerchits.png);
+  background-repeat: no-repeat;
+  border-radius: 2px;
+  filter: drop-shadow(2px 2px 2px black);
+  -webkit-filter: drop-shadow(2px 2px 3px #000);
+  height: 110px;
+  width: 89px;
+}
+
+.destroy {
+  background-position: 0 0;
+}
+
+.discard {
+  background-position: -89px 0;
+}
+
+.move {
+  background-position: -178px 0;
+}
+
+.talk {
+  background-position: 0 -110px;
+}
+
+.used-destroy {
+  background-position: -89px -110px;
+}
+
+.used-discard {
+  background-position: -178px -110px;
+}
+
+.used-move {
+  background-position: -267px 0;
+}
+
+.used-talk {
+  background-position: -267px -110px;
 }

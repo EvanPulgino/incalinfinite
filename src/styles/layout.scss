@@ -14,3 +14,19 @@
   align-items: center;
   justify-content: center;
 }
+
+.incal-location-container {
+  position: relative;
+  height: 406px;
+  width: 575px;
+}
+
+#power-chit-container {
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  height: 110px;
+  width: 387px;
+  top: 295px;
+  left: 66px;
+}

@@ -30,7 +30,10 @@ class GameBody extends GameBasics {
    */
   setup(gamedata: any) {
     super.setup(gamedata);
-    this.locationController.setupLocations(gamedata.locations);
+    this.locationController.setupLocations(
+      gamedata.locations,
+      gamedata.powers
+    );
     this.setupNotifications();
   }
 

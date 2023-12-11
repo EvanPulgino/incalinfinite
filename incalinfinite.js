@@ -257,7 +257,7 @@ var GameBody = /** @class */ (function (_super) {
      */
     GameBody.prototype.setup = function (gamedata) {
         _super.prototype.setup.call(this, gamedata);
-        this.locationController.setupLocations(gamedata.locations);
+        this.locationController.setupLocations(gamedata.locations, gamedata.powers);
         this.setupNotifications();
     };
     /**
@@ -342,10 +342,10 @@ var LocationController = /** @class */ (function () {
     function LocationController(ui) {
         this.ui = ui;
     }
-    LocationController.prototype.setupLocations = function (locations) {
+    LocationController.prototype.setupLocations = function (locations, powers) {
         for (var _i = 0, locations_1 = locations; _i < locations_1.length; _i++) {
             var location_1 = locations_1[_i];
-            this.createLocation(location_1);
+            this.createLocation(location_1, powers);
         }
     };
     /**
@@ -353,15 +353,39 @@ var LocationController = /** @class */ (function () {
      *
      * @param location
      */
-    LocationController.prototype.createLocation = function (location) {
-        // Create the div
+    LocationController.prototype.createLocation = function (location, powers) {
+        // Create the space div
+        var spaceDivId = "incal-space-" + location.tilePosition;
+        // Create container
+        var locationContainer = '<div id="incal-location-container-' +
+            location.key +
+            '" class="incal-location-container"></div>';
+        this.ui.createHtml(locationContainer, spaceDivId);
+        // Create the location tile div
         var locationDiv = '<div id="' +
             location.key +
             '" class="locationtile ' +
             location.key +
             '"></div>';
-        var spaceDivId = "incal-space-" + location.tilePosition;
-        this.ui.createHtml(locationDiv, spaceDivId);
+        this.ui.createHtml(locationDiv, "incal-location-container-" + location.key);
+        if (location.key === "suicidealley") {
+            var powerChitContainerDiv = "<div id='power-chit-container'></div>";
+            this.ui.createHtml(powerChitContainerDiv, "incal-location-container-" + location.key);
+            for (var _i = 0, powers_1 = powers; _i < powers_1.length; _i++) {
+                var power = powers_1[_i];
+                var powerChitDiv = '<div id="power-chit-' +
+                    power.key +
+                    '" class="power ' +
+                    power.cssClass +
+                    '"></div>';
+                this.ui.createHtml(powerChitDiv, "power-chit-container");
+            }
+        }
+        else {
+            // Create the incal chit div
+            var chitDiv = '<div id="incal-chit-' + location.key + '" class="incalchit"></div>';
+            this.ui.createHtml(chitDiv, "incal-location-container-" + location.key);
+        }
     };
     return LocationController;
 }());

@@ -1,0 +1,56 @@
+/**
+ *
+ * Incal Chit styles
+ *
+ */
+
+.incalchit {
+  background-image: url(./img/incalchits.png);
+  background-repeat: no-repeat;
+  filter: drop-shadow(2px 2px 2px black);
+  -webkit-filter: drop-shadow(2px 2px 3px #000);
+  height: 115px;
+  width: 115px;
+  position: absolute;
+}
+
+.incalchit-1 {
+  background-position: -115px -0;
+}
+
+.incalchit-2 {
+  background-position: -230px -0;
+}
+
+.incalchit-3 {
+  background-position: -345px -0;
+}
+
+.incalchit-4 {
+  background-position: -460px -0;
+}
+
+.incalchit-5 {
+  background-position: -575px -0;
+}
+
+.incalchit-6 {
+  background-position: -690px -0;
+}
+
+.incalchit-7 {
+  background-position: -805px -0;
+}
+
+.incalchit-8 {
+  background-position: -920px -0;
+}
+
+.incalchit-9 {
+  background-position: -1035px -0;
+}
+
+.incal-location-container .incalchit {
+  top: 95px;
+  left: -55px;
+}

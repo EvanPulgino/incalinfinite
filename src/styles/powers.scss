@@ -1,0 +1,47 @@
+/**
+ *
+ * Power Chit styles
+ *
+ */
+
+.power {
+  background-image: url(./img/powerchits.png);
+  background-repeat: no-repeat;
+  border-radius: 2px;
+  filter: drop-shadow(2px 2px 2px black);
+  -webkit-filter: drop-shadow(2px 2px 3px #000);
+  height: 110px;
+  width: 89px;
+}
+
+.destroy {
+  background-position: -0 -0;
+}
+
+.discard {
+  background-position: -89px -0;
+}
+
+.move {
+  background-position: -178px -0;
+}
+
+.talk {
+  background-position: -0 -110px;
+}
+
+.used-destroy {
+  background-position: -89px -110px;
+}
+
+.used-discard {
+  background-position: -178px -110px;
+}
+
+.used-move {
+  background-position: -267px 0;
+}
+
+.used-talk {
+  background-position: -267px -110px;
+}
