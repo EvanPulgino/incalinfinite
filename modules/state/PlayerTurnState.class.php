@@ -11,7 +11,7 @@
  *
  * Backend functions used by the playerTurn State
  *
- * In this state, a player moves the Meta-nave, passes, or attempts the Transfiguration Ritual
+ * In this state, a player moves the Meta-ship, passes, or attempts the Transfiguration Ritual
  *
  * @EvanPulgino
  */

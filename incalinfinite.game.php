@@ -37,7 +37,7 @@ class IncalInfinite extends Table {
 
         self::initGameStateLabels([
             GAME_STATE_LABEL_ENEMY_LOCATION => GAME_STATE_LABEL_ID_ENEMY_LOCATION,
-            GAME_STATE_LABEL_METANAVE_LOCATION => GAME_STATE_LABEL_ID_METANAVE_LOCATION,
+            GAME_STATE_LABEL_METASHIP_LOCATION => GAME_STATE_LABEL_ID_METASHIP_LOCATION,
             GAME_STATE_LABEL_PLAYER_COUNT => GAME_STATE_LABEL_ID_PLAYER_COUNT,
             GAME_STATE_LABEL_POWER_DESTROY_AVAILABLE => GAME_STATE_LABEL_ID_POWER_DESTROY_AVAILABLE,
             GAME_STATE_LABEL_POWER_DISCARD_AVAILABLE => GAME_STATE_LABEL_ID_POWER_DISCARD_AVAILABLE,
@@ -88,7 +88,7 @@ class IncalInfinite extends Table {
             GAME_STATE_LABEL_ENEMY_LOCATION,
             $this->getEnemyStartLocation()
         );
-        self::setGameStateInitialValue(GAME_STATE_LABEL_METANAVE_LOCATION, 0);
+        self::setGameStateInitialValue(GAME_STATE_LABEL_METASHIP_LOCATION, 0);
         self::setGameStateInitialValue(
             GAME_STATE_LABEL_PLAYER_COUNT,
             count($players)
@@ -154,8 +154,8 @@ class IncalInfinite extends Table {
         $result[
             "locations"
         ] = $this->locationController->getAllLocationsUiData();
-        $result["metanaveLocation"] = $this->getMetanaveLocation();
-        $result["metanaveName"] = METANAVE_NAME;
+        $result["metashipLocation"] = $this->getMetashipLocation();
+        $result["metashipName"] = METASHIP_NAME;
         $result[
             "playerHandCounts"
         ] = $this->cardController->getPlayerHandsCount(
@@ -243,8 +243,8 @@ class IncalInfinite extends Table {
         return 11;
     }
 
-    public function getMetanaveLocation() {
-        return self::getGameStateValue(GAME_STATE_LABEL_METANAVE_LOCATION);
+    public function getMetashipLocation() {
+        return self::getGameStateValue(GAME_STATE_LABEL_METASHIP_LOCATION);
     }
 
     public function getPlayerCount() {

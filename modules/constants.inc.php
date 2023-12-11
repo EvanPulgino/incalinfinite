@@ -18,7 +18,7 @@
 define("ACTION_BEGIN_TRANSFIGURATION_RITUAL", "beginTransfigurationRitual");
 define("ACTION_DISCARD_CARD", "discardCard");
 define("ACTION_EXPLORE_LOCATION", "exploreLocation");
-define("ACTION_MOVE_METANAVE", "moveMetanave");
+define("ACTION_MOVE_METASHIP", "moveMetaship");
 define("ACTION_PASS", "pass");
 
 /** Card Types */
@@ -93,7 +93,7 @@ define("ENEMIES", [
 /** Game State Labels */
 define("GAME_STATE_LABEL_ENEMY", "enemy");
 define("GAME_STATE_LABEL_ENEMY_LOCATION", "enemyLocation");
-define("GAME_STATE_LABEL_METANAVE_LOCATION", "metanaveLocation");
+define("GAME_STATE_LABEL_METASHIP_LOCATION", "metashipLocation");
 define("GAME_STATE_LABEL_PLAYER_COUNT", "playerCount");
 define("GAME_STATE_LABEL_POWER_DESTROY_AVAILABLE", "powerDestroyAvailable");
 define("GAME_STATE_LABEL_POWER_DISCARD_AVAILABLE", "powerDiscardAvailable");
@@ -102,7 +102,7 @@ define("GAME_STATE_LABEL_POWER_TALK_AVAILABLE", "powerTalkAvailable");
 
 /** Game State Label IDs */
 define("GAME_STATE_LABEL_ID_ENEMY_LOCATION", 10);
-define("GAME_STATE_LABEL_ID_METANAVE_LOCATION", 11);
+define("GAME_STATE_LABEL_ID_METASHIP_LOCATION", 11);
 define("GAME_STATE_LABEL_ID_PLAYER_COUNT", 12);
 define("GAME_STATE_LABEL_ID_POWER_DESTROY_AVAILABLE", 13);
 define("GAME_STATE_LABEL_ID_POWER_DISCARD_AVAILABLE", 14);
@@ -166,7 +166,7 @@ define("LOCATION_KEYS", [
     LOCATION_UNDERGROUND_RIVER => "undergroundriver",
 ]);
 
-define("METANAVE_NAME", clienttranslate("Meta-Nave"));
+define("METASHIP_NAME", clienttranslate("Meta-ship"));
 
 /** Power IDs */
 define("POWER_DESTROY", 1);
