@@ -15,12 +15,16 @@
 
 // @ts-ignore
 class GameBody extends GameBasics {
+  enemyController: EnemyController;
   locationController: LocationController;
+  metashipController: MetashipController;
 
   constructor() {
     super();
 
+    this.enemyController = new EnemyController(this);
     this.locationController = new LocationController(this);
+    this.metashipController = new MetashipController(this);
   }
 
   /**
@@ -30,10 +34,9 @@ class GameBody extends GameBasics {
    */
   setup(gamedata: any) {
     super.setup(gamedata);
-    this.locationController.setupLocations(
-      gamedata.locations,
-      gamedata.powers
-    );
+    this.locationController.setupLocations(gamedata.locations, gamedata.powers);
+    this.metashipController.setupMetaship(gamedata.metashipLocation);
+    this.enemyController.setupEnemy(gamedata.enemy);
     this.setupNotifications();
   }
 

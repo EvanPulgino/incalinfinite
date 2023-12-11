@@ -146,8 +146,7 @@ class IncalInfinite extends Table {
 
         $result["deck"] = $this->cardController->getDeckUiData();
         $result["discard"] = $this->cardController->getDiscardUiData();
-        $result["enemyLocation"] = $this->getEnemyLocation();
-        $result["enemyName"] = $this->getEnemyName();
+        $result["enemy"] = $this->buildEnemyObject();
         $result[
             "incalInfinitePlayers"
         ] = $this->playerController->getPlayersUiData();
@@ -258,6 +257,16 @@ class IncalInfinite extends Table {
         $powers[] = $this->buildPowerObject(POWER_MOVE);
         $powers[] = $this->buildPowerObject(POWER_TALK);
         return $powers;
+    }
+
+    private function buildEnemyObject() {
+        $enemyId = $this->getEnemy();
+        return [
+            "id" => $enemyId,
+            "name" => $this->getEnemyName(),
+            "key" => ENEMY_KEYS[$enemyId],
+            "location" => $this->getEnemyLocation(),
+        ];
     }
 
     private function buildPowerObject($powerId) {

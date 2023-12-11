@@ -27,19 +27,31 @@
 
 <div id="incal-table-grid">
     <div id="incal-space-4" class="grid-item"></div>
-    <div id="incal-space-5" class="grid-item"></div>
+    <div id="incal-space-5" class="grid-item">
+        <div id="enemy-container-5" class="enemy-container"></div>
+    </div>
     <div id="incal-space-6" class="grid-item"></div>
-    <div id="incal-space-7" class="grid-item"></div>
+    <div id="incal-space-7" class="grid-item">
+        <div id="enemy-container-7" class="enemy-container"></div>
+    </div>
     <div id="incal-space-8" class="grid-item"></div>
-    <div id="incal-space-3" class=" grid-item"></div>
+    <div id="incal-space-3" class=" grid-item">
+        <div id="enemy-container-3" class="enemy-container"></div>
+    </div>
     <div id="incal-space-empty-1" class="grid-item"></div>
     <div id="incal-space-decks" class="grid-item"></div>
     <div id="incal-space-empty-2" class="grid-item"></div>
-    <div id="incal-space-9" class="grid-item"></div>
+    <div id="incal-space-9" class="grid-item">
+        <div id="enemy-container-9" class="enemy-container"></div>
+    </div>
     <div id="incal-space-2" class="grid-item"></div>
-    <div id="incal-space-1" class="grid-item"></div>
+    <div id="incal-space-1" class="grid-item">
+        <div id="enemy-container-1" class="enemy-container"></div>
+    </div>
     <div id="incal-space-0" class="grid-item"></div>
-    <div id="incal-space-11" class="grid-item"></div>
+    <div id="incal-space-11" class="grid-item">
+        <div id="enemy-container-11" class="enemy-container"></div>
+    </div>
     <div id="incal-space-10" class="grid-item"></div>
 </div>
 

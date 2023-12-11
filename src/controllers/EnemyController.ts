@@ -7,14 +7,21 @@
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
  *
- * incalinfinite.scss
+ * EnemyController.ts
+ *
+ * Handles all front end interactions with the selected enemy silhouette
  *
  */
 
-@import url(../../../css/csslayer.css);
-@import "styles/general";
-@import "styles/incalchits.scss";
-@import "styles/layout";
-@import "styles/locations";
-@import "styles/powers";
-@import "styles/silhouettes";
+class EnemyController {
+  ui: GameBody;
+
+  constructor(ui: GameBody) {
+    this.ui = ui;
+  }
+
+  setupEnemy(enemy: Enemy): void {
+    const enemyDiv = '<div id="enemy" class="silhouette ' + enemy.key + '"></div>';
+    this.ui.createHtml(enemyDiv, "enemy-container-" + enemy.location);
+  }
+}

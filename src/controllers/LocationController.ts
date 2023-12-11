@@ -77,5 +77,32 @@ class LocationController {
 
       this.ui.createHtml(chitDiv, "incal-location-container-" + location.key);
     }
+
+    // Create metaship container div
+    const mirror = location.tilePosition > 3 && location.tilePosition < 9;
+    const cssClass = "silhouette-container" + (mirror ? " mirror" : "");
+
+    const metashipContainerDiv =
+      '<div id="metaship-container-' +
+      location.tilePosition +
+      '" class="' +
+      cssClass +
+      '"></div>';
+
+    this.ui.createHtml(
+      metashipContainerDiv,
+      location.key
+    );
+
+    // Create enemy container div
+    const enemyContainerDiv =
+      '<div id="enemy-container-' +
+      location.tilePosition +
+      '" class="silhouette-container"></div>';
+
+    this.ui.createHtml(
+      enemyContainerDiv,
+      location.key
+    );
   }
 }

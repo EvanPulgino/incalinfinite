@@ -23,6 +23,10 @@ html {
   font-size: calc(15px + 0.390625vw);
 }
 
+.mirror {
+  transform: scaleX(-1);
+}
+
 /**
  *
  * Incal Chit styles
@@ -90,6 +94,7 @@ html {
 }
 
 .grid-item {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -99,6 +104,26 @@ html {
   position: relative;
   height: 406px;
   width: 575px;
+}
+
+.enemy-container {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  height: 324px;
+  width: 336px;
+}
+
+.silhouette-container {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
 }
 
 #power-chit-container {
@@ -207,4 +232,52 @@ html {
 
 .used-talk {
   background-position: -267px -110px;
+}
+
+/**
+ *
+ * Silhouette styles
+ *
+ */
+.silhouette {
+  background-image: url(./img/silhouettes.png);
+  background-repeat: no-repeat;
+  filter: drop-shadow(5px 5px 5px black);
+  -webkit-filter: drop-shadow(5px 5px 6px #000);
+}
+
+.bergs {
+  background-position: 0 -155px;
+  height: 225px;
+  width: 336px;
+}
+
+.darkness {
+  background-position: 0 -380px;
+  height: 253px;
+  width: 298px;
+}
+
+.gorgothedirty {
+  background-position: 0 -920px;
+  height: 296px;
+  width: 251px;
+}
+
+.metaship {
+  background-position: 0 0;
+  height: 155px;
+  width: 334px;
+}
+
+.necrobot {
+  background-position: 0 -1216px;
+  height: 324px;
+  width: 172px;
+}
+
+.presidentshunchbacks {
+  background-position: 0 -633px;
+  height: 287px;
+  width: 203px;
 }

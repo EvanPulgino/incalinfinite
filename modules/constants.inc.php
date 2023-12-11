@@ -90,6 +90,15 @@ define("ENEMIES", [
     ENEMY_DARKNESS => ENEMY_NAME_DARKNESS,
 ]);
 
+define("ENEMY_KEYS", [
+    ENEMY_BERGS_DEPLETED => "bergs",
+    ENEMY_BERGS => "bergs",
+    ENEMY_PRESIDENTS_HUNCHBACKS => "presidentshunchbacks",
+    ENEMY_GORGO_THE_DIRTY => "gorgothedirty",
+    ENEMY_NECROBOT => "necrobot",
+    ENEMY_DARKNESS => "darkness",
+]);
+
 /** Game State Labels */
 define("GAME_STATE_LABEL_ENEMY", "enemy");
 define("GAME_STATE_LABEL_ENEMY_LOCATION", "enemyLocation");

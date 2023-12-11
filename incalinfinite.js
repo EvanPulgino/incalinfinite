@@ -247,7 +247,9 @@ var GameBody = /** @class */ (function (_super) {
     __extends(GameBody, _super);
     function GameBody() {
         var _this = _super.call(this) || this;
+        _this.enemyController = new EnemyController(_this);
         _this.locationController = new LocationController(_this);
+        _this.metashipController = new MetashipController(_this);
         return _this;
     }
     /**
@@ -258,6 +260,8 @@ var GameBody = /** @class */ (function (_super) {
     GameBody.prototype.setup = function (gamedata) {
         _super.prototype.setup.call(this, gamedata);
         this.locationController.setupLocations(gamedata.locations, gamedata.powers);
+        this.metashipController.setupMetaship(gamedata.metashipLocation);
+        this.enemyController.setupEnemy(gamedata.enemy);
         this.setupNotifications();
     };
     /**
@@ -333,6 +337,30 @@ define([
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
  *
+ * EnemyController.ts
+ *
+ * Handles all front end interactions with the selected enemy silhouette
+ *
+ */
+var EnemyController = /** @class */ (function () {
+    function EnemyController(ui) {
+        this.ui = ui;
+    }
+    EnemyController.prototype.setupEnemy = function (enemy) {
+        var enemyDiv = '<div id="enemy" class="silhouette ' + enemy.key + '"></div>';
+        this.ui.createHtml(enemyDiv, "enemy-container-" + enemy.location);
+    };
+    return EnemyController;
+}());
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * IncalInfinite implementation : © Evan Pulgino <evan.pulgino@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ *
  * LocationController.ts
  *
  * Handles all front end interactions with the location tiles
@@ -386,8 +414,46 @@ var LocationController = /** @class */ (function () {
             var chitDiv = '<div id="incal-chit-' + location.key + '" class="incalchit"></div>';
             this.ui.createHtml(chitDiv, "incal-location-container-" + location.key);
         }
+        // Create metaship container div
+        var mirror = location.tilePosition > 3 && location.tilePosition < 9;
+        var cssClass = "silhouette-container" + (mirror ? " mirror" : "");
+        var metashipContainerDiv = '<div id="metaship-container-' +
+            location.tilePosition +
+            '" class="' +
+            cssClass +
+            '"></div>';
+        this.ui.createHtml(metashipContainerDiv, location.key);
+        // Create enemy container div
+        var enemyContainerDiv = '<div id="enemy-container-' +
+            location.tilePosition +
+            '" class="silhouette-container"></div>';
+        this.ui.createHtml(enemyContainerDiv, location.key);
     };
     return LocationController;
+}());
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * IncalInfinite implementation : © Evan Pulgino <evan.pulgino@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ *
+ * MetashipController.ts
+ *
+ * Handles all front end interactions with the Meta-ship silhouette
+ *
+ */
+var MetashipController = /** @class */ (function () {
+    function MetashipController(ui) {
+        this.ui = ui;
+    }
+    MetashipController.prototype.setupMetaship = function (metashipLocation) {
+        var metashipDiv = '<div id="metaship" class="silhouette metaship"></div>';
+        this.ui.createHtml(metashipDiv, "metaship-container-" + metashipLocation);
+    };
+    return MetashipController;
 }());
 /**
  *------

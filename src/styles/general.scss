@@ -9,3 +9,7 @@ html {
   background-size: contain;
   font-size: calc(15px + 0.390625vw);
 }
+
+.mirror {
+  transform: scaleX(-1);
+}
