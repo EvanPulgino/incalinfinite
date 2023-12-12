@@ -57,6 +57,20 @@
   transform: translate(-50%, -50%);
 }
 
+#incal-deck-container {
+  position: absolute;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-evenly;
+  height: 180px;
+  top: 0;
+  left: 0;
+}
+
+#incal-space-decks {
+  height: 180px;
+}
+
 #power-chit-container {
   position: absolute;
   display: flex;

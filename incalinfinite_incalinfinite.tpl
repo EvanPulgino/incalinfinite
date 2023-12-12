@@ -39,7 +39,16 @@
         <div id="enemy-container-3" class="enemy-container"></div>
     </div>
     <div id="incal-space-empty-1" class="grid-item"></div>
-    <div id="incal-space-decks" class="grid-item"></div>
+    <div id="incal-space-decks" class="grid-item">
+        <div id="incal-deck-container">
+            <div id="incal-deck"></div>
+            <div id="incal-deck-count"></div>
+        </div>
+        <div id="incal-discard-container">
+            <div id="incal-discard"></div>
+            <div id="incal-discard-count"></div>
+        </div>
+    </div>
     <div id="incal-space-empty-2" class="grid-item"></div>
     <div id="incal-space-9" class="grid-item">
         <div id="enemy-container-9" class="enemy-container"></div>

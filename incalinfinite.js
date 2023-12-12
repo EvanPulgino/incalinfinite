@@ -263,6 +263,8 @@ var GameBody = /** @class */ (function (_super) {
         this.locationController.setupLocations(gamedata.locations, gamedata.powers);
         this.metashipController.setupMetaship(gamedata.metashipLocation);
         this.enemyController.setupEnemy(gamedata.enemy);
+        this.cardController.setupDeck(gamedata.deck);
+        this.cardController.setupDiscard(gamedata.discard);
         this.cardController.setupPlayerHand(gamedata.currentPlayerHand);
         this.cardController.setupLocationCards(gamedata.locationCards);
         this.setupNotifications();
@@ -349,9 +351,29 @@ var CardController = /** @class */ (function () {
     function CardController(ui) {
         this.ui = ui;
     }
-    CardController.prototype.setupLocationCards = function (cards) {
+    CardController.prototype.setupDeck = function (cards) {
         for (var _i = 0, cards_1 = cards; _i < cards_1.length; _i++) {
             var card = cards_1[_i];
+            var cardDiv = '<div id="card-' +
+                card.id +
+                '" class="card"></div>';
+            this.ui.createHtml(cardDiv, "incal-deck");
+        }
+    };
+    CardController.prototype.setupDiscard = function (cards) {
+        for (var _i = 0, cards_2 = cards; _i < cards_2.length; _i++) {
+            var card = cards_2[_i];
+            var cardDiv = '<div id="card-' +
+                card.id +
+                '" class="card ' +
+                this.getCardCssClass(card) +
+                '"></div>';
+            this.ui.createHtml(cardDiv, "incal-discard");
+        }
+    };
+    CardController.prototype.setupLocationCards = function (cards) {
+        for (var _i = 0, cards_3 = cards; _i < cards_3.length; _i++) {
+            var card = cards_3[_i];
             var cardDiv = '<div id="card-' +
                 card.id +
                 '" class="card ' +
@@ -361,8 +383,8 @@ var CardController = /** @class */ (function () {
         }
     };
     CardController.prototype.setupPlayerHand = function (cards) {
-        for (var _i = 0, cards_2 = cards; _i < cards_2.length; _i++) {
-            var card = cards_2[_i];
+        for (var _i = 0, cards_4 = cards; _i < cards_4.length; _i++) {
+            var card = cards_4[_i];
             var cardDiv = '<div id="card-' +
                 card.id +
                 '" class="card ' +

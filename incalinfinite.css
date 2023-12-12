@@ -52,6 +52,10 @@ html {
   width: 114.5px;
 }
 
+#incal-deck .card {
+  position: absolute;
+}
+
 .animah-1 {
   background-position: 14.28% 0;
 }
@@ -292,6 +296,20 @@ html {
   left: 50%;
   margin-right: -50%;
   transform: translate(-50%, -50%);
+}
+
+#incal-deck-container {
+  position: absolute;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-evenly;
+  height: 180px;
+  top: 0;
+  left: 0;
+}
+
+#incal-space-decks {
+  height: 180px;
 }
 
 #power-chit-container {

@@ -20,6 +20,28 @@ class CardController {
     this.ui = ui;
   }
 
+  setupDeck(cards: Card[]): void {
+    for (const card of cards) {
+      const cardDiv =
+        '<div id="card-' +
+        card.id +
+        '" class="card"></div>';
+      this.ui.createHtml(cardDiv, "incal-deck");
+    }
+  }
+
+  setupDiscard(cards: Card[]): void {
+    for (const card of cards) {
+      const cardDiv =
+        '<div id="card-' +
+        card.id +
+        '" class="card ' +
+        this.getCardCssClass(card) +
+        '"></div>';
+      this.ui.createHtml(cardDiv, "incal-discard");
+    }
+  }
+
   setupLocationCards(cards: Card[]): void {
     for (const card of cards) {
       const cardDiv =
