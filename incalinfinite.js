@@ -264,6 +264,7 @@ var GameBody = /** @class */ (function (_super) {
         this.metashipController.setupMetaship(gamedata.metashipLocation);
         this.enemyController.setupEnemy(gamedata.enemy);
         this.cardController.setupPlayerHand(gamedata.currentPlayerHand);
+        this.cardController.setupLocationCards(gamedata.locationCards);
         this.setupNotifications();
     };
     /**
@@ -348,16 +349,34 @@ var CardController = /** @class */ (function () {
     function CardController(ui) {
         this.ui = ui;
     }
-    CardController.prototype.setupPlayerHand = function (cards) {
+    CardController.prototype.setupLocationCards = function (cards) {
         for (var _i = 0, cards_1 = cards; _i < cards_1.length; _i++) {
             var card = cards_1[_i];
-            var cssClass = card.type;
-            if (card.type !== "damage" && card.type !== "johndifool") {
-                cssClass += "-" + card.value;
-            }
-            var cardDiv = '<div id="card-' + card.id + '" class="card ' + cssClass + '"></div>';
+            var cardDiv = '<div id="card-' +
+                card.id +
+                '" class="card ' +
+                this.getCardCssClass(card) +
+                '"></div>';
+            this.ui.createHtml(cardDiv, "card-container-" + card.locationArg);
+        }
+    };
+    CardController.prototype.setupPlayerHand = function (cards) {
+        for (var _i = 0, cards_2 = cards; _i < cards_2.length; _i++) {
+            var card = cards_2[_i];
+            var cardDiv = '<div id="card-' +
+                card.id +
+                '" class="card ' +
+                this.getCardCssClass(card) +
+                '"></div>';
             this.ui.createHtml(cardDiv, "player-hand");
         }
+    };
+    CardController.prototype.getCardCssClass = function (card) {
+        var cssClass = card.type;
+        if (card.type !== "damage" && card.type !== "johndifool") {
+            cssClass += "-" + card.value;
+        }
+        return cssClass;
     };
     return CardController;
 }());
@@ -403,6 +422,12 @@ var LocationController = /** @class */ (function () {
     function LocationController(ui) {
         this.ui = ui;
     }
+    /**
+     * Creates the location tiles
+     *
+     * @param locations
+     * @param powers
+     */
     LocationController.prototype.setupLocations = function (locations, powers) {
         for (var _i = 0, locations_1 = locations; _i < locations_1.length; _i++) {
             var location_1 = locations_1[_i];
@@ -415,39 +440,68 @@ var LocationController = /** @class */ (function () {
      * @param location
      */
     LocationController.prototype.createLocation = function (location, powers) {
-        // Create the space div
-        var spaceDivId = "incal-space-" + location.tilePosition;
         // Create container
-        var locationContainer = '<div id="incal-location-container-' +
-            location.key +
-            '" class="incal-location-container"></div>';
-        this.ui.createHtml(locationContainer, spaceDivId);
+        this.createLocationContainer(location);
         // Create the location tile div
-        var locationDiv = '<div id="' +
-            location.key +
-            '" class="locationtile ' +
-            location.key +
-            '"></div>';
-        this.ui.createHtml(locationDiv, "incal-location-container-" + location.key);
-        if (location.key === "suicidealley") {
-            var powerChitContainerDiv = "<div id='power-chit-container'></div>";
-            this.ui.createHtml(powerChitContainerDiv, "incal-location-container-" + location.key);
-            for (var _i = 0, powers_1 = powers; _i < powers_1.length; _i++) {
-                var power = powers_1[_i];
-                var powerChitDiv = '<div id="power-chit-' +
-                    power.key +
-                    '" class="power ' +
-                    power.cssClass +
-                    '"></div>';
-                this.ui.createHtml(powerChitDiv, "power-chit-container");
-            }
-        }
-        else {
-            // Create the incal chit div
-            var chitDiv = '<div id="incal-chit-' + location.key + '" class="incalchit"></div>';
-            this.ui.createHtml(chitDiv, "incal-location-container-" + location.key);
-        }
+        this.createLocationDiv(location);
+        // Create location chits
+        this.createLocationChits(location, powers);
         // Create metaship container div
+        this.createMetashipContainer(location);
+        // Create enemy container div
+        this.createEnemyContainer(location);
+        // Create card container div
+        this.createCardContainer(location);
+    };
+    /**
+     * Creates the card container for a location
+     *
+     * @param location - The location to create the container on
+     */
+    LocationController.prototype.createCardContainer = function (location) {
+        if (location.key !== "suicidealley") {
+            var cssClass = "location-card-container location-card-container-";
+            if (location.tilePosition > 3 && location.tilePosition < 9) {
+                cssClass += "north";
+            }
+            else {
+                cssClass += "south";
+            }
+            var cardContainerDiv = '<div id="card-container-' +
+                location.tilePosition +
+                '" class="' +
+                cssClass +
+                '"></div>';
+            this.ui.createHtml(cardContainerDiv, "incal-location-container-" + location.key);
+        }
+    };
+    /**
+     * Creates the enemy container
+     *
+     * @param location - The location to create the container on
+     */
+    LocationController.prototype.createEnemyContainer = function (location) {
+        var enemyContainerDiv = '<div id="enemy-container-' +
+            location.tilePosition +
+            '" class="silhouette-container"></div>';
+        this.ui.createHtml(enemyContainerDiv, location.key);
+    };
+    /**
+     * Creates the incal chit on the location
+     *
+     * @param location - The location to create the chit on
+     */
+    LocationController.prototype.createIncalChit = function (location) {
+        // Create the incal chit div
+        var chitDiv = '<div id="incal-chit-' + location.key + '" class="incalchit"></div>';
+        this.ui.createHtml(chitDiv, "incal-location-container-" + location.key);
+    };
+    /**
+     * Creates the metaship container
+     *
+     * @param location - The location to create the container on
+     */
+    LocationController.prototype.createMetashipContainer = function (location) {
         var mirror = location.tilePosition > 3 && location.tilePosition < 9;
         var cssClass = "silhouette-container" + (mirror ? " mirror" : "");
         var metashipContainerDiv = '<div id="metaship-container-' +
@@ -456,11 +510,63 @@ var LocationController = /** @class */ (function () {
             cssClass +
             '"></div>';
         this.ui.createHtml(metashipContainerDiv, location.key);
-        // Create enemy container div
-        var enemyContainerDiv = '<div id="enemy-container-' +
-            location.tilePosition +
-            '" class="silhouette-container"></div>';
-        this.ui.createHtml(enemyContainerDiv, location.key);
+    };
+    /**
+     * Creates the location chits
+     *
+     * @param location - The location to create the chits on
+     * @param powers - The power chits to create on Suicide Alley
+     */
+    LocationController.prototype.createLocationChits = function (location, powers) {
+        if (location.key === "suicidealley") {
+            this.createSuicideAlleyPowers(powers);
+        }
+        else {
+            this.createIncalChit(location);
+        }
+    };
+    /**
+     * Create location container
+     *
+     * @param location - The location to create a container for
+     */
+    LocationController.prototype.createLocationContainer = function (location) {
+        var spaceDivId = "incal-space-" + location.tilePosition;
+        var locationContainer = '<div id="incal-location-container-' +
+            location.key +
+            '" class="incal-location-container"></div>';
+        this.ui.createHtml(locationContainer, spaceDivId);
+    };
+    /**
+     * Creates a location tile div
+     *
+     * @param location - The location to create
+     */
+    LocationController.prototype.createLocationDiv = function (location) {
+        var locationDiv = '<div id="' +
+            location.key +
+            '" class="locationtile ' +
+            location.key +
+            '"></div>';
+        this.ui.createHtml(locationDiv, "incal-location-container-" + location.key);
+    };
+    /**
+     * Create the power chits on Suicide Alley
+     *
+     * @param powers - Power chits to create
+     */
+    LocationController.prototype.createSuicideAlleyPowers = function (powers) {
+        var powerChitContainerDiv = "<div id='power-chit-container'></div>";
+        this.ui.createHtml(powerChitContainerDiv, "incal-location-container-suicidealley");
+        for (var _i = 0, powers_1 = powers; _i < powers_1.length; _i++) {
+            var power = powers_1[_i];
+            var powerChitDiv = '<div id="power-chit-' +
+                power.key +
+                '" class="power ' +
+                power.cssClass +
+                '"></div>';
+            this.ui.createHtml(powerChitDiv, "power-chit-container");
+        }
     };
     return LocationController;
 }());

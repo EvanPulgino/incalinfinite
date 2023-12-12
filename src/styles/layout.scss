@@ -33,6 +33,21 @@
   width: 336px;
 }
 
+.location-card-container {
+  position: absolute;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-evenly;
+}
+
+.location-card-container-north {
+  top: 0;
+}
+
+.location-card-container-south {
+  bottom: 0;
+}
+
 .silhouette-container {
   margin: 0;
   position: absolute;
@@ -52,7 +67,7 @@
   left: 66px;
 }
 
-
 #player-hand {
+  padding-top: 10px;
   display: flex;
 }

@@ -197,6 +197,42 @@ class CardController extends APP_GameClass {
     }
 
     /**
+     * Get all cards on the location tiles
+     *
+     * @return Card[]|null - An array of cards or null if no cards left
+     */
+    public function getLocationTileCards() {
+        $locationTileCards = $this->cards->getCardsInLocation(
+            CARD_LOCATION_LOCATION_TILE
+        );
+        if (!$locationTileCards) {
+            return null;
+        }
+        $cardObjects = [];
+        foreach ($locationTileCards as $card) {
+            $cardObjects[] = new Card($card);
+        }
+        return $cardObjects;
+    }
+
+    /**
+     * Get all cards on the location tiles formatted for the UI
+     *
+     * @return array - An array of cards formatted for the UI
+     */
+    public function getLocationTileCardsUiData() {
+        $locationTileCards = $this->getLocationTileCards();
+        if (!$locationTileCards) {
+            return [];
+        }
+        $locationTileCardsUiData = [];
+        foreach ($locationTileCards as $card) {
+            $locationTileCardsUiData[] = $card->getUiData();
+        }
+        return $locationTileCardsUiData;
+    }
+
+    /**
      * Get all cards in a player's hand
      *
      * @param int $playerId The ID of the player

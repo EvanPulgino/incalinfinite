@@ -40,6 +40,7 @@ class GameBody extends GameBasics {
     this.metashipController.setupMetaship(gamedata.metashipLocation);
     this.enemyController.setupEnemy(gamedata.enemy);
     this.cardController.setupPlayerHand(gamedata.currentPlayerHand);
+    this.cardController.setupLocationCards(gamedata.locationCards);
     this.setupNotifications();
   }
 

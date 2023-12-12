@@ -156,6 +156,7 @@ class IncalInfinite extends Table {
         $result[
             "locations"
         ] = $this->locationController->getAllLocationsUiData();
+        $result["locationCards"] = $this->cardController->getLocationTileCardsUiData();
         $result["metashipLocation"] = $this->getMetashipLocation();
         $result["metashipName"] = METASHIP_NAME;
         $result[

@@ -20,15 +20,35 @@ class CardController {
     this.ui = ui;
   }
 
+  setupLocationCards(cards: Card[]): void {
+    for (const card of cards) {
+      const cardDiv =
+        '<div id="card-' +
+        card.id +
+        '" class="card ' +
+        this.getCardCssClass(card) +
+        '"></div>';
+      this.ui.createHtml(cardDiv, "card-container-" + card.locationArg);
+    }
+  }
+
   setupPlayerHand(cards: Card[]): void {
     for (const card of cards) {
-      let cssClass = card.type;
-      if (card.type !== "damage" && card.type !== "johndifool") {
-        cssClass += "-" + card.value;
-      }
       const cardDiv =
-        '<div id="card-' + card.id + '" class="card ' + cssClass + '"></div>';
+        '<div id="card-' +
+        card.id +
+        '" class="card ' +
+        this.getCardCssClass(card) +
+        '"></div>';
       this.ui.createHtml(cardDiv, "player-hand");
     }
+  }
+
+  getCardCssClass(card: Card): string {
+    let cssClass = card.type;
+    if (card.type !== "damage" && card.type !== "johndifool") {
+      cssClass += "-" + card.value;
+    }
+    return cssClass;
   }
 }
