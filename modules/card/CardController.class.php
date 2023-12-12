@@ -197,6 +197,42 @@ class CardController extends APP_GameClass {
     }
 
     /**
+     * Get all cards in a player's hand
+     *
+     * @param int $playerId The ID of the player
+     * @return Card[]|null - An array of cards or null if no cards left
+     */
+    public function getPlayerHand($playerId) {
+        $hand = $this->cards->getCardsInLocation(CARD_LOCATION_HAND, $playerId);
+        if (!$hand) {
+            return null;
+        }
+        $cardObjects = [];
+        foreach ($hand as $card) {
+            $cardObjects[] = new Card($card);
+        }
+        return $cardObjects;
+    }
+
+    /**
+     * Get all cards in a player's hand formatted for the UI
+     *
+     * @param int $playerId The ID of the player
+     * @return array - An array of cards formatted for the UI
+     */
+    public function getPlayerHandUiData($playerId) {
+        $hand = $this->getPlayerHand($playerId);
+        if (!$hand) {
+            return [];
+        }
+        $handUiData = [];
+        foreach ($hand as $card) {
+            $handUiData[] = $card->getUiData();
+        }
+        return $handUiData;
+    }
+
+    /**
      * Get the number of cards in a player's hand
      *
      * @param int $playerId The ID of the player
@@ -254,7 +290,7 @@ class CardController extends APP_GameClass {
             CARD_KILL,
             CARD_METABARON,
             CARD_SOLUNE,
-            CARD_TANATA,
+            CARD_TANATAH,
         ];
 
         // If 2 players, remove 1 random character from the game

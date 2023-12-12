@@ -144,6 +144,9 @@ class IncalInfinite extends Table {
 
         $current_player_id = self::getCurrentPlayerId(); // !! We must only return informations visible by this player !!
 
+        $result[
+            "currentPlayerHand"
+        ] = $this->cardController->getPlayerHandUiData($current_player_id);
         $result["deck"] = $this->cardController->getDeckUiData();
         $result["discard"] = $this->cardController->getDiscardUiData();
         $result["enemy"] = $this->buildEnemyObject();

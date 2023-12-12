@@ -25,11 +25,11 @@ define("ACTION_PASS", "pass");
 define("CARD_ANIMAH", "animah");
 define("CARD_DAMAGE", "damage");
 define("CARD_DEEPO", "deepo");
-define("CARD_JOHN_DIFOOL", "john_difool");
+define("CARD_JOHN_DIFOOL", "johndifool");
 define("CARD_KILL", "kill");
 define("CARD_METABARON", "metabaron");
 define("CARD_SOLUNE", "solune");
-define("CARD_TANATA", "tanata");
+define("CARD_TANATAH", "tanatah");
 
 /** Card Names */
 define("CARD_NAME_ANIMAH", clienttranslate("Animah"));
@@ -39,7 +39,7 @@ define("CARD_NAME_JOHN_DIFOOL", clienttranslate("John Difool"));
 define("CARD_NAME_KILL", clienttranslate("Kill"));
 define("CARD_NAME_METABARON", clienttranslate("Metabaron"));
 define("CARD_NAME_SOLUNE", clienttranslate("Solune"));
-define("CARD_NAME_TANATA", clienttranslate("Tanata"));
+define("CARD_NAME_TANATAH", clienttranslate("Tanatah"));
 
 /** Card Map */
 define("CARDS", [
@@ -50,7 +50,7 @@ define("CARDS", [
     CARD_KILL => CARD_NAME_KILL,
     CARD_METABARON => CARD_NAME_METABARON,
     CARD_SOLUNE => CARD_NAME_SOLUNE,
-    CARD_TANATA => CARD_NAME_TANATA,
+    CARD_TANATAH => CARD_NAME_TANATAH,
 ]);
 
 /** Card Locations */

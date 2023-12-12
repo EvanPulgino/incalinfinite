@@ -1,0 +1,153 @@
+/**
+ *
+ * Card styles
+ *
+ */
+
+.card-full {
+  background-image: url(./img/cards.png);
+  background-repeat: no-repeat;
+  filter: drop-shadow(2px 2px 2px black);
+  -webkit-filter: drop-shadow(2px 2px 3px #000);
+  border-radius: 5px;
+  height: 346px;
+  width: 229px;
+}
+
+.card {
+  background-image: url(./img/cards.png);
+  background-repeat: no-repeat;
+  filter: drop-shadow(2px 2px 2px black);
+  -webkit-filter: drop-shadow(2px 2px 3px #000);
+  border-radius: 5px;
+  height: 173px;
+  width: 114.5px;
+}
+
+.animah-1 {
+  background-position: 14.28% 0;
+}
+
+.animah-2 {
+  background-position: 28.57% 0;
+}
+
+.animah-3 {
+  background-position: 42.86% 0;
+}
+
+.animah-4 {
+  background-position: 0 25%;
+}
+
+.animah-5 {
+  background-position: 14.28% 25%;
+}
+
+.damage {
+  background-position: 28.57% 25%;
+}
+
+.deepo-1 {
+  background-position: 42.86% 25%;
+}
+
+.deepo-2 {
+  background-position: 57.14% 0;
+}
+
+.deepo-3 {
+  background-position: 57.14% 25%;
+}
+
+.deepo-4 {
+  background-position: 0 50%;
+}
+
+.deepo-5 {
+  background-position: 14.28% 50%;
+}
+
+.johndifool {
+  background-position: 28.57% 50%;
+}
+
+.kill-1 {
+  background-position: 42.86% 50%;
+}
+
+.kill-2 {
+  background-position: 57.14% 50%;
+}
+
+.kill-3 {
+  background-position: 71.43% 0;
+}
+
+.kill-4 {
+  background-position: 71.43% 25%;
+}
+
+.kill-5 {
+  background-position: 71.43% 50%;
+}
+
+.metabaron-1 {
+  background-position: 85.71% 0;
+}
+
+.metabaron-2 {
+  background-position: 85.71% 25%;
+}
+
+.metabaron-3 {
+  background-position: 85.71% 50%;
+}
+
+.metabaron-4 {
+  background-position: 0 75%;
+}
+
+.metabaron-5 {
+  background-position: 14.28% 75%;
+}
+
+.solune-1 {
+  background-position: 28.57% 75%;
+}
+
+.solune-2 {
+  background-position: 42.86% 75%;
+}
+
+.solune-3 {
+  background-position: 57.14% 75%;
+}
+
+.solune-4 {
+  background-position: 71.43% 75%;
+}
+
+.solune-5 {
+  background-position: 85.71% 75%;
+}
+
+.tanatah-1 {
+  background-position: 100% 0;
+}
+
+.tanatah-2 {
+  background-position: 100% 25%;
+}
+
+.tanatah-3 {
+  background-position: 100% 50%;
+}
+
+.tanatah-4 {
+  background-position: 100% 75%;
+}
+
+.tanatah-5 {
+  background-position: 0 100%;
+}

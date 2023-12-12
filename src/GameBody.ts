@@ -15,6 +15,7 @@
 
 // @ts-ignore
 class GameBody extends GameBasics {
+  cardController: CardController;
   enemyController: EnemyController;
   locationController: LocationController;
   metashipController: MetashipController;
@@ -22,6 +23,7 @@ class GameBody extends GameBasics {
   constructor() {
     super();
 
+    this.cardController = new CardController(this);
     this.enemyController = new EnemyController(this);
     this.locationController = new LocationController(this);
     this.metashipController = new MetashipController(this);
@@ -37,6 +39,7 @@ class GameBody extends GameBasics {
     this.locationController.setupLocations(gamedata.locations, gamedata.powers);
     this.metashipController.setupMetaship(gamedata.metashipLocation);
     this.enemyController.setupEnemy(gamedata.enemy);
+    this.cardController.setupPlayerHand(gamedata.currentPlayerHand);
     this.setupNotifications();
   }
 

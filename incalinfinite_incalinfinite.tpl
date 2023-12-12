@@ -54,7 +54,6 @@
     </div>
     <div id="incal-space-10" class="grid-item"></div>
 </div>
-
-
+<div id="player-hand"></div>
 
 {OVERALL_GAME_FOOTER}

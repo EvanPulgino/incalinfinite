@@ -247,6 +247,7 @@ var GameBody = /** @class */ (function (_super) {
     __extends(GameBody, _super);
     function GameBody() {
         var _this = _super.call(this) || this;
+        _this.cardController = new CardController(_this);
         _this.enemyController = new EnemyController(_this);
         _this.locationController = new LocationController(_this);
         _this.metashipController = new MetashipController(_this);
@@ -262,6 +263,7 @@ var GameBody = /** @class */ (function (_super) {
         this.locationController.setupLocations(gamedata.locations, gamedata.powers);
         this.metashipController.setupMetaship(gamedata.metashipLocation);
         this.enemyController.setupEnemy(gamedata.enemy);
+        this.cardController.setupPlayerHand(gamedata.currentPlayerHand);
         this.setupNotifications();
     };
     /**
@@ -328,6 +330,37 @@ define([
 ], function (dojo, declare) {
     return declare("bgagame.incalinfinite", ebg.core.gamegui, new GameBody());
 });
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * IncalInfinite implementation : © Evan Pulgino <evan.pulgino@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ *
+ * CardController.ts
+ *
+ * Handles all front end interactions with cards
+ *
+ */
+var CardController = /** @class */ (function () {
+    function CardController(ui) {
+        this.ui = ui;
+    }
+    CardController.prototype.setupPlayerHand = function (cards) {
+        for (var _i = 0, cards_1 = cards; _i < cards_1.length; _i++) {
+            var card = cards_1[_i];
+            var cssClass = card.type;
+            if (card.type !== "damage" && card.type !== "johndifool") {
+                cssClass += "-" + card.value;
+            }
+            var cardDiv = '<div id="card-' + card.id + '" class="card ' + cssClass + '"></div>';
+            this.ui.createHtml(cardDiv, "player-hand");
+        }
+    };
+    return CardController;
+}());
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>

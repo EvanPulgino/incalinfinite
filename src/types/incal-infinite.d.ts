@@ -11,6 +11,15 @@
  *
  */
 
+declare class Card {
+  id: number;
+  location: string;
+  locationArg: number;
+  name: string;
+  type: string;
+  value: number;
+}
+
 declare class Enemy {
   id: number;
   key: string;
