@@ -346,8 +346,8 @@ html {
 #player-hand {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: space-around;
-  width: 475px;
+  justify-content: space-between;
+  width: 500px;
 }
 
 #incal-space-3 {
@@ -365,7 +365,8 @@ html {
   justify-content: center;
   position: fixed;
   z-index: 100;
-  bottom: 0;
+  bottom: 5px;
+  left: -1px;
 }
 
 #floating-hand-wrapper {
@@ -378,6 +379,8 @@ html {
   border: 5px solid var(--player-color-hex);
   border-radius: 10px;
   z-index: 101;
+  filter: drop-shadow(20px 10px 5x black);
+  -webkit-filter: drop-shadow(20px 10px 5px #000);
 }
 
 /**
