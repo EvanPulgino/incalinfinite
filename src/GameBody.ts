@@ -27,6 +27,13 @@ class GameBody extends GameBasics {
     this.enemyController = new EnemyController(this);
     this.locationController = new LocationController(this);
     this.metashipController = new MetashipController(this);
+
+    dojo.connect(
+      window,
+      "onresize",
+      this,
+      dojo.hitch(this, "adaptViewportSize")
+    );
   }
 
   /**

@@ -47,6 +47,38 @@ var GameBasics = /** @class */ (function (_super) {
         return _this;
     }
     /**
+     * Change the viewport size based on current window size
+     * Called when window is resized
+     *
+     * @returns {void}
+     */
+    GameBasics.prototype.adaptViewportSize = function () {
+        var t = dojo.marginBox("incal-screen");
+        console.log("adaptViewportSize-t", t);
+        var r = t.w;
+        var s = 2400;
+        var height = dojo.marginBox("incal-table").h;
+        var viewportWidth = dojo.window.getBox().w;
+        var gameAreaWidth = viewportWidth < 980 ? viewportWidth : viewportWidth - 245;
+        console.log("adaptViewportSize-gameAreaWidth", gameAreaWidth);
+        if (r >= s) {
+            var i = (r - s) / 2;
+            dojo.style("incal-game", "transform", "");
+            dojo.style("incal-game", "left", i + "px");
+            dojo.style("incal-game", "height", height + "px");
+            dojo.style("incal-game", "width", gameAreaWidth + "px");
+        }
+        else {
+            var o = r / s;
+            i = (t.w - r) / 2;
+            var width = viewportWidth <= 245 ? gameAreaWidth : gameAreaWidth / o;
+            dojo.style("incal-game", "transform", "scale(" + o + ")");
+            dojo.style("incal-game", "left", i + "px");
+            dojo.style("incal-game", "height", height * o + "px");
+            dojo.style("incal-game", "width", width + "px");
+        }
+    };
+    /**
      * UI setup entry point
      *
      * @param {object} gamedata - game data
@@ -278,6 +310,7 @@ var GameBody = /** @class */ (function (_super) {
         _this.enemyController = new EnemyController(_this);
         _this.locationController = new LocationController(_this);
         _this.metashipController = new MetashipController(_this);
+        dojo.connect(window, "onresize", _this, dojo.hitch(_this, "adaptViewportSize"));
         return _this;
     }
     /**

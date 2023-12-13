@@ -255,19 +255,22 @@ html {
  * Layout styles
  *
  */
+#incal-screen {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 #incal-game {
+  transform-origin: top left;
   position: relative;
-  width: 100%;
 }
 
 #incal-table {
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: flex-start;
-  align-items: center;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  gap: 15px;
+  position: relative;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 #incal-table-grid {

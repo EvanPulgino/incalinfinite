@@ -26,7 +26,6 @@
 -->
 
 <div id="incal-game">
-
     <div id="incal-table">
         <div id="incal-table-grid">
             <div id="incal-space-4" class="grid-item incal-location-space"></div>
@@ -55,13 +54,14 @@
             <div id="incal-space-10" class="grid-item incal-location-space"></div>
         </div>
     </div>
-
-    <div id="player-hand-area">
-        <div id="floating-hand-wrapper">
-            <div id="player-hand"></div>
-        </div>
-    </div>
-
 </div>
+
+<div id="player-hand-area">
+    <div id="floating-hand-wrapper">
+        <div id="player-hand"></div>
+    </div>
+</div>
+
+<div id="incal-screen"></div>
 
 {OVERALL_GAME_FOOTER}
