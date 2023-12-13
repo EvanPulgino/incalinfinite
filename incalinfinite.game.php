@@ -144,6 +144,9 @@ class IncalInfinite extends Table {
 
         $current_player_id = self::getCurrentPlayerId(); // !! We must only return informations visible by this player !!
 
+        $result["currentPlayer"] = $this->playerController
+            ->getPlayer($current_player_id)
+            ->getUiData();
         $result[
             "currentPlayerHand"
         ] = $this->cardController->getPlayerHandUiData($current_player_id);
@@ -156,7 +159,9 @@ class IncalInfinite extends Table {
         $result[
             "locations"
         ] = $this->locationController->getAllLocationsUiData();
-        $result["locationCards"] = $this->cardController->getLocationTileCardsUiData();
+        $result[
+            "locationCards"
+        ] = $this->cardController->getLocationTileCardsUiData();
         $result["metashipLocation"] = $this->getMetashipLocation();
         $result["metashipName"] = METASHIP_NAME;
         $result[

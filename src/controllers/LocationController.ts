@@ -65,20 +65,10 @@ class LocationController {
   createCardContainer(location: LocationTile): void {
 
     if (location.key !== "suicidealley") {
-      let cssClass = "location-card-container location-card-container-";
-      if (location.tilePosition > 3 && location.tilePosition < 9) {
-        cssClass += "north";
-      }
-      else {
-        cssClass += "south";
-      }
-
       const cardContainerDiv =
         '<div id="card-container-' +
         location.tilePosition +
-        '" class="' +
-        cssClass +
-        '"></div>';
+        '" class="location-card-container"></div>';
 
       this.ui.createHtml(
         cardContainerDiv,

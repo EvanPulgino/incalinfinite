@@ -4,33 +4,50 @@
  *
  */
 
+#incal-game {
+  position: relative;
+  width: 100%;
+}
+
+#incal-table {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  gap: 15px;
+}
+
 #incal-table-grid {
   display: grid;
   grid-template-columns: auto auto auto auto auto;
+  max-width: 2400px;
 }
 
 .grid-item {
-  position: relative;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+}
+
+.incal-location-space {
+  position: relative;
+  height: 400px;
+  width: 570px;
+  justify-content: flex-end !important;
+  align-items: flex-start !important;
+}
+
+.incal-enemy-space {
+  position: relative;
+  height: 225px;
+  width: 225px;
+  transform: scale(0.75);
 }
 
 .incal-location-container {
   position: relative;
-  height: 406px;
-  width: 575px;
-}
-
-.enemy-container {
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-right: -50%;
-  transform: translate(-50%, -50%);
-  height: 324px;
-  width: 336px;
 }
 
 .location-card-container {
@@ -38,14 +55,8 @@
   display: flex;
   flex-flow: row wrap;
   justify-content: space-evenly;
-}
-
-.location-card-container-north {
-  top: 0;
-}
-
-.location-card-container-south {
-  bottom: 0;
+  bottom: -85px;
+  left: -35px;
 }
 
 .silhouette-container {
@@ -58,17 +69,14 @@
 }
 
 #incal-deck-container {
-  position: absolute;
   display: flex;
   flex-flow: row wrap;
   justify-content: space-evenly;
   height: 180px;
-  top: 0;
-  left: 0;
 }
 
 #incal-space-decks {
-  height: 180px;
+  justify-content: space-around !important;
 }
 
 #power-chit-container {
@@ -82,6 +90,38 @@
 }
 
 #player-hand {
-  padding-top: 10px;
   display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-around;
+  width: 475px;
+}
+
+#incal-space-3 {
+  width: 570px !important;
+}
+
+#incal-space-9 {
+  width: 570px !important;
+}
+
+#player-hand-area {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  position: fixed;
+  z-index: 100;
+  bottom: 0;
+}
+
+#floating-hand-wrapper {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background-color: $playerColorRgba;
+  border: 5px solid $playerColorHex;
+  border-radius: 10px;
+  z-index: 101;
 }

@@ -1,0 +1,12 @@
+/**
+ *
+ * Style variables
+ *
+ */
+:root {
+  --player-color-hex: #f00;
+  --player-color-rgba: rgba(255, 0, 0, 0.5);
+}
+
+$playerColorHex: var(--player-color-hex);
+$playerColorRgba: var(--player-color-rgba);

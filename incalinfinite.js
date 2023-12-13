@@ -54,6 +54,7 @@ var GameBasics = /** @class */ (function (_super) {
      */
     GameBasics.prototype.setup = function (gamedata) {
         this.debug("Game data", gamedata);
+        this.setCurrentPlayerColorVariables(gamedata.currentPlayer.color);
     };
     /**
      * Gives javascript access to PHP defined constants
@@ -165,6 +166,20 @@ var GameBasics = /** @class */ (function (_super) {
         }
     };
     /**
+     * Convert a hex color into rbga
+     *
+     * @param hex - hex color
+     * @param opacity - opacity to use
+     * @returns {string} rgba color
+     */
+    GameBasics.prototype.convertHexToRGBA = function (hex, opacity) {
+        var hexString = hex.replace("#", "");
+        var red = parseInt(hexString.substring(0, 2), 16);
+        var green = parseInt(hexString.substring(2, 4), 16);
+        var blue = parseInt(hexString.substring(4, 6), 16);
+        return "rgba(".concat(red, ",").concat(green, ",").concat(blue, ",").concat(opacity, ")");
+    };
+    /**
      * Creates and inserts HTML into the DOM
      *
      * @param {string} divstr - div to create
@@ -225,6 +240,18 @@ var GameBasics = /** @class */ (function (_super) {
         // cannot call super - dojo still have to used here
         //super.onScriptError(msg, url, linenumber);
         return this.inherited(arguments);
+    };
+    /**
+     * Set the css color variables for the current player
+     *
+     * @param color - hex color from player db
+     */
+    GameBasics.prototype.setCurrentPlayerColorVariables = function (color) {
+        var root = document.documentElement;
+        var hexColor = "#" + color;
+        var rgbaColor = this.convertHexToRGBA(hexColor, 0.75);
+        root.style.setProperty("--player-color-hex", hexColor);
+        root.style.setProperty("--player-color-rgba", rgbaColor);
     };
     return GameBasics;
 }(GameGui));
@@ -422,7 +449,12 @@ var EnemyController = /** @class */ (function () {
     }
     EnemyController.prototype.setupEnemy = function (enemy) {
         var enemyDiv = '<div id="enemy" class="silhouette ' + enemy.key + '"></div>';
-        this.ui.createHtml(enemyDiv, "enemy-container-" + enemy.location);
+        if (enemy.key === "presidentshunchbacks") {
+            this.ui.createHtml(enemyDiv, "enemy-container-" + enemy.location);
+        }
+        else {
+            this.ui.createHtml(enemyDiv, "incal-space-" + enemy.location);
+        }
     };
     return EnemyController;
 }());
@@ -482,18 +514,9 @@ var LocationController = /** @class */ (function () {
      */
     LocationController.prototype.createCardContainer = function (location) {
         if (location.key !== "suicidealley") {
-            var cssClass = "location-card-container location-card-container-";
-            if (location.tilePosition > 3 && location.tilePosition < 9) {
-                cssClass += "north";
-            }
-            else {
-                cssClass += "south";
-            }
             var cardContainerDiv = '<div id="card-container-' +
                 location.tilePosition +
-                '" class="' +
-                cssClass +
-                '"></div>';
+                '" class="location-card-container"></div>';
             this.ui.createHtml(cardContainerDiv, "incal-location-container-" + location.key);
         }
     };

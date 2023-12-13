@@ -9,10 +9,11 @@
   background-repeat: no-repeat;
   filter: drop-shadow(5px 5px 5px black);
   -webkit-filter: drop-shadow(5px 5px 6px #000);
+  position: absolute;
 }
 
 .bergs {
-  background-position: -0 -155px;
+  background-position: -0 -156px;
   height: 225px;
   width: 336px;
 }
@@ -33,6 +34,8 @@
   background-position: -0 -0;
   height: 155px;
   width: 334px;
+  transform: scale(0.75);
+  position: relative !important;
 }
 
 .necrobot {
@@ -42,7 +45,9 @@
 }
 
 .presidentshunchbacks {
-  background-position: -0 -633px;
+  background-position: -0 -634px;
   height: 287px;
   width: 203px;
+  transform: scale(0.75);
+  position: relative !important;
 }

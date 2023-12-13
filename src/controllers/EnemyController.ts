@@ -21,7 +21,13 @@ class EnemyController {
   }
 
   setupEnemy(enemy: Enemy): void {
-    const enemyDiv = '<div id="enemy" class="silhouette ' + enemy.key + '"></div>';
-    this.ui.createHtml(enemyDiv, "enemy-container-" + enemy.location);
+    const enemyDiv =
+      '<div id="enemy" class="silhouette ' + enemy.key + '"></div>';
+
+    if (enemy.key === "presidentshunchbacks") {
+      this.ui.createHtml(enemyDiv, "enemy-container-" + enemy.location);
+    } else {
+      this.ui.createHtml(enemyDiv, "incal-space-" + enemy.location);
+    }
   }
 }

@@ -46,6 +46,7 @@ class GameBasics extends GameGui {
    */
   setup(gamedata: object): void {
     this.debug("Game data", gamedata);
+    this.setCurrentPlayerColorVariables(gamedata.currentPlayer.color);
   }
 
   /**
@@ -181,6 +182,21 @@ class GameBasics extends GameGui {
   }
 
   /**
+   * Convert a hex color into rbga
+   *
+   * @param hex - hex color
+   * @param opacity - opacity to use
+   * @returns {string} rgba color
+   */
+  convertHexToRGBA(hex: string, opacity: number): string {
+    const hexString = hex.replace("#", "");
+    const red = parseInt(hexString.substring(0, 2), 16);
+    const green = parseInt(hexString.substring(2, 4), 16);
+    const blue = parseInt(hexString.substring(4, 6), 16);
+    return `rgba(${red},${green},${blue},${opacity})`;
+  }
+
+  /**
    * Creates and inserts HTML into the DOM
    *
    * @param {string} divstr - div to create
@@ -239,5 +255,18 @@ class GameBasics extends GameGui {
     // cannot call super - dojo still have to used here
     //super.onScriptError(msg, url, linenumber);
     return this.inherited(arguments);
+  }
+
+  /**
+   * Set the css color variables for the current player
+   *
+   * @param color - hex color from player db
+   */
+  setCurrentPlayerColorVariables(color: string): void {
+    const root = document.documentElement;
+    const hexColor = "#" + color;
+    const rgbaColor = this.convertHexToRGBA(hexColor, 0.75);
+    root.style.setProperty("--player-color-hex", hexColor);
+    root.style.setProperty("--player-color-rgba", rgbaColor);
   }
 }
