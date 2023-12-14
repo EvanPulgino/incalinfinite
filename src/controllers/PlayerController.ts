@@ -15,15 +15,19 @@
 
 class PlayerController {
   ui: GameBody;
+  counters: any[];
 
   constructor(ui: GameBody) {
     this.ui = ui;
+    this.counters = [];
+    this.counters["handCount"] = [];
   }
 
   setupPlayerPanels(players: IncalInfinitePlayer[]): void {
     for (const player of players) {
       this.createPlayerPanelContainer(player.id);
       this.createHandCountDiv(player.id);
+      this.createHandCountCounterDiv(player);
       this.createHandCountCounter(player);
     }
   }
@@ -44,13 +48,13 @@ class PlayerController {
     this.ui.createHtml(handCountDiv, "incal-player-panel-" + playerId);
   }
 
-  createHandCountCounter(player: IncalInfinitePlayer): void {
+  createHandCountCounterDiv(player: IncalInfinitePlayer): void {
     const handCountCounter =
       '<div id="incal-player-hand-count-counter-' +
       player.id +
-      '" class="card-icon">' +
-      player.handCount +
-      "</div>";
+      '" class="card-icon"><span id="player-hand-count-' +
+      player.id +
+      '"></span></div>';
     this.ui.createHtml(
       handCountCounter,
       "incal-player-hand-count-" + player.id
@@ -62,5 +66,13 @@ class PlayerController {
       "textShadow",
       textShadowStyle
     );
+  }
+
+  createHandCountCounter(player: IncalInfinitePlayer): void {
+    this.counters["handCount"][player.id] = new ebg.counter();
+    this.counters["handCount"][player.id].create(
+      "player-hand-count-" + player.id
+    );
+    this.counters["handCount"][player.id].setValue(player.handCount);
   }
 }

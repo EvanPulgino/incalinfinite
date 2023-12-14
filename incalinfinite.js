@@ -689,12 +689,15 @@ var MetashipController = /** @class */ (function () {
 var PlayerController = /** @class */ (function () {
     function PlayerController(ui) {
         this.ui = ui;
+        this.counters = [];
+        this.counters["handCount"] = [];
     }
     PlayerController.prototype.setupPlayerPanels = function (players) {
         for (var _i = 0, players_1 = players; _i < players_1.length; _i++) {
             var player = players_1[_i];
             this.createPlayerPanelContainer(player.id);
             this.createHandCountDiv(player.id);
+            this.createHandCountCounterDiv(player);
             this.createHandCountCounter(player);
         }
     };
@@ -710,15 +713,20 @@ var PlayerController = /** @class */ (function () {
             '" class="player-hand-count"></div>';
         this.ui.createHtml(handCountDiv, "incal-player-panel-" + playerId);
     };
-    PlayerController.prototype.createHandCountCounter = function (player) {
+    PlayerController.prototype.createHandCountCounterDiv = function (player) {
         var handCountCounter = '<div id="incal-player-hand-count-counter-' +
             player.id +
-            '" class="card-icon">' +
-            player.handCount +
-            "</div>";
+            '" class="card-icon"><span id="player-hand-count-' +
+            player.id +
+            '"></span></div>';
         this.ui.createHtml(handCountCounter, "incal-player-hand-count-" + player.id);
         var textShadowStyle = "3px 3px 2px #".concat(player.color, ", -3px 3px 2px #").concat(player.color, ", -3px -3px 0 #").concat(player.color, ", 3px -3px 0 #").concat(player.color);
         dojo.style("incal-player-hand-count-counter-" + player.id, "textShadow", textShadowStyle);
+    };
+    PlayerController.prototype.createHandCountCounter = function (player) {
+        this.counters["handCount"][player.id] = new ebg.counter();
+        this.counters["handCount"][player.id].create("player-hand-count-" + player.id);
+        this.counters["handCount"][player.id].setValue(player.handCount);
     };
     return PlayerController;
 }());
