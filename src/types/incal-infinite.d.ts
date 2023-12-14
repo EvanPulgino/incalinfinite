@@ -32,6 +32,7 @@ declare class IncalInfinitePlayer {
   name: string;
   color: string;
   naturalOrder: string;
+  handCount: number;
 }
 
 declare class LocationTile {

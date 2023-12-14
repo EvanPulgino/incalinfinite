@@ -24,6 +24,21 @@
   width: 114.5px;
 }
 
+.card-icon {
+  background-image: url(./img/card-icon.png);
+  background-repeat: no-repeat;
+  filter: drop-shadow(2px 2px 2px black);
+  -webkit-filter: drop-shadow(2px 2px 3px #000);
+  border-radius: 5px;
+  height: 75px;
+  width: 50px;
+  color: white;
+  font-family: "ITC Serif Gothic";
+  font-size: 1.5rem;
+  text-align: center;
+  line-height: 75px;
+}
+
 #incal-deck .card {
   position: absolute;
 }

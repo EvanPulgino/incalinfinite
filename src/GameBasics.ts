@@ -46,14 +46,12 @@ class GameBasics extends GameGui {
    */
   adaptViewportSize(): void {
     var t = dojo.marginBox("incal-screen");
-    console.log("adaptViewportSize-t", t);
     var r = t.w;
     var s = 2400;
     var height = dojo.marginBox("incal-table").h;
     var viewportWidth = dojo.window.getBox().w;
     var gameAreaWidth =
       viewportWidth < 980 ? viewportWidth : viewportWidth - 245;
-    console.log("adaptViewportSize-gameAreaWidth", gameAreaWidth);
 
     if (r >= s) {
       var i = (r - s) / 2;

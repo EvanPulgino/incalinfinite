@@ -1,5 +1,5 @@
 .prettierignore
 .vscode
-fonts
+font
 img
 node_modules

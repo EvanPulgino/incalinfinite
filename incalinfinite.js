@@ -54,13 +54,11 @@ var GameBasics = /** @class */ (function (_super) {
      */
     GameBasics.prototype.adaptViewportSize = function () {
         var t = dojo.marginBox("incal-screen");
-        console.log("adaptViewportSize-t", t);
         var r = t.w;
         var s = 2400;
         var height = dojo.marginBox("incal-table").h;
         var viewportWidth = dojo.window.getBox().w;
         var gameAreaWidth = viewportWidth < 980 ? viewportWidth : viewportWidth - 245;
-        console.log("adaptViewportSize-gameAreaWidth", gameAreaWidth);
         if (r >= s) {
             var i = (r - s) / 2;
             dojo.style("incal-game", "transform", "");
@@ -310,6 +308,7 @@ var GameBody = /** @class */ (function (_super) {
         _this.enemyController = new EnemyController(_this);
         _this.locationController = new LocationController(_this);
         _this.metashipController = new MetashipController(_this);
+        _this.playerController = new PlayerController(_this);
         dojo.connect(window, "onresize", _this, dojo.hitch(_this, "adaptViewportSize"));
         return _this;
     }
@@ -320,6 +319,7 @@ var GameBody = /** @class */ (function (_super) {
      */
     GameBody.prototype.setup = function (gamedata) {
         _super.prototype.setup.call(this, gamedata);
+        this.playerController.setupPlayerPanels(gamedata.incalInfinitePlayers);
         this.locationController.setupLocations(gamedata.locations, gamedata.powers);
         this.metashipController.setupMetaship(gamedata.metashipLocation);
         this.enemyController.setupEnemy(gamedata.enemy);
@@ -671,6 +671,56 @@ var MetashipController = /** @class */ (function () {
         this.ui.createHtml(metashipDiv, "metaship-container-" + metashipLocation);
     };
     return MetashipController;
+}());
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * IncalInfinite implementation : © Evan Pulgino <evan.pulgino@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ *
+ * PlayerController.ts
+ *
+ * Handles all front end interactions with players
+ *
+ */
+var PlayerController = /** @class */ (function () {
+    function PlayerController(ui) {
+        this.ui = ui;
+    }
+    PlayerController.prototype.setupPlayerPanels = function (players) {
+        for (var _i = 0, players_1 = players; _i < players_1.length; _i++) {
+            var player = players_1[_i];
+            this.createPlayerPanelContainer(player.id);
+            this.createHandCountDiv(player.id);
+            this.createHandCountCounter(player);
+        }
+    };
+    PlayerController.prototype.createPlayerPanelContainer = function (playerId) {
+        var playerPanelContainer = '<div id="incal-player-panel-' +
+            playerId +
+            '" class="player-panel-container"></div>';
+        this.ui.createHtml(playerPanelContainer, "player_board_" + playerId);
+    };
+    PlayerController.prototype.createHandCountDiv = function (playerId) {
+        var handCountDiv = '<div id="incal-player-hand-count-' +
+            playerId +
+            '" class="player-hand-count"></div>';
+        this.ui.createHtml(handCountDiv, "incal-player-panel-" + playerId);
+    };
+    PlayerController.prototype.createHandCountCounter = function (player) {
+        var handCountCounter = '<div id="incal-player-hand-count-counter-' +
+            player.id +
+            '" class="card-icon">' +
+            player.handCount +
+            "</div>";
+        this.ui.createHtml(handCountCounter, "incal-player-hand-count-" + player.id);
+        var textShadowStyle = "3px 3px 2px #".concat(player.color, ", -3px 3px 2px #").concat(player.color, ", -3px -3px 0 #").concat(player.color, ", 3px -3px 0 #").concat(player.color);
+        dojo.style("incal-player-hand-count-counter-" + player.id, "textShadow", textShadowStyle);
+    };
+    return PlayerController;
 }());
 /**
  *------

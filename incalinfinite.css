@@ -27,6 +27,14 @@
  * General styles
  *
  */
+@font-face {
+  font-family: "ITC Serif Gothic";
+  src: url("./font/SerifGothic-Heavy.eot");
+  src: url("./font/SerifGothic-Heavy.eot?#iefix") format("embedded-opentype"), url("./font/SerifGothic-Heavy.woff2") format("woff2"), url("./font/SerifGothic-Heavy.woff") format("woff"), url("./font/SerifGothic-Heavy.ttf") format("truetype"), url("./font/SerifGothic-Heavy.svg#SerifGothic-Heavy") format("svg");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
 html {
   background-image: url(./img/incalbg.jpg);
   background-size: contain;
@@ -60,6 +68,21 @@ html {
   border-radius: 5px;
   height: 173px;
   width: 114.5px;
+}
+
+.card-icon {
+  background-image: url(./img/card-icon.png);
+  background-repeat: no-repeat;
+  filter: drop-shadow(2px 2px 2px black);
+  -webkit-filter: drop-shadow(2px 2px 3px #000);
+  border-radius: 5px;
+  height: 75px;
+  width: 50px;
+  color: white;
+  font-family: "ITC Serif Gothic";
+  font-size: 1.5rem;
+  text-align: center;
+  line-height: 75px;
 }
 
 #incal-deck .card {
@@ -311,6 +334,14 @@ html {
   justify-content: space-evenly;
   bottom: -85px;
   left: -35px;
+}
+
+.player-panel-container {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 10px;
 }
 
 .silhouette-container {

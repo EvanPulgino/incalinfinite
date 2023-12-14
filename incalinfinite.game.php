@@ -153,9 +153,7 @@ class IncalInfinite extends Table {
         $result["deck"] = $this->cardController->getDeckUiData();
         $result["discard"] = $this->cardController->getDiscardUiData();
         $result["enemy"] = $this->buildEnemyObject();
-        $result[
-            "incalInfinitePlayers"
-        ] = $this->playerController->getPlayersUiData();
+        $result["incalInfinitePlayers"] = $this->getAllPlayers();
         $result[
             "locations"
         ] = $this->locationController->getAllLocationsUiData();
@@ -217,6 +215,21 @@ class IncalInfinite extends Table {
      */
     public function getActivePlayer() {
         return $this->playerController->getPlayer(self::getActivePlayerId());
+    }
+
+    /**
+     * Get player ui objects for all players (includes hand counts)
+     */
+    public function getAllPlayers() {
+        $players = $this->playerController->getPlayersUiData();
+
+        foreach ($players as $playerKey => $player) {
+            $players[$playerKey][
+                "handCount"
+            ] = $this->cardController->getPlayerHandCount($player["id"]);
+        }
+
+        return $players;
     }
 
     /**

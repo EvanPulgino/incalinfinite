@@ -19,6 +19,7 @@ class GameBody extends GameBasics {
   enemyController: EnemyController;
   locationController: LocationController;
   metashipController: MetashipController;
+  playerController: PlayerController;
 
   constructor() {
     super();
@@ -27,6 +28,7 @@ class GameBody extends GameBasics {
     this.enemyController = new EnemyController(this);
     this.locationController = new LocationController(this);
     this.metashipController = new MetashipController(this);
+    this.playerController = new PlayerController(this);
 
     dojo.connect(
       window,
@@ -43,6 +45,7 @@ class GameBody extends GameBasics {
    */
   setup(gamedata: any) {
     super.setup(gamedata);
+    this.playerController.setupPlayerPanels(gamedata.incalInfinitePlayers);
     this.locationController.setupLocations(gamedata.locations, gamedata.powers);
     this.metashipController.setupMetaship(gamedata.metashipLocation);
     this.enemyController.setupEnemy(gamedata.enemy);

@@ -4,6 +4,19 @@
  *
  */
 
+@font-face {
+  font-family: "ITC Serif Gothic";
+  src: url("./font/SerifGothic-Heavy.eot");
+  src: url("./font/SerifGothic-Heavy.eot?#iefix") format("embedded-opentype"),
+    url("./font/SerifGothic-Heavy.woff2") format("woff2"),
+    url("./font/SerifGothic-Heavy.woff") format("woff"),
+    url("./font/SerifGothic-Heavy.ttf") format("truetype"),
+    url("./font/SerifGothic-Heavy.svg#SerifGothic-Heavy") format("svg");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 html {
   background-image: url(./img/incalbg.jpg);
   background-size: contain;

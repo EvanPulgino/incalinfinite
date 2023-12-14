@@ -62,6 +62,14 @@
   left: -35px;
 }
 
+.player-panel-container {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 10px;
+}
+
 .silhouette-container {
   margin: 0;
   position: absolute;
