@@ -883,7 +883,7 @@ html {
   top: -22px !important;
   right: -145px !important;
   color: black;
-  font-size: 1.5em;
+  font-size: 1.75em;
   font-family: "ITC Serif Gothic";
   z-index: 50;
   display: flex;
@@ -1122,7 +1122,7 @@ html {
   color: white;
   padding: 10px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   width: 406px;
   border: 5px solid #231f20;
   line-height: 50px;
