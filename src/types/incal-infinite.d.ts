@@ -18,6 +18,7 @@ declare class Card {
   name: string;
   type: string;
   value: number;
+  tooltip: string;
 }
 
 declare class Enemy {

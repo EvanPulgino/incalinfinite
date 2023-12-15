@@ -16,6 +16,7 @@
  * - The card's value (aka type_arg)
  * - The card's location
  * - The card's location arg
+ * - The card's HTML Tooltip
  *
  * @EvanPulgino
  */
@@ -49,12 +50,24 @@ class Card {
      */
     protected $locationArg;
 
+    /**
+     * @var string $name The HTML formatted name of the card
+     */
+    protected $name;
+
+    /**
+     * @var string $tooltip The HTML tooltip of the card
+     */
+    protected $tooltip;
+
     public function __construct($data) {
         $this->id = $data["id"];
         $this->type = $data["type"];
         $this->value = $data["type_arg"];
         $this->location = $data["location"];
         $this->locationArg = $data["location_arg"];
+        $this->name = $this->buildName();
+        $this->tooltip = $this->buildTooltip();
     }
 
     /**
@@ -103,6 +116,31 @@ class Card {
     }
 
     public function getName() {
+        return $this->name;
+    }
+
+    /**
+     * Get the HTML tooltip of the card
+     *
+     * @return string
+     */
+    public function getTooltip() {
+        return $this->tooltip;
+    }
+
+    public function getUiData() {
+        return [
+            "id" => $this->id,
+            "type" => $this->type,
+            "value" => $this->value,
+            "location" => $this->location,
+            "locationArg" => $this->locationArg,
+            "name" => $this->getName(),
+            "tooltip" => $this->getTooltip(),
+        ];
+    }
+
+    private function buildName() {
         switch ($this->type) {
             case CARD_DAMAGE:
                 return clienttranslate("a Damage card");
@@ -116,14 +154,152 @@ class Card {
         }
     }
 
-    public function getUiData() {
-        return [
-            "id" => $this->id,
-            "type" => $this->type,
-            "value" => $this->value,
-            "location" => $this->location,
-            "locationArg" => $this->locationArg,
-            "name" => $this->getName(),
-        ];
+    private function buildTooltip() {
+        return '<div id="card-tooltip-' .
+            $this->id .
+            '" class="incal-tooltip">' .
+            $this->buildTooltipTitle() .
+            $this->buildTooltipBody() .
+            "</div>";
+    }
+
+    private function buildTooltipTitle() {
+        if ($this->type == CARD_DAMAGE) {
+            return $this->buildTooltipTitleDamage();
+        } elseif ($this->type == CARD_JOHN_DIFOOL) {
+            return $this->buildTooltipTitleJohnDifool();
+        }
+
+        return '<div class="tooltip-title title-' .
+            $this->type .
+            '">' .
+            '<span class="tooltip-title-name">' .
+            CARDS[$this->type] .
+            "</span>" .
+            '<div class="hexagon"><span class="tooltip-card-value text-' .
+            $this->type .
+            '">' .
+            $this->value .
+            "</span></div>" .
+            "</div>";
+    }
+
+    private function buildTooltipBody() {
+        return '<div class="tooltip-body"><div id="tooltip-card-' .
+            $this->id .
+            '" class="card-full ' .
+            $this->type .
+            "-" .
+            $this->value .
+            '"></div>' .
+            $this->buildTooltipText() .
+            "</div>";
+    }
+
+    private function buildTooltipTitleDamage() {
+        return '<div class="tooltip-title title-' .
+            $this->type .
+            '">' .
+            '<span class="tooltip-title-name">' .
+            CARDS[$this->type] .
+            "</span>" .
+            "</div>";
+    }
+
+    private function buildTooltipTitleJohnDifool() {
+        return '<div class="tooltip-title title-' .
+            $this->type .
+            '">' .
+            '<span class="tooltip-title-name text-johndifool">' .
+            CARDS[$this->type] .
+            "</span>" .
+            '<div class="hexagon"><span class="tooltip-card-value text-johndifool">?</span></div>' .
+            "</div>";
+    }
+
+    private function buildTooltipText() {
+        return '<div class="tooltip-text">' .
+            $this->getTooltipTextHeader() .
+            "<br><br>" .
+            $this->getTooltipTextBody() .
+            "</div>";
+    }
+
+    private function getTooltipTextHeader() {
+        switch ($this->type) {
+            case CARD_DAMAGE:
+                return clienttranslate("DAMAGE:");
+            case CARD_JOHN_DIFOOL:
+                return clienttranslate("JOHN DIFOOL:");
+            default:
+                return clienttranslate("IDENTICAL CARDS:");
+        }
+    }
+
+    private function getTooltipTextBody() {
+        switch ($this->type) {
+            case CARD_DAMAGE:
+                return $this->getTooltipTextDamage();
+            case CARD_JOHN_DIFOOL:
+                return $this->getTooltipTextJohnDifool();
+            default:
+                return $this->getTooltipTextRegular();
+        }
+    }
+
+    private function getTooltipTextDamage() {
+        $text = clienttranslate(
+            "Damage cards are unplayable. The only way to get rid of them is to activate the "
+        );
+        $text .=
+            '<span class="text-bold">' . clienttranslate("DESTROY") . "</span>";
+        $text .= clienttranslate(" power of Suicide Alley.");
+        $text .= "<br><br>";
+        $text .= clienttranslate(
+            "The game is instantly lost if a player has 3 Damage cards in their hand."
+        );
+
+        return $text;
+    }
+
+    private function getTooltipTextJohnDifool() {
+        $text = clienttranslate("John Difool is considered a wild card.");
+        $text .= "<br><br>";
+        $text .= clienttranslate("When you ");
+        $text .=
+            '<span class="text-bold">' . clienttranslate("explore") . "</span>";
+        $text .= clienttranslate(", you can either ");
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("play it alone") .
+            "</span>";
+        $text .= clienttranslate(
+            " and in this case, name which Character it becomes (Animah, Tanatah, the Meta-Baron, Deepo, Kill, or Solune) as well as its value (1, 2, 3, 4, or 5); or "
+        );
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("associate") .
+            "</span>";
+        $text .= clienttranslate(
+            " it with other identical cards (of which it becomes the Character with the value of your choice)."
+        );
+        $text .= "<br><br>";
+        $text .= clienttranslate(
+            "Played alone on Suicide Alley, it remains John Difool and allows to activate a grayed-out Power."
+        );
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate(
+                "But beware, once your turn ends, John Difool is ALWAYS DIRECTLY sent to the Discard pile."
+            ) .
+            "</span>";
+        return $text;
+    }
+
+    private function getTooltipTextRegular() {
+        return clienttranslate(
+            "During the Explore action, it is possible to play several cards as long as they are identical, i.e. with the same chracter (the value of the card not being taken into account)."
+        );
     }
 }

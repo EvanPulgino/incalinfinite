@@ -1,0 +1,129 @@
+/**
+ *
+ * Tooltip styles
+ *
+ */
+
+.incal-tooltip {
+  position: relative;
+  z-index: 9999;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: flex-start;
+  pointer-events: none;
+  gap: 15px;
+  width: 464px;
+  padding: 10px;
+  background-color: #231f20;
+  border-radius: 10px;
+  border: 7px solid #fbcb0a;
+}
+
+.tooltip-title {
+  font-weight: bold;
+  font-size: 2.5em;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: "ITC Serif Gothic";
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  width: 406px;
+  border: 5px solid #231f20;
+  line-height: 50px;
+}
+
+.title-animah {
+  background-color: $animah;
+}
+
+.title-damage {
+  background-image: linear-gradient(to right, $damageleft, $damageright);
+}
+
+.title-deepo {
+  background-color: $deepo;
+}
+
+.title-johndifool {
+  background-color: $johndifool;
+}
+
+.title-kill {
+  background-color: $kill;
+}
+
+.title-metabaron {
+  background-color: $metabaron;
+}
+
+.title-solune {
+  background-color: $solune;
+}
+
+.title-tanatah {
+  background-color: $tanatah;
+}
+
+.hexagon {
+  background-image: url(./img/hex.png);
+  background-repeat: no-repeat;
+  height: 55px;
+  width: 63px;
+  position: absolute;
+  right: 15px;
+  top: 22px;
+}
+
+.tooltip-card-value {
+  line-height: 55px;
+}
+
+.text-animah {
+  color: $animah;
+}
+
+.text-deepo {
+  color: $deepo;
+}
+
+.text-johndifool {
+  color: black;
+}
+
+.text-kill {
+  color: $kill;
+}
+
+.text-metabaron {
+  color: $metabaron;
+}
+
+.text-solune {
+  color: $solune;
+}
+
+.text-tanatah {
+  color: $tanatah;
+}
+
+.tooltip-text {
+  color: #fff;
+  width: 220px;
+  font-family: "ITC Serif Gothic";
+  font-size: 1.5em;
+}
+
+.text-bold {
+  font-weight: bolder;
+}
+
+.tooltip-body {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}

@@ -412,15 +412,15 @@ var CardController = /** @class */ (function () {
         this.ui = ui;
     }
     CardController.prototype.setupDeck = function (cards) {
+        cards.sort(this.byPileOrder);
         for (var _i = 0, cards_1 = cards; _i < cards_1.length; _i++) {
             var card = cards_1[_i];
-            var cardDiv = '<div id="card-' +
-                card.id +
-                '" class="card"></div>';
-            this.ui.createHtml(cardDiv, "incal-deck");
+            var cardDiv = '<div id="card-' + card.id + '" class="card"></div>';
+            this.createCardElement(card, cardDiv, "incal-deck");
         }
     };
     CardController.prototype.setupDiscard = function (cards) {
+        cards.sort(this.byPileOrder);
         for (var _i = 0, cards_2 = cards; _i < cards_2.length; _i++) {
             var card = cards_2[_i];
             var cardDiv = '<div id="card-' +
@@ -428,7 +428,7 @@ var CardController = /** @class */ (function () {
                 '" class="card ' +
                 this.getCardCssClass(card) +
                 '"></div>';
-            this.ui.createHtml(cardDiv, "incal-discard");
+            this.createCardElement(card, cardDiv, "incal-discard");
         }
     };
     CardController.prototype.setupLocationCards = function (cards) {
@@ -439,7 +439,7 @@ var CardController = /** @class */ (function () {
                 '" class="card ' +
                 this.getCardCssClass(card) +
                 '"></div>';
-            this.ui.createHtml(cardDiv, "card-container-" + card.locationArg);
+            this.createCardElement(card, cardDiv, "card-container-" + card.locationArg);
         }
     };
     CardController.prototype.setupPlayerHand = function (cards) {
@@ -450,7 +450,7 @@ var CardController = /** @class */ (function () {
                 '" class="card ' +
                 this.getCardCssClass(card) +
                 '"></div>';
-            this.ui.createHtml(cardDiv, "player-hand");
+            this.createCardElement(card, cardDiv, "player-hand");
         }
     };
     CardController.prototype.getCardCssClass = function (card) {
@@ -459,6 +459,15 @@ var CardController = /** @class */ (function () {
             cssClass += "-" + card.value;
         }
         return cssClass;
+    };
+    CardController.prototype.createCardElement = function (card, cardDiv, parentDiv) {
+        this.ui.createHtml(cardDiv, parentDiv);
+        if (card.location !== "deck" && card.location !== "discard") {
+            this.ui.addTooltipHtml("card-" + card.id, card.tooltip);
+        }
+    };
+    CardController.prototype.byPileOrder = function (a, b) {
+        return b.locationArg - a.locationArg;
     };
     return CardController;
 }());

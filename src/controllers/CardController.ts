@@ -21,16 +21,15 @@ class CardController {
   }
 
   setupDeck(cards: Card[]): void {
+    cards.sort(this.byPileOrder);
     for (const card of cards) {
-      const cardDiv =
-        '<div id="card-' +
-        card.id +
-        '" class="card"></div>';
-      this.ui.createHtml(cardDiv, "incal-deck");
+      const cardDiv = '<div id="card-' + card.id + '" class="card"></div>';
+      this.createCardElement(card, cardDiv, "incal-deck");
     }
   }
 
   setupDiscard(cards: Card[]): void {
+    cards.sort(this.byPileOrder);
     for (const card of cards) {
       const cardDiv =
         '<div id="card-' +
@@ -38,7 +37,7 @@ class CardController {
         '" class="card ' +
         this.getCardCssClass(card) +
         '"></div>';
-      this.ui.createHtml(cardDiv, "incal-discard");
+      this.createCardElement(card, cardDiv, "incal-discard");
     }
   }
 
@@ -50,7 +49,11 @@ class CardController {
         '" class="card ' +
         this.getCardCssClass(card) +
         '"></div>';
-      this.ui.createHtml(cardDiv, "card-container-" + card.locationArg);
+      this.createCardElement(
+        card,
+        cardDiv,
+        "card-container-" + card.locationArg
+      );
     }
   }
 
@@ -62,7 +65,7 @@ class CardController {
         '" class="card ' +
         this.getCardCssClass(card) +
         '"></div>';
-      this.ui.createHtml(cardDiv, "player-hand");
+      this.createCardElement(card, cardDiv, "player-hand");
     }
   }
 
@@ -72,5 +75,17 @@ class CardController {
       cssClass += "-" + card.value;
     }
     return cssClass;
+  }
+
+  createCardElement(card: Card, cardDiv: string, parentDiv: string): void {
+    this.ui.createHtml(cardDiv, parentDiv);
+
+    if (card.location !== "deck" && card.location !== "discard") {
+      this.ui.addTooltipHtml("card-" + card.id, card.tooltip);
+    }
+  }
+
+  byPileOrder(a: Card, b: Card): number {
+    return b.locationArg - a.locationArg;
   }
 }

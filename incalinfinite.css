@@ -41,6 +41,14 @@ html {
   font-size: calc(15px + 0.390625vw);
 }
 
+#pagemaintitletext {
+  font-family: "ITC Serif Gothic" !important;
+}
+
+.player-name {
+  font-family: "ITC Serif Gothic" !important;
+}
+
 .mirror {
   transform: scaleX(-1);
 }
@@ -51,7 +59,7 @@ html {
  *
  */
 .card-full {
-  background-image: url(./img/cards.png);
+  background-image: url(./img/cards-full.png);
   background-repeat: no-repeat;
   filter: drop-shadow(2px 2px 2px black);
   -webkit-filter: drop-shadow(2px 2px 3px #000);
@@ -562,4 +570,133 @@ html {
   width: 203px;
   transform: scale(0.75);
   position: relative !important;
+}
+
+/**
+ *
+ * Tooltip styles
+ *
+ */
+.incal-tooltip {
+  position: relative;
+  z-index: 9999;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: flex-start;
+  pointer-events: none;
+  gap: 15px;
+  width: 464px;
+  padding: 10px;
+  background-color: #231f20;
+  border-radius: 10px;
+  border: 7px solid #fbcb0a;
+}
+
+.tooltip-title {
+  font-weight: bold;
+  font-size: 2.5em;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: "ITC Serif Gothic";
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  width: 406px;
+  border: 5px solid #231f20;
+  line-height: 50px;
+}
+
+.title-animah {
+  background-color: #e80289;
+}
+
+.title-damage {
+  background-image: linear-gradient(to right, #d74220, #f6ec2e);
+}
+
+.title-deepo {
+  background-color: #9ecbe6;
+}
+
+.title-johndifool {
+  background-color: #ffffff;
+}
+
+.title-kill {
+  background-color: #01aaeb;
+}
+
+.title-metabaron {
+  background-color: #7dcb29;
+}
+
+.title-solune {
+  background-color: #38b6a6;
+}
+
+.title-tanatah {
+  background-color: #741e7e;
+}
+
+.hexagon {
+  background-image: url(./img/hex.png);
+  background-repeat: no-repeat;
+  height: 55px;
+  width: 63px;
+  position: absolute;
+  right: 15px;
+  top: 22px;
+}
+
+.tooltip-card-value {
+  line-height: 55px;
+}
+
+.text-animah {
+  color: #e80289;
+}
+
+.text-deepo {
+  color: #9ecbe6;
+}
+
+.text-johndifool {
+  color: black;
+}
+
+.text-kill {
+  color: #01aaeb;
+}
+
+.text-metabaron {
+  color: #7dcb29;
+}
+
+.text-solune {
+  color: #38b6a6;
+}
+
+.text-tanatah {
+  color: #741e7e;
+}
+
+.tooltip-text {
+  color: #fff;
+  width: 220px;
+  font-family: "ITC Serif Gothic";
+  font-size: 1.5em;
+}
+
+.text-bold {
+  font-weight: bolder;
+}
+
+.tooltip-body {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
