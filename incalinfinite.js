@@ -410,6 +410,7 @@ define([
 var CardController = /** @class */ (function () {
     function CardController(ui) {
         this.ui = ui;
+        this.counters = [];
     }
     CardController.prototype.setupDeck = function (cards) {
         cards.sort(this.byPileOrder);
@@ -418,6 +419,7 @@ var CardController = /** @class */ (function () {
             var cardDiv = '<div id="card-' + card.id + '" class="card"></div>';
             this.createCardElement(card, cardDiv, "incal-deck");
         }
+        this.createDeckCounter(cards.length);
     };
     CardController.prototype.setupDiscard = function (cards) {
         cards.sort(this.byPileOrder);
@@ -430,6 +432,7 @@ var CardController = /** @class */ (function () {
                 '"></div>';
             this.createCardElement(card, cardDiv, "incal-discard");
         }
+        this.createDiscardCounter(cards.length);
     };
     CardController.prototype.setupLocationCards = function (cards) {
         for (var _i = 0, cards_3 = cards; _i < cards_3.length; _i++) {
@@ -467,7 +470,23 @@ var CardController = /** @class */ (function () {
         }
     };
     CardController.prototype.byPileOrder = function (a, b) {
-        return b.locationArg - a.locationArg;
+        return a.locationArg - b.locationArg;
+    };
+    CardController.prototype.createDeckCounter = function (deckSize) {
+        this.counters["deck"] = new ebg.counter();
+        this.counters["deck"].create("incal-deck-count");
+        this.counters["deck"].setValue(deckSize);
+        if (deckSize === 0) {
+            dojo.style("incal-deck-count", "display", "none");
+        }
+    };
+    CardController.prototype.createDiscardCounter = function (discardSize) {
+        this.counters["discard"] = new ebg.counter();
+        this.counters["discard"].create("incal-discard-count");
+        this.counters["discard"].setValue(discardSize);
+        if (discardSize === 0) {
+            dojo.style("incal-discard-count", "display", "none");
+        }
     };
     return CardController;
 }());

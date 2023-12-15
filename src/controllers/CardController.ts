@@ -15,9 +15,11 @@
 
 class CardController {
   ui: GameBody;
+  counters: any[];
 
   constructor(ui: GameBody) {
     this.ui = ui;
+    this.counters = [];
   }
 
   setupDeck(cards: Card[]): void {
@@ -26,6 +28,7 @@ class CardController {
       const cardDiv = '<div id="card-' + card.id + '" class="card"></div>';
       this.createCardElement(card, cardDiv, "incal-deck");
     }
+    this.createDeckCounter(cards.length);
   }
 
   setupDiscard(cards: Card[]): void {
@@ -39,6 +42,7 @@ class CardController {
         '"></div>';
       this.createCardElement(card, cardDiv, "incal-discard");
     }
+    this.createDiscardCounter(cards.length);
   }
 
   setupLocationCards(cards: Card[]): void {
@@ -86,6 +90,24 @@ class CardController {
   }
 
   byPileOrder(a: Card, b: Card): number {
-    return b.locationArg - a.locationArg;
+    return a.locationArg - b.locationArg;
+  }
+
+  createDeckCounter(deckSize: number): void {
+    this.counters["deck"] = new ebg.counter();
+    this.counters["deck"].create("incal-deck-count");
+    this.counters["deck"].setValue(deckSize);
+    if (deckSize === 0) {
+      dojo.style("incal-deck-count", "display", "none");
+    }
+  }
+
+  createDiscardCounter(discardSize: number): void {
+    this.counters["discard"] = new ebg.counter();
+    this.counters["discard"].create("incal-discard-count");
+    this.counters["discard"].setValue(discardSize);
+    if (discardSize === 0) {
+      dojo.style("incal-discard-count", "display", "none");
+    }
   }
 }

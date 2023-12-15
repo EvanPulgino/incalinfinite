@@ -36,13 +36,13 @@
             <div id="incal-space-3" class=" grid-item incal-enemy-space"></div>
             <div id="incal-space-empty-1"></div>
             <div id="incal-space-decks" class="grid-item">
-                <div id="incal-deck-container">
+                <div id="incal-deck-container" class="pile-container">
                     <div id="incal-deck"></div>
-                    <div id="incal-deck-count"></div>
+                    <div id="incal-deck-count" class="hexagon pile-counter"></div>
                 </div>
-                <div id="incal-discard-container">
+                <div id="incal-discard-container" class="pile-container">
                     <div id="incal-discard"></div>
-                    <div id="incal-discard-count"></div>
+                    <div id="incal-discard-count" class="hexagon pile-counter"></div>
                 </div>
             </div>
             <div id="incal-space-empty-2"></div>

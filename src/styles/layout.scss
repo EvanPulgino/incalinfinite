@@ -79,15 +79,37 @@
   transform: translate(-50%, -50%);
 }
 
-#incal-deck-container {
+.pile-container {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-evenly;
   height: 180px;
+  position: relative;
 }
 
 #incal-space-decks {
   justify-content: space-around !important;
+}
+
+#incal-deck {
+  position: relative;
+}
+
+#incal-discard {
+  position: relative;
+}
+
+.pile-counter {
+  top: -22px !important;
+  right: -145px !important;
+  color: black;
+  font-size: 1.5em;
+  font-family: "ITC Serif Gothic";
+  z-index: 50;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
 }
 
 #power-chit-container {
