@@ -446,6 +446,8 @@ var CardController = /** @class */ (function () {
         }
     };
     CardController.prototype.setupPlayerHand = function (cards) {
+        cards.sort(this.byValue);
+        cards.sort(this.byType);
         for (var _i = 0, cards_4 = cards; _i < cards_4.length; _i++) {
             var card = cards_4[_i];
             var cardDiv = '<div id="card-' +
@@ -471,6 +473,12 @@ var CardController = /** @class */ (function () {
     };
     CardController.prototype.byPileOrder = function (a, b) {
         return a.locationArg - b.locationArg;
+    };
+    CardController.prototype.byType = function (a, b) {
+        return a.type.localeCompare(b.type);
+    };
+    CardController.prototype.byValue = function (a, b) {
+        return a.value - b.value;
     };
     CardController.prototype.createDeckCounter = function (deckSize) {
         this.counters["deck"] = new ebg.counter();

@@ -62,6 +62,8 @@ class CardController {
   }
 
   setupPlayerHand(cards: Card[]): void {
+    cards.sort(this.byValue);
+    cards.sort(this.byType);
     for (const card of cards) {
       const cardDiv =
         '<div id="card-' +
@@ -91,6 +93,14 @@ class CardController {
 
   byPileOrder(a: Card, b: Card): number {
     return a.locationArg - b.locationArg;
+  }
+
+  byType(a: Card, b: Card): number {
+    return a.type.localeCompare(b.type);
+  }
+
+  byValue(a: Card, b: Card): number {
+    return a.value - b.value;
   }
 
   createDeckCounter(deckSize: number): void {
