@@ -555,6 +555,7 @@ var LocationController = /** @class */ (function () {
         for (var _i = 0, locations_1 = locations; _i < locations_1.length; _i++) {
             var location_1 = locations_1[_i];
             this.createLocation(location_1, powers);
+            this.ui.addTooltipHtml(location_1.key, location_1.tooltip);
         }
     };
     /**

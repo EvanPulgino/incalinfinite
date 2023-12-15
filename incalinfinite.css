@@ -1115,7 +1115,7 @@ html {
 
 .tooltip-title {
   font-weight: bold;
-  font-size: 2.5em;
+  font-size: 2em;
   text-align: center;
   text-transform: uppercase;
   font-family: "ITC Serif Gothic";
@@ -1148,6 +1148,10 @@ html {
   background-color: #01aaeb;
 }
 
+.title-location {
+  background-color: #f25031;
+}
+
 .title-metabaron {
   background-color: #7dcb29;
 }
@@ -1163,7 +1167,17 @@ html {
 .hexagon {
   background-image: url(./img/hex.png);
   background-repeat: no-repeat;
-  height: 55px;
+  height: 54px;
+  width: 63px;
+  position: absolute;
+  right: 15px;
+  top: 22px;
+}
+
+.location-hexagon {
+  background-image: url(./img/location-hex.png);
+  background-repeat: no-repeat;
+  height: 54px;
   width: 63px;
   position: absolute;
   right: 15px;
@@ -1209,8 +1223,12 @@ html {
   font-size: 1.5em;
 }
 
+.tooltip-text-location {
+  width: 450px !important;
+}
+
 .text-bold {
-  font-weight: bolder;
+  color: #fbcb0a !important;
 }
 
 .tooltip-body {
@@ -1219,4 +1237,28 @@ html {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+}
+
+.location-tooltip-name {
+  font-size: 1.5em;
+  font-weight: bold;
+  font-family: "ITC Serif Gothic";
+  color: white;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  width: 406px;
+  border: 5px solid #231f20;
+  line-height: 50px;
+  background-color: #231f20;
+}
+
+.locationtile-tooltip {
+  position: relative;
+  top: -25px;
+  left: -25px;
+  transform: scale(0.9);
+  margin-bottom: -40px;
 }

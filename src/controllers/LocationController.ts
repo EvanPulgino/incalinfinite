@@ -29,6 +29,7 @@ class LocationController {
   setupLocations(locations: LocationTile[], powers: PowerChit[]): void {
     for (const location of locations) {
       this.createLocation(location, powers);
+      this.ui.addTooltipHtml(location.key, location.tooltip);
     }
   }
 
@@ -63,7 +64,6 @@ class LocationController {
    * @param location - The location to create the container on
    */
   createCardContainer(location: LocationTile): void {
-
     if (location.key !== "suicidealley") {
       const cardContainerDiv =
         '<div id="card-container-' +

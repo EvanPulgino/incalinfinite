@@ -43,6 +43,7 @@ declare class LocationTile {
   name: string;
   tileId: number;
   tilePosition: number;
+  tooltip: string;
 }
 
 declare class PowerChit {

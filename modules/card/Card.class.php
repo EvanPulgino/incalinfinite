@@ -228,11 +228,15 @@ class Card {
     private function getTooltipTextHeader() {
         switch ($this->type) {
             case CARD_DAMAGE:
-                return clienttranslate("DAMAGE:");
+                return '<span class="text-bold">' .
+                    clienttranslate("DAMAGE:") .
+                    "</span>";
             case CARD_JOHN_DIFOOL:
-                return clienttranslate("JOHN DIFOOL:");
+                return '<span class="text-bold">' .
+                    clienttranslate("JOHN DIFOOL:") .
+                    "</span>";
             default:
-                return clienttranslate("IDENTICAL CARDS:");
+                return '<span class="text-bold">'.clienttranslate("IDENTICAL CARDS:")."</span>";
         }
     }
 
