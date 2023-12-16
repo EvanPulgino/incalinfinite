@@ -241,7 +241,15 @@ class Location {
         $text = clienttranslate(
             "Unlike the other locations, Suicide Alley does not allow Revelation but works as follows: a player who has moved the Meta-ship to this location must activate one or more Powers: "
         );
-        $text .= '<span class="text-bold">'.clienttranslate("1 discarded character activates a Power once, 2 identical characters active the same power twice or two different powers, etc...")."</span>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate(
+                "1 discarded character activates a Power once, 2 identical characters active the same power twice or two different powers, etc..."
+            ) .
+            "</span>";
+        $text .= "<br><br>";
+        $text .=
+            "Once a Power has been used it is flipped over to its inactive side. A Power on the inactive side can no longer be activated (except by John Difool).";
         return $text;
     }
 

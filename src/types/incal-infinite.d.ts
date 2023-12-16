@@ -52,4 +52,5 @@ declare class PowerChit {
   key: string;
   name: string;
   available: number;
+  tooltip: string;
 }

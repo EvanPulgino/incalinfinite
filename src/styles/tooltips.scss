@@ -63,6 +63,10 @@
   background-color: $metabaron;
 }
 
+.title-power {
+  background-color: white;
+  color: #fbcb0a;
+}
 .title-solune {
   background-color: $solune;
 }
@@ -95,6 +99,12 @@
   line-height: 55px;
 }
 
+.tooltip-power-icon {
+  transform: scale(0.7);
+  position: absolute;
+  right: 10px;
+  top: -4px;
+}
 .text-animah {
   color: $animah;
 }
@@ -135,6 +145,10 @@
 }
 .text-bold {
   color: #fbcb0a !important;
+}
+
+.text-warning {
+  color: #f25031 !important;
 }
 
 .tooltip-body {

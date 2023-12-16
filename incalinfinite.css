@@ -1156,6 +1156,11 @@ html {
   background-color: #7dcb29;
 }
 
+.title-power {
+  background-color: white;
+  color: #fbcb0a;
+}
+
 .title-solune {
   background-color: #38b6a6;
 }
@@ -1186,6 +1191,13 @@ html {
 
 .tooltip-card-value {
   line-height: 55px;
+}
+
+.tooltip-power-icon {
+  transform: scale(0.7);
+  position: absolute;
+  right: 10px;
+  top: -4px;
 }
 
 .text-animah {
@@ -1229,6 +1241,10 @@ html {
 
 .text-bold {
   color: #fbcb0a !important;
+}
+
+.text-warning {
+  color: #f25031 !important;
 }
 
 .tooltip-body {

@@ -681,6 +681,7 @@ var LocationController = /** @class */ (function () {
                 power.cssClass +
                 '"></div>';
             this.ui.createHtml(powerChitDiv, "power-chit-container");
+            this.ui.addTooltipHtml("power-chit-" + power.key, power.tooltip);
         }
     };
     return LocationController;

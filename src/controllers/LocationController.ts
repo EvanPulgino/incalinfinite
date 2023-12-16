@@ -190,6 +190,7 @@ class LocationController {
         '"></div>';
 
       this.ui.createHtml(powerChitDiv, "power-chit-container");
+      this.ui.addTooltipHtml("power-chit-" + power.key, power.tooltip);
     }
   }
 }

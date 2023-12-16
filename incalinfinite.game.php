@@ -304,7 +304,59 @@ class IncalInfinite extends Table {
                     ? POWER_KEYS[$powerId]
                     : "used-" . POWER_KEYS[$powerId],
             "available" => $powerAvailable,
+            "tooltip" => $this->buildPowerTooltip(
+                $powerId,
+                POWER_KEYS[$powerId]
+            ),
         ];
+    }
+
+    private function buildPowerTooltip($powerId, $powerKey) {
+        $tooltip = '<div class="incal-tooltip">';
+        $tooltip .= '<div class="tooltip-title title-power">';
+        $tooltip .= POWERS[$powerId];
+        $tooltip .=
+            '<div class="tooltip-power-icon power ' . $powerKey . '"></div>';
+        $tooltip .= "</div>";
+        $tooltip .= '<div class="tooltip-text tooltip-text-location">';
+        $tooltip .= $this->getPowerTooltipText($powerId);
+        $tooltip .= "</div>";
+        $tooltip .= "</div>";
+        return $tooltip;
+    }
+
+    private function getPowerTooltipText($powerId) {
+        switch ($powerId) {
+            case POWER_DESTROY:
+                return clienttranslate(
+                    "The player designates a player (they may choose themselves). The designated player destroys a Damage card from their hand, removing it from the game."
+                );
+            case POWER_DISCARD:
+                return clienttranslate(
+                    "The player chooses a Location, moves 2 cards from it to the discard pile, and removes the rest from the game."
+                );
+            case POWER_MOVE:
+                return clienttranslate(
+                    "The player must move 1 card from a Location to another non-closed Location. If the Revelation condition is met, the player performs a Revelation."
+                );
+            case POWER_TALK:
+                $text = clienttranslate(
+                    "The player designates a location of their choice. The player(s) who have performed Revelations at the location must announce the number of the Incal chit at the location."
+                );
+                $text .= "<br><br>";
+                $text .=
+                    '<span class="text-warning">' .
+                    clienttranslate("Note:") .
+                    "</span>";
+                $text .= clienttranslate(" This is done from memory, ");
+                $text .=
+                    '<span class="text-warning">' .
+                    clienttranslate(
+                        "It is forbidden to consult the Incal chit."
+                    ) .
+                    "</span>";
+                return $text;
+        }
     }
 
     private function randomizeEnemy() {
