@@ -12,6 +12,15 @@
   position: absolute;
 }
 
+.silhouette-transparent {
+  background-image: url(./img/silhouettes-transparent.png);
+  background-repeat: no-repeat;
+  position: relative;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%) !important;
+}
+
 .bergs {
   background-position: -0 -156px;
   height: 225px;

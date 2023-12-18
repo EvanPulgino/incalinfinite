@@ -39,14 +39,25 @@
   background-color: $animah;
 }
 
+.title-bergs {
+  background-color: #c33c2c;
+}
+
 .title-damage {
   background-image: linear-gradient(to right, $damageleft, $damageright);
+}
+
+.title-darkness {
+  background-color: #59825b;
 }
 
 .title-deepo {
   background-color: $deepo;
 }
 
+.title-gorgothedirty {
+  background-color: #cb4d28;
+}
 .title-johndifool {
   background-color: $johndifool;
 }
@@ -63,10 +74,19 @@
   background-color: $metabaron;
 }
 
+.title-necrobot {
+  background-color: #df4030;
+}
+
 .title-power {
   background-color: white;
   color: #fbcb0a;
 }
+
+.title-presidentshunchbacks {
+  background-color: #eac60a;
+}
+
 .title-solune {
   background-color: $solune;
 }
@@ -181,4 +201,56 @@
   left: -25px;
   transform: scale(0.9);
   margin-bottom: -40px;
+}
+
+.incal-tooltip .bergs {
+  top: 105px;
+}
+
+.incal-tooltip .darkness {
+  top: 125px;
+}
+
+.incal-tooltip .gorgothedirty {
+  top: 145px;
+}
+
+.incal-tooltip .presidentshunchbacks {
+  top: 145px;
+}
+
+.incal-tooltip .necrobot {
+  top: 160px;
+}
+
+.enemy-icon {
+  background-image: url(./img/enemyicons.png);
+  background-repeat: no-repeat;
+  filter: drop-shadow(5px 5px 5px black);
+  -webkit-filter: drop-shadow(5px 5px 6px #000);
+  width: 63px;
+  height: 60px;
+  position: absolute;
+  right: 15px;
+  top: 20px;
+}
+
+.darkness-icon {
+  background-position: -0 -0;
+}
+
+.necrobot-icon {
+  background-position: -63px -0;
+}
+
+.gorgothedirty-icon {
+  background-position: -126px -0;
+}
+
+.presidentshunchbacks-icon {
+  background-position: -189px -0;
+}
+
+.bergs-icon {
+  background-position: -252px -0;
 }

@@ -29,5 +29,7 @@ class EnemyController {
     } else {
       this.ui.createHtml(enemyDiv, "incal-space-" + enemy.location);
     }
+
+    this.ui.addTooltipHtml("enemy", enemy.tooltip);
   }
 }

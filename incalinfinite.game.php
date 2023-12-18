@@ -288,7 +288,272 @@ class IncalInfinite extends Table {
             "name" => $this->getEnemyName(),
             "key" => ENEMY_KEYS[$enemyId],
             "location" => $this->getEnemyLocation(),
+            "tooltip" => $this->buildEnemyTooltip($enemyId),
         ];
+    }
+
+    private function buildEnemyTooltip($enemyId) {
+        $tooltip = '<div class="incal-tooltip">';
+        $tooltip .=
+            '<div class="tooltip-title title-' . ENEMY_KEYS[$enemyId] . '">';
+        $tooltip .= $this->getEnemyName();
+        $tooltip .= '<div class="enemy-icon '. ENEMY_KEYS[$enemyId] .'-icon"></div>';
+        $tooltip .= "</div>";
+        $tooltip .=
+            '<div class="silhouette-transparent ' .
+            ENEMY_KEYS[$enemyId] .
+            '"></div>';
+        $tooltip .= '<div class="tooltip-text tooltip-text-location">';
+        $tooltip .= $this->buildEnemyTooltipText($enemyId);
+        $tooltip .= "</div>";
+        $tooltip .= "</div>";
+        return $tooltip;
+    }
+
+    private function buildEnemyTooltipText($enemyId) {
+        switch ($enemyId) {
+            case ENEMY_BERGS_DEPLETED:
+                return $this->getEnemyTooltipTextBergsDepleted();
+            case ENEMY_BERGS:
+                return $this->getEnemyTooltipTextBergs();
+            case ENEMY_PRESIDENTS_HUNCHBACKS:
+                return $this->getEnemyTooltipTextPresidentsHunchbacks();
+            case ENEMY_GORGO_THE_DIRTY:
+                return $this->getEnemyTooltipTextGorgo();
+            case ENEMY_NECROBOT:
+                return $this->getEnemyTooltipTextNecrobot();
+            case ENEMY_DARKNESS:
+                return $this->getEnemyTooltipTextDarkness();
+            default:
+                return "";
+        }
+    }
+
+    private function getEnemyTooltipTextBergsDepleted() {
+        $text =
+            '<span class="text-bold">' .
+            clienttranslate("Initial Placement: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "The Bergs are placed in the gap just before Suicide Alley clockwise"
+        );
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("Damage Cards: ") .
+            "</span>";
+        $text .= clienttranslate("2 Damage cards in the initial deck");
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("Activation: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "When the Meta-ship passes the Bergs, they move one gap counterclockwise and a Damage card is moved to the discard pile."
+        );
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("Additional Defeat Condition: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "When the Bergs returns to their starting location the players lose."
+        );
+        return $text;
+    }
+
+    private function getEnemyTooltipTextBergs() {
+        $text =
+            '<span class="text-bold">' .
+            clienttranslate("Initial Placement: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "The Bergs are placed in the gap just before Suicide Alley clockwise"
+        );
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("Damage Cards: ") .
+            "</span>";
+        $text .= clienttranslate("4 Damage cards in the initial deck");
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("Activation: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "When the Meta-ship passes the Bergs, they move one gap counterclockwise and a Damage card is moved to the discard pile."
+        );
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("Additional Defeat Condition: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "When the Bergs returns to their starting location the players lose."
+        );
+        return $text;
+    }
+
+    private function getEnemyTooltipTextPresidentsHunchbacks() {
+        $text =
+            '<span class="text-bold">' .
+            clienttranslate("Initial Placement: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "The President's Hunchbacks are placed on the the Location tile just before Suicide Alley clockwise"
+        );
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("Damage Cards: ") .
+            "</span>";
+        $text .= clienttranslate("3 Damage cards in the initial deck");
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("Activation: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "When the Meta-ship passes over the President's Hunchbacks, they move one Location counterclockwise anf then a Damage Card is added to the discard pile."
+        );
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("Ability: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "It is impossible to travel to the Location occupied by the President's Hunchbacks."
+        );
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-warning">' .
+            clienttranslate("Warning: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "If it is impossible to travel to a location (blocked by the Hunchbacks or closed), the only thing left to do is to try the Ritual."
+        );
+        return $text;
+    }
+
+    private function getEnemyTooltipTextGorgo() {
+        $text =
+            '<span class="text-bold">' .
+            clienttranslate("Initial Placement: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "Gorgo-the-dirty is placed in the gap just before Suicide Alley clockwise"
+        );
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("Damage Cards: ") .
+            "</span>";
+        $text .= clienttranslate("2 Damage cards in the initial deck");
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("Activation: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "When the Meta-ship passes Gorgo-the-dirty, they move one gap counterclockwise. The player randomly picks a non-Damage card from another player's hand and it discards it. Finally, a Damage card is added to the discard pile."
+        );
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("Additional Defeat Condition: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "When Gorgo-the-dirty returns to their starting location the players lose."
+        );
+        return $text;
+    }
+
+    private function getEnemyTooltipTextNecrobot() {
+        $text =
+            '<span class="text-bold">' .
+            clienttranslate("Initial Placement: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "The Necrobot is placed in the gap just before Suicide Alley clockwise"
+        );
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("Damage Cards: ") .
+            "</span>";
+        $text .= clienttranslate("1 Damage card in the initial deck");
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("Activation: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "When the Meta-ship passes the Necrobot, they move one gap counterclockwise. The active player takes a Damage card from the reserve and places it directly in their hand."
+        );
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("Additional Defeat Condition: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "When the Necrobot returns to their starting location the players lose."
+        );
+        return $text;
+    }
+
+    private function getEnemyTooltipTextDarkness() {
+        $text =
+            '<span class="text-bold">' .
+            clienttranslate("Incal Tokens: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "The Incal Tokens range from 1 to 9 instead of 1 to 7."
+        );
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("Initial Placement: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "The Darkness is placed in the gap just before Suicide Alley clockwise"
+        );
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("Damage Cards: ") .
+            "</span>";
+        $text .= clienttranslate("3 Damage cards in the initial deck");
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("Activation: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "When the Meta-ship passes the Darkness, it moves one gap counterclockwise and a Damage card is added to the discard pile."
+        );
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-warning">' .
+            clienttranslate("Special Rules:") .
+            "</span>";
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("Revelation: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "During a Revelation, the player who looks at the Incal token consults it as normal but then keeps it face-down in front of them. Each player may not possess more than 2 (or 3 in a 2-player game) Incal tokens in front of them. Communication rules still apply as normal."
+        );
+        $text .= "<br><br>";
+        $text .=
+            '<span class="text-bold">' .
+            clienttranslate("Transfiguration Ritual: ") .
+            "</span>";
+        $text .= clienttranslate(
+            "Attempting the Transgiguration Ritual cannot be taken as an action. The ritual is triggered automatically when all Incal tokens have been taken by the players. Players must reveal their Incal tokens in ascending order. There is no turn order during the ritual and players are not aloud to speak before or during the ritual. Victory and defeat conditions remain the same."
+        );
+        return $text;
     }
 
     private function buildPowerObject($powerId) {

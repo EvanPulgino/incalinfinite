@@ -26,6 +26,7 @@ declare class Enemy {
   key: string;
   location: number;
   name: string;
+  tooltip: string;
 }
 
 declare class IncalInfinitePlayer {

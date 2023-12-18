@@ -524,6 +524,7 @@ var EnemyController = /** @class */ (function () {
         else {
             this.ui.createHtml(enemyDiv, "incal-space-" + enemy.location);
         }
+        this.ui.addTooltipHtml("enemy", enemy.tooltip);
     };
     return EnemyController;
 }());
