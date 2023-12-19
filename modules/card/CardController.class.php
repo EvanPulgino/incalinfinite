@@ -490,8 +490,7 @@ class CardController extends APP_GameClass {
                 "The discard pile has been shuffled to make a new deck"
             ),
             [
-                "discard" => $this->getDiscardUiData(),
-                "deck" => $this->getDeckUiData(),
+                "cards" => $this->getDeckUiData(),
             ]
         );
     }

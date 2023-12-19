@@ -113,7 +113,11 @@ class CardController {
   addDamageToDiscard(card: Card, playerId: number): void {
     const cardDiv = '<div id="card-' + card.id + '" class="card damage"></div>';
     this.ui.createHtml(cardDiv, "incal-player-panel-" + playerId);
-    const animation = this.ui.slideToObject("card-" + card.id, "incal-discard", 1000);
+    const animation = this.ui.slideToObject(
+      "card-" + card.id,
+      "incal-discard",
+      1000
+    );
     dojo.connect(animation, "onEnd", () => {
       dojo.removeAttr("card-" + card.id, "style");
       dojo.place("card-" + card.id, "incal-discard");
@@ -227,5 +231,16 @@ class CardController {
       dojo.removeAttr("incal-discard-count", "style");
     }
     this.counters["discard"].incValue(1);
+  }
+
+  shuffleDiscardIntoDeck(cards: Card[]): void {
+    const discards = dojo.query(".card", "incal-discard");
+    for (const card of discards) {
+      dojo.destroy(card);
+    }
+    this.counters["discard"].setValue(0);
+    dojo.style("incal-discard-count", "display", "none");
+
+    this.setupDeck(cards);
   }
 }

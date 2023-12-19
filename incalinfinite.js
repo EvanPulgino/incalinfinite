@@ -338,10 +338,11 @@ var GameBody = /** @class */ (function (_super) {
                 dojo.subscribe(m.substring(6), this, m);
             }
         }
-        this.notifqueue.setSynchronous("addDamageToDiscard", 500);
-        this.notifqueue.setSynchronous("cardDrawn", 500);
-        this.notifqueue.setSynchronous("cardDrawnPrivate", 500);
-        this.notifqueue.setSynchronous("discardCard", 500);
+        this.notifqueue.setSynchronous("addDamageToDiscard", 1000);
+        this.notifqueue.setSynchronous("cardDrawn", 1000);
+        this.notifqueue.setSynchronous("cardDrawnPrivate", 1000);
+        this.notifqueue.setSynchronous("discardCard", 1000);
+        this.notifqueue.setSynchronous("discardShuffled", 1000);
         this.notifqueue.setIgnoreNotificationCheck("cardDrawn", function (notif) {
             return notif.args.player_id == gameui.player_id;
         });
@@ -366,6 +367,9 @@ var GameBody = /** @class */ (function (_super) {
     GameBody.prototype.notif_discardCard = function (notif) {
         this.cardController.discardCard(notif.args.card, notif.args.player_id);
         this.playerController.decrementHandCount(notif.args.player_id);
+    };
+    GameBody.prototype.notif_discardShuffled = function (notif) {
+        this.cardController.shuffleDiscardIntoDeck(notif.args.cards);
     };
     return GameBody;
 }(GameBasics));
@@ -606,6 +610,16 @@ var CardController = /** @class */ (function () {
             dojo.removeAttr("incal-discard-count", "style");
         }
         this.counters["discard"].incValue(1);
+    };
+    CardController.prototype.shuffleDiscardIntoDeck = function (cards) {
+        var discards = dojo.query(".card", "incal-discard");
+        for (var _i = 0, discards_1 = discards; _i < discards_1.length; _i++) {
+            var card = discards_1[_i];
+            dojo.destroy(card);
+        }
+        this.counters["discard"].setValue(0);
+        dojo.style("incal-discard-count", "display", "none");
+        this.setupDeck(cards);
     };
     return CardController;
 }());

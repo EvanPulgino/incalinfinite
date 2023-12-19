@@ -66,10 +66,11 @@ class GameBody extends GameBasics {
       }
     }
 
-    this.notifqueue.setSynchronous("addDamageToDiscard", 500);
-    this.notifqueue.setSynchronous("cardDrawn", 500);
-    this.notifqueue.setSynchronous("cardDrawnPrivate", 500);
-    this.notifqueue.setSynchronous("discardCard", 500);
+    this.notifqueue.setSynchronous("addDamageToDiscard", 1000);
+    this.notifqueue.setSynchronous("cardDrawn", 1000);
+    this.notifqueue.setSynchronous("cardDrawnPrivate", 1000);
+    this.notifqueue.setSynchronous("discardCard", 1000);
+    this.notifqueue.setSynchronous("discardShuffled", 1000);
 
     this.notifqueue.setIgnoreNotificationCheck(
       "cardDrawn",
@@ -106,5 +107,9 @@ class GameBody extends GameBasics {
   notif_discardCard(notif: any): void {
     this.cardController.discardCard(notif.args.card, notif.args.player_id);
     this.playerController.decrementHandCount(notif.args.player_id);
+  }
+
+  notif_discardShuffled(notif: any): void {
+    this.cardController.shuffleDiscardIntoDeck(notif.args.cards);
   }
 }
