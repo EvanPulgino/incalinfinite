@@ -219,6 +219,7 @@ define("STATE_ACTION_NEXT_PLAYER", "stNextPlayer");
 /** State Arguments */
 define("STATE_ARGUMENTS_EXPLORE", "argExplore");
 define("STATE_ARGUMENTS_GAME_END", "argGameEnd");
+define("STATE_ARGUMENTS_PASS_TURN", "argPassTurn");
 define("STATE_ARGUMENTS_PLAYER_TURN", "argPlayerTurn");
 
 /** State IDs */

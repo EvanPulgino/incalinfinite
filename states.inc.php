@@ -107,6 +107,7 @@ $machinestates = [
             '${you} must discard 1 non-damage card from your hand'
         ),
         "type" => STATE_TYPE_ACTIVE_PLAYER,
+        "args" => STATE_ARGUMENTS_PASS_TURN,
         "possibleactions" => [ACTION_DISCARD_CARD],
         "transitions" => [
             TRANSITION_END_GAME => STATE_GAME_END,

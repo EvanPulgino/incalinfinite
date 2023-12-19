@@ -208,6 +208,10 @@ class IncalInfinite extends Table {
     //////////// Utility functions
     ////////////
 
+    public function activateNextPlayer() {
+        self::activeNextPlayer();
+    }
+
     /**
      * Get the active player object
      *
@@ -297,7 +301,8 @@ class IncalInfinite extends Table {
         $tooltip .=
             '<div class="tooltip-title title-' . ENEMY_KEYS[$enemyId] . '">';
         $tooltip .= $this->getEnemyName();
-        $tooltip .= '<div class="enemy-icon '. ENEMY_KEYS[$enemyId] .'-icon"></div>';
+        $tooltip .=
+            '<div class="enemy-icon ' . ENEMY_KEYS[$enemyId] . '-icon"></div>';
         $tooltip .= "</div>";
         $tooltip .=
             '<div class="silhouette-transparent ' .
@@ -629,6 +634,10 @@ class IncalInfinite extends Table {
             GAME_STATE_LABEL_ENEMY,
             rand(ENEMY_BERGS, ENEMY_DARKNESS)
         );
+    }
+
+    public function argPassTurn() {
+        return $this->states[STATE_PASS_TURN]->getArgs();
     }
 
     public function argPlayerTurn() {

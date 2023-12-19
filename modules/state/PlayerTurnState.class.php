@@ -28,6 +28,16 @@ class PlayerTurnState {
     }
 
     public function pass() {
+        $activePlayer = $this->game->getActivePlayer();
+
+        $this->game->notifyAllPlayers(
+            "message",
+            clienttranslate('${player_name} passes'),
+            [
+                "player_name" => $activePlayer->getName(),
+            ]
+        );
+        
         $this->game->gamestate->nextState(TRANSITION_PASS_TURN);
     }
 }

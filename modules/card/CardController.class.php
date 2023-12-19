@@ -129,6 +129,18 @@ class CardController extends APP_GameClass {
                 "card" => $drawnCard->getUiData(),
             ]
         );
+
+        $game->notifyPlayer(
+            $player->getId(),
+            "cardDrawnPrivate",
+            clienttranslate('${player_name} draws a ${card_name}'),
+            [
+                "player_name" => $player->getName(),
+                "player_id" => $player->getId(),
+                "card_name" => $drawnCard->getName(),
+                "card" => $drawnCard->getUiData(),
+            ]
+        );
     }
 
     /**
@@ -155,6 +167,9 @@ class CardController extends APP_GameClass {
      */
     public function getDeckUiData() {
         $deck = $this->getDeck();
+        if (!$deck) {
+            return [];
+        }
         $deckUiData = [];
         foreach ($deck as $card) {
             $deckUiData[] = $card->getUiData();
@@ -311,7 +326,7 @@ class CardController extends APP_GameClass {
      * Create the supply of damage cards
      */
     private function createDamageSupply() {
-        $damageCards = ["type" => CARD_DAMAGE, "type_arg" => 0, "nbr" => 18];
+        $damageCards = ["type" => CARD_DAMAGE, "type_arg" => 0, "nbr" => 50];
         $this->cards->createCards([$damageCards], CARD_LOCATION_DAMAGE_SUPPLY);
     }
 

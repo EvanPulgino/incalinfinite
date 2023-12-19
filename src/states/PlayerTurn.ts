@@ -32,6 +32,7 @@ class PlayerTurn implements State {
       gameui.addActionButton("pass-button", _("Pass"), () => {
         this.pass();
       });
+      dojo.addClass("pass-button", "incal-button");
 
       // Create action button for Transfiguration Ritual action
       gameui.addActionButton(
@@ -41,12 +42,12 @@ class PlayerTurn implements State {
           this.transfigurationRitual();
         }
       );
+      dojo.addClass("transfiguration-ritual-button", "incal-button");
     }
   }
 
   pass(): void {
     // Pass turn
-    console.log("Passing turn");
     this.game.ajaxcallwrapper("pass", {});
   }
 

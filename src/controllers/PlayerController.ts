@@ -75,4 +75,12 @@ class PlayerController {
     );
     this.counters["handCount"][player.id].setValue(player.handCount);
   }
+
+  decrementHandCount(playerId: string): void {
+    this.counters["handCount"][playerId].incValue(-1);
+  }
+
+  incrementHandCount(playerId: string): void {
+    this.counters["handCount"][playerId].incValue(1);
+  }
 }

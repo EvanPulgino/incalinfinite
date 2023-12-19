@@ -82,13 +82,13 @@
 .pile-container {
   display: flex;
   flex-flow: row wrap;
-  justify-content: space-evenly;
   height: 180px;
   position: relative;
 }
 
 #incal-space-decks {
-  justify-content: space-around !important;
+  justify-content: space-evenly !important;
+  margin-right: 80px;
 }
 
 #incal-deck {

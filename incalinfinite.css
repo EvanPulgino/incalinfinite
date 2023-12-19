@@ -57,6 +57,50 @@ html {
   transform: scaleX(-1);
 }
 
+.incal-button {
+  background-color: #000000;
+  border: 2px solid #fbcb0a;
+  color: #ffffff;
+  font-family: "ITC Serif Gothic";
+  font-size: 0.6rem;
+  padding: 0.3rem 1rem;
+  text-transform: uppercase;
+  transition: all 0.2s ease-in-out;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  margin-left: 25px;
+}
+
+.incal-button:hover {
+  background-color: #fbcb0a !important;
+  color: #000000 !important;
+  cursor: pointer;
+}
+
+.incal-button-disabled {
+  background-color: #ccc !important;
+  color: #fff !important;
+  border: 2px solid #ccc !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+.incal-card-disabled {
+  opacity: 0.4;
+  filter: alpha(opacity=40); /* msie */
+  background-color: #000;
+}
+
+.incal-card-selected {
+  border: 2px solid #fbcb0a !important;
+  box-shadow: 0 0 10px #fbcb0a !important;
+  cursor: pointer;
+}
+
+.incal-clickable {
+  cursor: pointer;
+}
+
 /**
  *
  * Card styles
@@ -862,13 +906,13 @@ html {
 .pile-container {
   display: flex;
   flex-flow: row wrap;
-  justify-content: space-evenly;
   height: 180px;
   position: relative;
 }
 
 #incal-space-decks {
-  justify-content: space-around !important;
+  justify-content: space-evenly !important;
+  margin-right: 80px;
 }
 
 #incal-deck {

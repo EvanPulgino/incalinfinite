@@ -24,7 +24,13 @@ class PassTurnState {
     }
 
     public function getArgs() {
-        return [];
+        $activePlayer = $this->game->getActivePlayer();
+
+        return [
+            "hand" => $this->game->cardController->getPlayerHandUiData(
+                $activePlayer->getId()
+            ),
+        ];
     }
 
     public function discardCard($cardId) {
@@ -41,8 +47,9 @@ class PassTurnState {
             clienttranslate('${player_name} discards ${card_name}'),
             [
                 "player_name" => $activePlayer->getName(),
+                "player_id" => $activePlayer->getId(),
                 "card_name" => $discardedCard->getName(),
-                "card_id" => $cardId,
+                "card" => $discardedCard->getUiData(),
             ]
         );
 
@@ -66,7 +73,8 @@ class PassTurnState {
             "addDamageToDiscard",
             clienttranslate("A Damage card is added to the discard pile"),
             [
-                "card_id" => $damageCard->getId(),
+                "card" => $damageCard->getUiData(),
+                "player_id" => $activePlayer->getId(),
             ]
         );
 

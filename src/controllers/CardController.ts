@@ -32,7 +32,7 @@ class CardController {
   }
 
   setupDiscard(cards: Card[]): void {
-    cards.sort(this.byPileOrder);
+    cards.sort(this.byPileOrderDesc);
     for (const card of cards) {
       const cardDiv =
         '<div id="card-' +
@@ -66,11 +66,14 @@ class CardController {
     cards.sort(this.byType);
     for (const card of cards) {
       const cardDiv =
+        '<div id="card-wrapper-' +
+        card.id +
+        '">' +
         '<div id="card-' +
         card.id +
         '" class="card ' +
         this.getCardCssClass(card) +
-        '"></div>';
+        '"></div></div>';
       this.createCardElement(card, cardDiv, "player-hand");
     }
   }
@@ -95,12 +98,29 @@ class CardController {
     return a.locationArg - b.locationArg;
   }
 
+  byPileOrderDesc(a: Card, b: Card): number {
+    return b.locationArg - a.locationArg;
+  }
+
   byType(a: Card, b: Card): number {
     return a.type.localeCompare(b.type);
   }
 
   byValue(a: Card, b: Card): number {
     return a.value - b.value;
+  }
+
+  addDamageToDiscard(card: Card, playerId: number): void {
+    const cardDiv = '<div id="card-' + card.id + '" class="card damage"></div>';
+    this.ui.createHtml(cardDiv, "incal-player-panel-" + playerId);
+    const animation = this.ui.slideToObject("card-" + card.id, "incal-discard", 1000);
+    dojo.connect(animation, "onEnd", () => {
+      dojo.removeAttr("card-" + card.id, "style");
+      dojo.place("card-" + card.id, "incal-discard");
+      this.incrementDiscardCounter();
+    });
+
+    animation.play();
   }
 
   createDeckCounter(deckSize: number): void {
@@ -119,5 +139,93 @@ class CardController {
     if (discardSize === 0) {
       dojo.style("incal-discard-count", "display", "none");
     }
+  }
+
+  discardCard(card: Card, playerId: number): void {
+    const cardDivId = "card-" + card.id;
+    let cardElement = dojo.byId(cardDivId);
+    if (cardElement === null) {
+      const cardDiv =
+        '<div id="' +
+        cardDivId +
+        '" class="card ' +
+        this.getCardCssClass(card) +
+        '"></div>';
+      this.ui.createHtml(cardDiv, "incal-player-panel-" + playerId);
+    } else {
+      dojo.place(cardDivId, "incal-player-panel-" + playerId);
+    }
+
+    const animation = this.ui.slideToObject(cardDivId, "incal-discard", 1000);
+    dojo.connect(animation, "onEnd", () => {
+      dojo.removeAttr(cardDivId, "style");
+      dojo.place(cardDivId, "incal-discard");
+      this.incrementDiscardCounter();
+    });
+
+    animation.play();
+
+    const cardWrapper = dojo.byId("card-wrapper-" + card.id);
+    dojo.destroy(cardWrapper);
+  }
+
+  discardExistingCard(cardId: any, playerId: number) {
+    const card = dojo.byId("card-" + cardId);
+    dojo.place(card, "incal-player-panel-" + playerId);
+    const animation = this.ui.slideToObject(card, "incal-discard", 1000);
+    dojo.connect(animation, "onEnd", () => {
+      dojo.removeAttr(card, "style");
+      dojo.place(card, "incal-discard");
+      this.incrementDiscardCounter();
+    });
+
+    animation.play();
+
+    const cardWrapper = dojo.byId("card-wrapper-" + cardId);
+    dojo.destroy(cardWrapper);
+  }
+
+  drawCard(card: Card, playerId: number): void {
+    const cardElement = dojo.byId("card-" + card.id);
+    this.ui.slideToObjectAndDestroy(
+      cardElement,
+      "incal-player-panel-" + playerId,
+      1000
+    );
+    this.decrementDeckCounter();
+  }
+
+  drawCardActivePlayer(card: Card): void {
+    const cardElement = dojo.byId("card-" + card.id);
+    dojo.addClass(cardElement, this.getCardCssClass(card));
+    this.ui.addTooltipHtml("card-" + card.id, card.tooltip);
+    const wrapperDiv = "<div id='card-wrapper-" + card.id + "'></div>";
+    this.ui.createHtml(wrapperDiv, "player-hand");
+    const animation = this.ui.slideToObject(
+      cardElement,
+      "card-wrapper-" + card.id,
+      1000
+    );
+    dojo.connect(animation, "onEnd", () => {
+      dojo.removeAttr(cardElement, "style");
+      dojo.place(cardElement, "card-wrapper-" + card.id);
+      this.decrementDeckCounter();
+    });
+
+    animation.play();
+  }
+
+  decrementDeckCounter(): void {
+    this.counters["deck"].incValue(-1);
+    if (this.counters["deck"].getValue() === 0) {
+      dojo.style("incal-deck-count", "display", "none");
+    }
+  }
+
+  incrementDiscardCounter(): void {
+    if (this.counters["discard"].getValue() === 0) {
+      dojo.removeAttr("incal-discard-count", "style");
+    }
+    this.counters["discard"].incValue(1);
   }
 }

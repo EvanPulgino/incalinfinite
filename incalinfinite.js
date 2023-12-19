@@ -338,6 +338,13 @@ var GameBody = /** @class */ (function (_super) {
                 dojo.subscribe(m.substring(6), this, m);
             }
         }
+        this.notifqueue.setSynchronous("addDamageToDiscard", 500);
+        this.notifqueue.setSynchronous("cardDrawn", 500);
+        this.notifqueue.setSynchronous("cardDrawnPrivate", 500);
+        this.notifqueue.setSynchronous("discardCard", 500);
+        this.notifqueue.setIgnoreNotificationCheck("cardDrawn", function (notif) {
+            return notif.args.player_id == gameui.player_id;
+        });
     };
     /**
      * Handle 'message' notification
@@ -345,6 +352,21 @@ var GameBody = /** @class */ (function (_super) {
      * @param {object} notif - notification data
      */
     GameBody.prototype.notif_message = function (notif) { };
+    GameBody.prototype.notif_addDamageToDiscard = function (notif) {
+        this.cardController.addDamageToDiscard(notif.args.card, notif.args.player_id);
+    };
+    GameBody.prototype.notif_cardDrawn = function (notif) {
+        this.cardController.drawCard(notif.args.card, notif.args.player_id);
+        this.playerController.incrementHandCount(notif.args.player_id);
+    };
+    GameBody.prototype.notif_cardDrawnPrivate = function (notif) {
+        this.cardController.drawCardActivePlayer(notif.args.card);
+        this.playerController.incrementHandCount(notif.args.player_id);
+    };
+    GameBody.prototype.notif_discardCard = function (notif) {
+        this.cardController.discardCard(notif.args.card, notif.args.player_id);
+        this.playerController.decrementHandCount(notif.args.player_id);
+    };
     return GameBody;
 }(GameBasics));
 /**
@@ -422,7 +444,7 @@ var CardController = /** @class */ (function () {
         this.createDeckCounter(cards.length);
     };
     CardController.prototype.setupDiscard = function (cards) {
-        cards.sort(this.byPileOrder);
+        cards.sort(this.byPileOrderDesc);
         for (var _i = 0, cards_2 = cards; _i < cards_2.length; _i++) {
             var card = cards_2[_i];
             var cardDiv = '<div id="card-' +
@@ -450,11 +472,14 @@ var CardController = /** @class */ (function () {
         cards.sort(this.byType);
         for (var _i = 0, cards_4 = cards; _i < cards_4.length; _i++) {
             var card = cards_4[_i];
-            var cardDiv = '<div id="card-' +
+            var cardDiv = '<div id="card-wrapper-' +
+                card.id +
+                '">' +
+                '<div id="card-' +
                 card.id +
                 '" class="card ' +
                 this.getCardCssClass(card) +
-                '"></div>';
+                '"></div></div>';
             this.createCardElement(card, cardDiv, "player-hand");
         }
     };
@@ -474,11 +499,26 @@ var CardController = /** @class */ (function () {
     CardController.prototype.byPileOrder = function (a, b) {
         return a.locationArg - b.locationArg;
     };
+    CardController.prototype.byPileOrderDesc = function (a, b) {
+        return b.locationArg - a.locationArg;
+    };
     CardController.prototype.byType = function (a, b) {
         return a.type.localeCompare(b.type);
     };
     CardController.prototype.byValue = function (a, b) {
         return a.value - b.value;
+    };
+    CardController.prototype.addDamageToDiscard = function (card, playerId) {
+        var _this = this;
+        var cardDiv = '<div id="card-' + card.id + '" class="card damage"></div>';
+        this.ui.createHtml(cardDiv, "incal-player-panel-" + playerId);
+        var animation = this.ui.slideToObject("card-" + card.id, "incal-discard", 1000);
+        dojo.connect(animation, "onEnd", function () {
+            dojo.removeAttr("card-" + card.id, "style");
+            dojo.place("card-" + card.id, "incal-discard");
+            _this.incrementDiscardCounter();
+        });
+        animation.play();
     };
     CardController.prototype.createDeckCounter = function (deckSize) {
         this.counters["deck"] = new ebg.counter();
@@ -495,6 +535,77 @@ var CardController = /** @class */ (function () {
         if (discardSize === 0) {
             dojo.style("incal-discard-count", "display", "none");
         }
+    };
+    CardController.prototype.discardCard = function (card, playerId) {
+        var _this = this;
+        var cardDivId = "card-" + card.id;
+        var cardElement = dojo.byId(cardDivId);
+        if (cardElement === null) {
+            var cardDiv = '<div id="' +
+                cardDivId +
+                '" class="card ' +
+                this.getCardCssClass(card) +
+                '"></div>';
+            this.ui.createHtml(cardDiv, "incal-player-panel-" + playerId);
+        }
+        else {
+            dojo.place(cardDivId, "incal-player-panel-" + playerId);
+        }
+        var animation = this.ui.slideToObject(cardDivId, "incal-discard", 1000);
+        dojo.connect(animation, "onEnd", function () {
+            dojo.removeAttr(cardDivId, "style");
+            dojo.place(cardDivId, "incal-discard");
+            _this.incrementDiscardCounter();
+        });
+        animation.play();
+        var cardWrapper = dojo.byId("card-wrapper-" + card.id);
+        dojo.destroy(cardWrapper);
+    };
+    CardController.prototype.discardExistingCard = function (cardId, playerId) {
+        var _this = this;
+        var card = dojo.byId("card-" + cardId);
+        dojo.place(card, "incal-player-panel-" + playerId);
+        var animation = this.ui.slideToObject(card, "incal-discard", 1000);
+        dojo.connect(animation, "onEnd", function () {
+            dojo.removeAttr(card, "style");
+            dojo.place(card, "incal-discard");
+            _this.incrementDiscardCounter();
+        });
+        animation.play();
+        var cardWrapper = dojo.byId("card-wrapper-" + cardId);
+        dojo.destroy(cardWrapper);
+    };
+    CardController.prototype.drawCard = function (card, playerId) {
+        var cardElement = dojo.byId("card-" + card.id);
+        this.ui.slideToObjectAndDestroy(cardElement, "incal-player-panel-" + playerId, 1000);
+        this.decrementDeckCounter();
+    };
+    CardController.prototype.drawCardActivePlayer = function (card) {
+        var _this = this;
+        var cardElement = dojo.byId("card-" + card.id);
+        dojo.addClass(cardElement, this.getCardCssClass(card));
+        this.ui.addTooltipHtml("card-" + card.id, card.tooltip);
+        var wrapperDiv = "<div id='card-wrapper-" + card.id + "'></div>";
+        this.ui.createHtml(wrapperDiv, "player-hand");
+        var animation = this.ui.slideToObject(cardElement, "card-wrapper-" + card.id, 1000);
+        dojo.connect(animation, "onEnd", function () {
+            dojo.removeAttr(cardElement, "style");
+            dojo.place(cardElement, "card-wrapper-" + card.id);
+            _this.decrementDeckCounter();
+        });
+        animation.play();
+    };
+    CardController.prototype.decrementDeckCounter = function () {
+        this.counters["deck"].incValue(-1);
+        if (this.counters["deck"].getValue() === 0) {
+            dojo.style("incal-deck-count", "display", "none");
+        }
+    };
+    CardController.prototype.incrementDiscardCounter = function () {
+        if (this.counters["discard"].getValue() === 0) {
+            dojo.removeAttr("incal-discard-count", "style");
+        }
+        this.counters["discard"].incValue(1);
     };
     return CardController;
 }());
@@ -767,6 +878,12 @@ var PlayerController = /** @class */ (function () {
         this.counters["handCount"][player.id].create("player-hand-count-" + player.id);
         this.counters["handCount"][player.id].setValue(player.handCount);
     };
+    PlayerController.prototype.decrementHandCount = function (playerId) {
+        this.counters["handCount"][playerId].incValue(-1);
+    };
+    PlayerController.prototype.incrementHandCount = function (playerId) {
+        this.counters["handCount"][playerId].incValue(1);
+    };
     return PlayerController;
 }());
 /**
@@ -863,10 +980,96 @@ var PassTurn = /** @class */ (function () {
         this.id = 12;
         this.name = "passTurn";
         this.game = game;
+        this.connections = {};
     }
-    PassTurn.prototype.onEnteringState = function (stateArgs) { };
-    PassTurn.prototype.onLeavingState = function () { };
-    PassTurn.prototype.onUpdateActionButtons = function (stateArgs) { };
+    PassTurn.prototype.onEnteringState = function (stateArgs) {
+        if (stateArgs.isCurrentPlayerActive) {
+            var hand = stateArgs.args["hand"];
+            for (var _i = 0, hand_1 = hand; _i < hand_1.length; _i++) {
+                var card = hand_1[_i];
+                if (card.type === "damage") {
+                    this.disableDamageCard(card);
+                }
+                else {
+                    this.createCardAction(card);
+                }
+            }
+        }
+    };
+    PassTurn.prototype.onLeavingState = function () {
+        this.resetUX();
+    };
+    PassTurn.prototype.onUpdateActionButtons = function (stateArgs) {
+        var _this = this;
+        if (stateArgs.isCurrentPlayerActive) {
+            // Create action button for Confirm discard action
+            gameui.addActionButton("confirm-discard-button", _("Confirm"), function () {
+                _this.confirmDiscard();
+            });
+            var button = dojo.byId("confirm-discard-button");
+            dojo.addClass(button, "incal-button");
+            dojo.addClass(button, "incal-button-disabled");
+        }
+    };
+    PassTurn.prototype.confirmDiscard = function () {
+        var selectedCard = dojo.query(".incal-card-selected");
+        if (selectedCard.length === 0) {
+            return;
+        }
+        var cardId = selectedCard[0].id.split("-")[1];
+        this.resetUX();
+        this.game.ajaxcallwrapper("discardCard", {
+            cardId: cardId,
+        });
+    };
+    PassTurn.prototype.createCardAction = function (card) {
+        var _this = this;
+        var cardId = card.id;
+        var cardDivId = "card-" + cardId;
+        dojo.addClass(cardDivId, "incal-clickable");
+        this.connections[cardId] = dojo.connect(dojo.byId(cardDivId), "onclick", function () {
+            _this.selectCard(cardId);
+        });
+    };
+    PassTurn.prototype.disableDamageCard = function (card) {
+        var cardId = card.id;
+        dojo.addClass("card-wrapper-" + cardId, "incal-card-disabled");
+    };
+    PassTurn.prototype.selectCard = function (cardId) {
+        var cardDivId = "card-" + cardId;
+        var cardDiv = dojo.byId(cardDivId);
+        if (dojo.hasClass(cardDiv, "incal-card-selected")) {
+            return;
+        }
+        var previouslySelectedCard = dojo.query(".incal-card-selected");
+        if (previouslySelectedCard.length > 0) {
+            dojo.removeClass(previouslySelectedCard[0], "incal-card-selected");
+        }
+        dojo.addClass(cardDiv, "incal-card-selected");
+        dojo.removeClass("confirm-discard-button", "incal-button-disabled");
+    };
+    PassTurn.prototype.resetUX = function () {
+        for (var cardId in this.connections) {
+            dojo.disconnect(this.connections[cardId]);
+        }
+        this.connections = {};
+        var selectedCard = dojo.query(".incal-card-selected");
+        if (selectedCard.length > 0) {
+            dojo.removeClass(selectedCard[0], "incal-card-selected");
+        }
+        var confirmButton = dojo.byId("confirm-discard-button");
+        if (confirmButton !== null) {
+            dojo.addClass("confirm-discard-button", "incal-button-disabled");
+        }
+        var disableDamageCards = dojo.query(".incal-card-disabled");
+        for (var _i = 0, disableDamageCards_1 = disableDamageCards; _i < disableDamageCards_1.length; _i++) {
+            var card = disableDamageCards_1[_i];
+            dojo.removeClass(card, "incal-card-disabled");
+        }
+        dojo.query(".incal-clickable").forEach(function (node) {
+            dojo.removeClass(node, "incal-clickable");
+        });
+    };
     return PassTurn;
 }());
 /**
@@ -898,15 +1101,16 @@ var PlayerTurn = /** @class */ (function () {
             gameui.addActionButton("pass-button", _("Pass"), function () {
                 _this.pass();
             });
+            dojo.addClass("pass-button", "incal-button");
             // Create action button for Transfiguration Ritual action
             gameui.addActionButton("transfiguration-ritual-button", _("Attempt Transfiguration Ritual"), function () {
                 _this.transfigurationRitual();
             });
+            dojo.addClass("transfiguration-ritual-button", "incal-button");
         }
     };
     PlayerTurn.prototype.pass = function () {
         // Pass turn
-        console.log("Passing turn");
         this.game.ajaxcallwrapper("pass", {});
     };
     PlayerTurn.prototype.transfigurationRitual = function () {

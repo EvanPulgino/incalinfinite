@@ -185,12 +185,15 @@ class Card {
     }
 
     private function buildTooltipBody() {
+        $cardClass = $this->type;
+        if ($this->value > 0) {
+            $cardClass .= "-" . $this->value;
+        }
+
         return '<div class="tooltip-body"><div id="tooltip-card-' .
             $this->id .
             '" class="card-full ' .
-            $this->type .
-            "-" .
-            $this->value .
+            $cardClass .
             '"></div>' .
             $this->buildTooltipText() .
             "</div>";
@@ -236,7 +239,9 @@ class Card {
                     clienttranslate("JOHN DIFOOL:") .
                     "</span>";
             default:
-                return '<span class="text-bold">'.clienttranslate("IDENTICAL CARDS:")."</span>";
+                return '<span class="text-bold">' .
+                    clienttranslate("IDENTICAL CARDS:") .
+                    "</span>";
         }
     }
 

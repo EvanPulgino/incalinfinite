@@ -65,6 +65,18 @@ class GameBody extends GameBasics {
         dojo.subscribe(m.substring(6), this, m);
       }
     }
+
+    this.notifqueue.setSynchronous("addDamageToDiscard", 500);
+    this.notifqueue.setSynchronous("cardDrawn", 500);
+    this.notifqueue.setSynchronous("cardDrawnPrivate", 500);
+    this.notifqueue.setSynchronous("discardCard", 500);
+
+    this.notifqueue.setIgnoreNotificationCheck(
+      "cardDrawn",
+      function (notif: any) {
+        return notif.args.player_id == gameui.player_id;
+      }
+    );
   }
 
   /**
@@ -73,4 +85,26 @@ class GameBody extends GameBasics {
    * @param {object} notif - notification data
    */
   notif_message(notif: any): void {}
+
+  notif_addDamageToDiscard(notif: any): void {
+    this.cardController.addDamageToDiscard(
+      notif.args.card,
+      notif.args.player_id
+    );
+  }
+
+  notif_cardDrawn(notif: any): void {
+    this.cardController.drawCard(notif.args.card, notif.args.player_id);
+    this.playerController.incrementHandCount(notif.args.player_id);
+  }
+
+  notif_cardDrawnPrivate(notif: any): void {
+    this.cardController.drawCardActivePlayer(notif.args.card);
+    this.playerController.incrementHandCount(notif.args.player_id);
+  }
+
+  notif_discardCard(notif: any): void {
+    this.cardController.discardCard(notif.args.card, notif.args.player_id);
+    this.playerController.decrementHandCount(notif.args.player_id);
+  }
 }
