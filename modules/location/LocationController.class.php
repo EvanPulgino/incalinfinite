@@ -65,6 +65,18 @@ class LocationController extends APP_GameClass {
     }
 
     /**
+     * Get the location position from the location key
+     *
+     * @param string $locationKey - The key of the location
+     * @return int - The position of the location
+     */
+    public function getLocationPositionFromKey($locationKey) {
+        $locationId = $this->getLocationIdFromKey($locationKey);
+        $sql = "SELECT location_tile_position FROM location WHERE location_tile_id = $locationId";
+        return self::getUniqueValueFromDB($sql);
+    }
+
+    /**
      * Create a location record
      *
      * @param int $tileId - Id of the location tile
@@ -74,6 +86,21 @@ class LocationController extends APP_GameClass {
     private function createLocation($tileId, $tilePosition, $incalChit) {
         $sql = "INSERT INTO location (location_tile_id, location_tile_position, location_incal_chit) VALUES ($tileId, $tilePosition, $incalChit)";
         self::DbQuery($sql);
+    }
+
+    /**
+     * Get the location ID from the location key
+     *
+     * @param string $locationKey - The key of the location
+     * @return int - The ID of the location
+     */
+    private function getLocationIdFromKey($locationKey) {
+        for ($id = 1; $id <= 9; $id++) {
+            if ($locationKey == LOCATION_KEYS[$id]) {
+                return $id;
+            }
+        }
+        return 0;
     }
 
     /**

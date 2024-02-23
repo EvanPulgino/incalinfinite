@@ -17,15 +17,40 @@ class PlayerTurn implements State {
   id: number;
   name: string;
   game: any;
+  connections: any;
 
   constructor(game: any) {
     this.id = 10;
     this.name = "playerTurn";
     this.game = game;
+    this.connections = {};
   }
 
-  onEnteringState(stateArgs: StateArgs): void {}
-  onLeavingState(): void {}
+  onEnteringState(stateArgs: StateArgs): void {
+    if (stateArgs.isCurrentPlayerActive) {
+      // Get all location tiles
+      const locationTiles = dojo.query(".locationtile");
+
+      for (var key in locationTiles) {
+        var locationTile = locationTiles[key];
+        if (locationTile.id) {
+          // Make tile clickable
+          dojo.addClass(locationTile, "incal-clickable");
+          // Add event listener for tile click
+          this.connections[locationTile.id] = dojo.connect(
+            locationTile,
+            "onclick",
+            dojo.hitch(this, "selectLocation", locationTile.id)
+          );
+        }
+      }
+    }
+  }
+
+  onLeavingState(): void {
+    this.resetUX();
+  }
+
   onUpdateActionButtons(stateArgs: StateArgs): void {
     if (stateArgs.isCurrentPlayerActive) {
       // Create action button for Pass action
@@ -47,11 +72,38 @@ class PlayerTurn implements State {
   }
 
   pass(): void {
+    this.resetUX();
     // Pass turn
     this.game.ajaxcallwrapper("pass", {});
   }
 
+  resetUX(): void {
+    // Remove clickable style from tiles
+    dojo.query(".locationtile").removeClass("incal-clickable");
+
+    // Remove event listeners
+    for (var key in this.connections) {
+      dojo.disconnect(this.connections[key]);
+    }
+
+    // Clear connections object
+    this.connections = {};
+  }
+
+  /**
+   * When a player selects a location tile trigger the action to move the ship to that location
+   * @param locationId - The id of the location tile that was clicked
+   */
+  selectLocation(locationId: string): void {
+    this.resetUX();
+    // Select location
+    this.game.ajaxcallwrapper("moveMetaship", {
+      location: locationId,
+    });
+  }
+
   transfigurationRitual(): void {
+    this.resetUX();
     // Perform transfiguration ritual
     console.log("Performing transfiguration ritual");
   }

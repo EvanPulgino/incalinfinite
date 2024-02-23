@@ -54,7 +54,7 @@ html {
 }
 
 .mirror {
-  transform: scaleX(-1);
+  transform: translate(-50%, -50%) scaleX(-1) !important;
 }
 
 .incal-button {
@@ -99,6 +99,7 @@ html {
 
 .incal-clickable {
   cursor: pointer;
+  outline: 4px solid red;
 }
 
 /**

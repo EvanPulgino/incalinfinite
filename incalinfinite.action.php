@@ -40,6 +40,13 @@ class action_incalinfinite extends APP_GameAction {
         self::ajaxResponse();
     }
 
+    public function moveMetaship() {
+        self::setAjaxMode();
+        $location = self::getArg("location", AT_alphanum, true);
+        $this->game->states[STATE_PLAYER_TURN]->moveMetaship($location);
+        self::ajaxResponse();
+    }
+
     public function pass() {
         self::setAjaxMode();
         $this->game->states[STATE_PLAYER_TURN]->pass();

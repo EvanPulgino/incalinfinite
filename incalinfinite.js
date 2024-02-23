@@ -1105,9 +1105,26 @@ var PlayerTurn = /** @class */ (function () {
         this.id = 10;
         this.name = "playerTurn";
         this.game = game;
+        this.connections = {};
     }
-    PlayerTurn.prototype.onEnteringState = function (stateArgs) { };
-    PlayerTurn.prototype.onLeavingState = function () { };
+    PlayerTurn.prototype.onEnteringState = function (stateArgs) {
+        if (stateArgs.isCurrentPlayerActive) {
+            // Get all location tiles
+            var locationTiles = dojo.query(".locationtile");
+            for (var key in locationTiles) {
+                var locationTile = locationTiles[key];
+                if (locationTile.id) {
+                    // Make tile clickable
+                    dojo.addClass(locationTile, "incal-clickable");
+                    // Add event listener for tile click
+                    this.connections[locationTile.id] = dojo.connect(locationTile, "onclick", dojo.hitch(this, "selectLocation", locationTile.id));
+                }
+            }
+        }
+    };
+    PlayerTurn.prototype.onLeavingState = function () {
+        this.resetUX();
+    };
     PlayerTurn.prototype.onUpdateActionButtons = function (stateArgs) {
         var _this = this;
         if (stateArgs.isCurrentPlayerActive) {
@@ -1124,10 +1141,33 @@ var PlayerTurn = /** @class */ (function () {
         }
     };
     PlayerTurn.prototype.pass = function () {
+        this.resetUX();
         // Pass turn
         this.game.ajaxcallwrapper("pass", {});
     };
+    PlayerTurn.prototype.resetUX = function () {
+        // Remove clickable style from tiles
+        dojo.query(".locationtile").removeClass("incal-clickable");
+        // Remove event listeners
+        for (var key in this.connections) {
+            dojo.disconnect(this.connections[key]);
+        }
+        // Clear connections object
+        this.connections = {};
+    };
+    /**
+     * When a player selects a location tile trigger the action to move the ship to that location
+     * @param locationId - The id of the location tile that was clicked
+     */
+    PlayerTurn.prototype.selectLocation = function (locationId) {
+        this.resetUX();
+        // Select location
+        this.game.ajaxcallwrapper("moveMetaship", {
+            location: locationId,
+        });
+    };
     PlayerTurn.prototype.transfigurationRitual = function () {
+        this.resetUX();
         // Perform transfiguration ritual
         console.log("Performing transfiguration ritual");
     };

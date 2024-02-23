@@ -27,6 +27,17 @@ class PlayerTurnState {
         return [];
     }
 
+    public function moveMetaship($location) {
+        // Move the ship
+        $tilePositionToMoveTo = $this->game->locationController->getLocationPositionFromKey(
+            $location
+        );
+        $this->game->setGameStateValue(
+            GAME_STATE_LABEL_METASHIP_LOCATION,
+            $tilePositionToMoveTo
+        );
+    }
+
     public function pass() {
         $activePlayer = $this->game->getActivePlayer();
 
@@ -37,7 +48,7 @@ class PlayerTurnState {
                 "player_name" => $activePlayer->getName(),
             ]
         );
-        
+
         $this->game->gamestate->nextState(TRANSITION_PASS_TURN);
     }
 }
