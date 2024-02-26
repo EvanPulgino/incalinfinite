@@ -33,7 +33,7 @@ class PlayerTurn implements State {
 
       for (var key in locationTiles) {
         var locationTile = locationTiles[key];
-        if (locationTile.id) {
+        if (locationTile.id && !this.enemyOnLocation(locationTile.id)) {
           // Make tile clickable
           dojo.addClass(locationTile, "incal-clickable");
           // Add event listener for tile click
@@ -69,6 +69,12 @@ class PlayerTurn implements State {
       );
       dojo.addClass("transfiguration-ritual-button", "incal-button");
     }
+  }
+
+  enemyOnLocation(locationId: string): boolean {
+    // Check if enemy silhouette is on location
+    const enemyDiv = dojo.query(`#${locationId} #enemy`);
+    return enemyDiv.length > 0;
   }
 
   pass(): void {

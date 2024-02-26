@@ -1183,7 +1183,7 @@ var PlayerTurn = /** @class */ (function () {
             var locationTiles = dojo.query(".locationtile");
             for (var key in locationTiles) {
                 var locationTile = locationTiles[key];
-                if (locationTile.id) {
+                if (locationTile.id && !this.enemyOnLocation(locationTile.id)) {
                     // Make tile clickable
                     dojo.addClass(locationTile, "incal-clickable");
                     // Add event listener for tile click
@@ -1209,6 +1209,11 @@ var PlayerTurn = /** @class */ (function () {
             });
             dojo.addClass("transfiguration-ritual-button", "incal-button");
         }
+    };
+    PlayerTurn.prototype.enemyOnLocation = function (locationId) {
+        // Check if enemy silhouette is on location
+        var enemyDiv = dojo.query("#".concat(locationId, " #enemy"));
+        return enemyDiv.length > 0;
     };
     PlayerTurn.prototype.pass = function () {
         this.resetUX();
