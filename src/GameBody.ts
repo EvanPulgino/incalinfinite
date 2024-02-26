@@ -71,6 +71,7 @@ class GameBody extends GameBasics {
     this.notifqueue.setSynchronous("cardDrawnPrivate", 1000);
     this.notifqueue.setSynchronous("discardCard", 1000);
     this.notifqueue.setSynchronous("discardShuffled", 1000);
+    this.notifqueue.setSynchronous("moveMetaship", 1250);
 
     this.notifqueue.setIgnoreNotificationCheck(
       "cardDrawn",
@@ -111,5 +112,12 @@ class GameBody extends GameBasics {
 
   notif_discardShuffled(notif: any): void {
     this.cardController.shuffleDiscardIntoDeck(notif.args.cards);
+  }
+
+  notif_moveMetaship(notif: any): void {
+    this.metashipController.moveMetaship(
+      notif.args.newLocationPosition,
+      notif.args.lastStep
+    );
   }
 }

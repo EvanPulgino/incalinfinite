@@ -27,15 +27,58 @@ class PlayerTurnState {
         return [];
     }
 
-    public function moveMetaship($location) {
-        // Move the ship
-        $tilePositionToMoveTo = $this->game->locationController->getLocationPositionFromKey(
-            $location
+    public function moveMetaship($locationKey) {
+        $activePlayer = $this->game->getActivePlayer();
+
+        // Get current ship location
+        $currentLocation = $this->game->getGameStateValue(
+            GAME_STATE_LABEL_METASHIP_LOCATION
         );
+
+        // Get new Location object
+        $location = $this->game->locationController->getLocationFromKey(
+            $locationKey
+        );
+
+        // Move the ship - aka set new ship location
         $this->game->setGameStateValue(
             GAME_STATE_LABEL_METASHIP_LOCATION,
-            $tilePositionToMoveTo
+            $location->getTilePosition()
         );
+
+        // Notify players of the move
+        $this->game->notifyAllPlayers(
+            "message",
+            clienttranslate(
+                '${player_name} moves the Meta-ship to ${locationName}'
+            ),
+            [
+                "player_name" => $activePlayer->getName(),
+                "locationName" => $location->getName(),
+            ]
+        );
+
+        // Set up animation to move along path
+        $locationPath = [];
+        $firstStep = $currentLocation == 10 ? 0 : $currentLocation + 2;
+        $locationPath[] = $firstStep;
+
+        $nextStep = $firstStep;
+        while ($nextStep != $location->getTilePosition()) {
+            $nextStep = $nextStep + 2;
+            if ($nextStep > 10) {
+                $nextStep = 0;
+            }
+            $locationPath[] = $nextStep;
+        }
+
+        // Animate each step of the path
+        foreach ($locationPath as $step) {
+            $this->game->notifyAllPlayers("moveMetaship", "", [
+                "newLocationPosition" => $step,
+                "lastStep" => $step == $location->getTilePosition(),
+            ]);
+        }
     }
 
     public function pass() {

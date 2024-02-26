@@ -24,4 +24,14 @@ class MetashipController {
     const metashipDiv = '<div id="metaship" class="silhouette metaship"></div>';
     this.ui.createHtml(metashipDiv, "metaship-container-" + metashipLocation);
   }
+
+  /**
+   * Moves the metaship to the a location
+   *
+   * @param {number} location - new location to move the metaship to
+   * @param {boolean} lastStep - whether this is the last step of the animation
+   */
+  moveMetaship(location: number, lastStep: boolean): void {
+    this.ui.phantomMove("metaship", "metaship-container-" + location, 1000);
+  }
 }

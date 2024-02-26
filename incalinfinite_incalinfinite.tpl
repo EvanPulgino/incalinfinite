@@ -63,5 +63,6 @@
 </div>
 
 <div id="incal-screen"></div>
+<div id="oversurface"></div>
 
 {OVERALL_GAME_FOOTER}
