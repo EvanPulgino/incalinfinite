@@ -226,6 +226,43 @@ class CardController {
     }
   }
 
+  gainDamageFromEnemy(card: Card, playerId: number): void {
+    const cardDiv = '<div id="card-' + card.id + '" class="card damage"></div>';
+    this.ui.createHtml(cardDiv, "oversurface");
+
+    const cardElement = dojo.byId("card-" + card.id);
+    this.ui.slideToObjectAndDestroy(
+      cardElement,
+      "incal-player-panel-" + playerId,
+      1000
+    );
+  }
+
+  gainDamageFromEnemyActivePlayer(card: Card, playerId: number): void {
+    const cardDiv = '<div id="card-' + card.id + '" class="card damage"></div>';
+    this.ui.createHtml(cardDiv, "oversurface");
+
+    const cardElement = dojo.byId("card-" + card.id);
+    dojo.addClass(cardElement, this.getCardCssClass(card));
+    this.ui.addTooltipHtml("card-" + card.id, card.tooltip);
+
+    const wrapperDiv = "<div id='card-wrapper-" + card.id + "'></div>";
+    this.ui.createHtml(wrapperDiv, "player-hand");
+
+    const animation = this.ui.slideToObject(
+      cardElement,
+      "card-wrapper-" + card.id,
+      1000
+    );
+    dojo.connect(animation, "onEnd", () => {
+      dojo.removeAttr(cardElement, "style");
+      dojo.place(cardElement, "card-wrapper-" + card.id);
+      this.decrementDeckCounter();
+    });
+
+    animation.play();
+  }
+
   incrementDiscardCounter(): void {
     if (this.counters["discard"].getValue() === 0) {
       dojo.removeAttr("incal-discard-count", "style");

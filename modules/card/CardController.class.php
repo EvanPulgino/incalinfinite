@@ -323,6 +323,23 @@ class CardController extends APP_GameClass {
     }
 
     /**
+     * Add a damage card from supply to a player's hand
+     *
+     * @param IncalInfinitePlayer $player The player object
+     * @return Card - The card that the player gained
+     */
+    public function playerGainNewDamage($player) {
+        $damageCard = new Card(
+            $this->cards->pickCard(
+                CARD_LOCATION_DAMAGE_SUPPLY,
+                $player->getId()
+            )
+        );
+
+        return $damageCard;
+    }
+
+    /**
      * Create the supply of damage cards
      */
     private function createDamageSupply() {

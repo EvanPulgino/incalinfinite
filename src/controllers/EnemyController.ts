@@ -32,4 +32,25 @@ class EnemyController {
 
     this.ui.addTooltipHtml("enemy", enemy.tooltip);
   }
+
+  moveEnemy(position: number): void {
+    const enemy = document.getElementById("enemy");
+    const enemyType = enemy.classList[1];
+    var destinationId = "";
+
+    if (enemyType === "presidentshunchbacks") {
+      destinationId = "enemy-container-" + position;
+    } else {
+      destinationId = "incal-space-" + position;
+    }
+
+    const animation = this.ui.slideToObject(enemy, destinationId, 500);
+
+    dojo.connect(animation, "onEnd", () => {
+      dojo.removeAttr(enemy, "style");
+      dojo.place(enemy, destinationId);
+    });
+
+    animation.play();
+  }
 }

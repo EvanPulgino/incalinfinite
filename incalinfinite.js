@@ -400,8 +400,14 @@ var GameBody = /** @class */ (function (_super) {
         this.notifqueue.setSynchronous("cardDrawnPrivate", 1000);
         this.notifqueue.setSynchronous("discardCard", 1000);
         this.notifqueue.setSynchronous("discardShuffled", 1000);
+        this.notifqueue.setSynchronous("gainDamageFromEnemy", 1000);
+        this.notifqueue.setSynchronous("gainDamageFromEnemyPrivate", 1000);
+        this.notifqueue.setSynchronous("moveEnemy", 1000);
         this.notifqueue.setSynchronous("moveMetaship", 1250);
         this.notifqueue.setIgnoreNotificationCheck("cardDrawn", function (notif) {
+            return notif.args.player_id == gameui.player_id;
+        });
+        this.notifqueue.setIgnoreNotificationCheck("gainDamageFromEnemy", function (notif) {
             return notif.args.player_id == gameui.player_id;
         });
     };
@@ -428,6 +434,19 @@ var GameBody = /** @class */ (function (_super) {
     };
     GameBody.prototype.notif_discardShuffled = function (notif) {
         this.cardController.shuffleDiscardIntoDeck(notif.args.cards);
+    };
+    GameBody.prototype.notif_gainDamageFromEnemy = function (notif) {
+        console.log("gainDamageFromEnemy", notif.args.card, notif.args.player_id);
+        this.cardController.gainDamageFromEnemy(notif.args.card, notif.args.player_id);
+        this.playerController.incrementHandCount(notif.args.player_id);
+    };
+    GameBody.prototype.notif_gainDamageFromEnemyPrivate = function (notif) {
+        console.log("gainDamageFromEnemyPrivate", notif.args.card, notif.args.player_id);
+        this.cardController.gainDamageFromEnemyActivePlayer(notif.args.card, notif.args.player_id);
+        this.playerController.incrementHandCount(notif.args.player_id);
+    };
+    GameBody.prototype.notif_moveEnemy = function (notif) {
+        this.enemyController.moveEnemy(notif.args.destinationPosition);
     };
     GameBody.prototype.notif_moveMetaship = function (notif) {
         this.metashipController.moveMetaship(notif.args.newLocationPosition, notif.args.lastStep);
@@ -666,6 +685,29 @@ var CardController = /** @class */ (function () {
             dojo.style("incal-deck-count", "display", "none");
         }
     };
+    CardController.prototype.gainDamageFromEnemy = function (card, playerId) {
+        var cardDiv = '<div id="card-' + card.id + '" class="card damage"></div>';
+        this.ui.createHtml(cardDiv, "oversurface");
+        var cardElement = dojo.byId("card-" + card.id);
+        this.ui.slideToObjectAndDestroy(cardElement, "incal-player-panel-" + playerId, 1000);
+    };
+    CardController.prototype.gainDamageFromEnemyActivePlayer = function (card, playerId) {
+        var _this = this;
+        var cardDiv = '<div id="card-' + card.id + '" class="card damage"></div>';
+        this.ui.createHtml(cardDiv, "oversurface");
+        var cardElement = dojo.byId("card-" + card.id);
+        dojo.addClass(cardElement, this.getCardCssClass(card));
+        this.ui.addTooltipHtml("card-" + card.id, card.tooltip);
+        var wrapperDiv = "<div id='card-wrapper-" + card.id + "'></div>";
+        this.ui.createHtml(wrapperDiv, "player-hand");
+        var animation = this.ui.slideToObject(cardElement, "card-wrapper-" + card.id, 1000);
+        dojo.connect(animation, "onEnd", function () {
+            dojo.removeAttr(cardElement, "style");
+            dojo.place(cardElement, "card-wrapper-" + card.id);
+            _this.decrementDeckCounter();
+        });
+        animation.play();
+    };
     CardController.prototype.incrementDiscardCounter = function () {
         if (this.counters["discard"].getValue() === 0) {
             dojo.removeAttr("incal-discard-count", "style");
@@ -711,6 +753,23 @@ var EnemyController = /** @class */ (function () {
             this.ui.createHtml(enemyDiv, "incal-space-" + enemy.location);
         }
         this.ui.addTooltipHtml("enemy", enemy.tooltip);
+    };
+    EnemyController.prototype.moveEnemy = function (position) {
+        var enemy = document.getElementById("enemy");
+        var enemyType = enemy.classList[1];
+        var destinationId = "";
+        if (enemyType === "presidentshunchbacks") {
+            destinationId = "enemy-container-" + position;
+        }
+        else {
+            destinationId = "incal-space-" + position;
+        }
+        var animation = this.ui.slideToObject(enemy, destinationId, 500);
+        dojo.connect(animation, "onEnd", function () {
+            dojo.removeAttr(enemy, "style");
+            dojo.place(enemy, destinationId);
+        });
+        animation.play();
     };
     return EnemyController;
 }());

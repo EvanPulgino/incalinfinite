@@ -242,7 +242,7 @@ class IncalInfinite extends Table {
      * @return int - The enemy ID
      */
     public function getEnemy() {
-        return self::getGameStateValue("enemy");
+        return self::getGameStateValue(GAME_STATE_LABEL_ENEMY);
     }
 
     /**

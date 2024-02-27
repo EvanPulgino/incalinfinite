@@ -950,8 +950,8 @@ html {
 #player-hand {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: space-between;
-  width: 500px;
+  justify-content: space-around;
+  width: 625px;
 }
 
 #incal-space-3 {

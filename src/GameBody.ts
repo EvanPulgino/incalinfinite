@@ -71,10 +71,20 @@ class GameBody extends GameBasics {
     this.notifqueue.setSynchronous("cardDrawnPrivate", 1000);
     this.notifqueue.setSynchronous("discardCard", 1000);
     this.notifqueue.setSynchronous("discardShuffled", 1000);
+    this.notifqueue.setSynchronous("gainDamageFromEnemy", 1000);
+    this.notifqueue.setSynchronous("gainDamageFromEnemyPrivate", 1000);
+    this.notifqueue.setSynchronous("moveEnemy", 1000);
     this.notifqueue.setSynchronous("moveMetaship", 1250);
 
     this.notifqueue.setIgnoreNotificationCheck(
       "cardDrawn",
+      function (notif: any) {
+        return notif.args.player_id == gameui.player_id;
+      }
+    );
+
+    this.notifqueue.setIgnoreNotificationCheck(
+      "gainDamageFromEnemy",
       function (notif: any) {
         return notif.args.player_id == gameui.player_id;
       }
@@ -112,6 +122,28 @@ class GameBody extends GameBasics {
 
   notif_discardShuffled(notif: any): void {
     this.cardController.shuffleDiscardIntoDeck(notif.args.cards);
+  }
+
+  notif_gainDamageFromEnemy(notif: any): void {
+    console.log("gainDamageFromEnemy", notif.args.card, notif.args.player_id);
+    this.cardController.gainDamageFromEnemy(
+      notif.args.card,
+      notif.args.player_id
+    );
+    this.playerController.incrementHandCount(notif.args.player_id);
+  }
+
+  notif_gainDamageFromEnemyPrivate(notif: any): void {
+    console.log("gainDamageFromEnemyPrivate", notif.args.card, notif.args.player_id);
+    this.cardController.gainDamageFromEnemyActivePlayer(
+      notif.args.card,
+      notif.args.player_id
+    );
+    this.playerController.incrementHandCount(notif.args.player_id);
+  }
+
+  notif_moveEnemy(notif: any): void {
+    this.enemyController.moveEnemy(notif.args.destinationPosition);
   }
 
   notif_moveMetaship(notif: any): void {
