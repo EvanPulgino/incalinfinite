@@ -14,6 +14,7 @@
  */
 
 class GameState {
+  explore: Explore;
   gameEnd: GameEnd;
   gameSetup: GameSetup;
   gorgoDiscard: GorgoDiscard;
@@ -21,6 +22,7 @@ class GameState {
   passTurn: PassTurn;
   playerTurn: PlayerTurn;
   constructor(game: any) {
+    this.explore = new Explore(game);
     this.gameEnd = new GameEnd(game);
     this.gameSetup = new GameSetup(game);
     this.gorgoDiscard = new GorgoDiscard(game);

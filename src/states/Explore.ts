@@ -7,19 +7,20 @@
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
  *
- * GameSetup.ts
+ * Explore.ts
  *
- * Incal Infinite game setup state
+ * Incal Infinite explore state
  *
  */
-class GameSetup implements State {
+
+class Explore implements State {
   id: number;
   name: string;
   game: any;
 
   constructor(game: any) {
-    this.id = 1;
-    this.name = "gameSetup";
+    this.id = 12;
+    this.name = "explore";
     this.game = game;
   }
 

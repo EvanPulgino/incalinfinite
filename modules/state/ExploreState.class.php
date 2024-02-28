@@ -1,3 +1,5 @@
+<?php
+
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
@@ -7,24 +9,23 @@
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
  *
- * GameEnd.ts
+ * Backend functions used by the explore State
  *
- * Incal Infinite game end state
+ * In this state, the game handles exploring a location
  *
+ * @EvanPulgino
  */
 
-class GameEnd implements State {
-  id: number;
-  name: string;
-  game: any;
+class ExploreState {
+    private $game;
 
-  constructor(game: any) {
-    this.id = 99;
-    this.name = "gameEnd";
-    this.game = game;
-  }
+    public function __construct(IncalInfinite $game) {
+        $this->game = $game;
+    }
 
-  onEnteringState(stateArgs: StateArgs): void {}
-  onLeavingState(): void {}
-  onUpdateActionButtons(stateArgs: StateArgs): void {}
+    public function getArgs() {
+        return [
+            "statusMessage" => clienttranslate("Exploring location..."),
+        ];
+    }
 }

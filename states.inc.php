@@ -95,8 +95,7 @@ $machinestates = [
         "type" => STATE_TYPE_ACTIVE_PLAYER,
         "args" => STATE_ARGUMENTS_GORGO_DISCARD,
         "possibleactions" => [ACTION_SELECT_PLAYER],
-        "transitions
-        " => [
+        "transitions" => [
             TRANSITION_END_GAME => STATE_GAME_END,
             TRANSITION_EXPLORE_LOCATION => STATE_EXPLORE,
         ],
@@ -104,11 +103,9 @@ $machinestates = [
 
     STATE_EXPLORE => [
         "name" => STATE_NAME_EXPLORE,
-        "description" => clienttranslate(
-            '${actplayer} must explore the ${location}'
-        ),
+        "description" => clienttranslate('${actplayer} ${statusMessage}'),
         "descriptionmyturn" => clienttranslate(
-            '${you} must explore the ${location}'
+            '${you} ${statusMessage}'
         ),
         "type" => STATE_TYPE_ACTIVE_PLAYER,
         "args" => STATE_ARGUMENTS_EXPLORE,

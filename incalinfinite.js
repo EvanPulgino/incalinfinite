@@ -474,6 +474,7 @@ var GameBody = /** @class */ (function (_super) {
  */
 var GameState = /** @class */ (function () {
     function GameState(game) {
+        this.explore = new Explore(game);
         this.gameEnd = new GameEnd(game);
         this.gameSetup = new GameSetup(game);
         this.gorgoDiscard = new GorgoDiscard(game);
@@ -1044,6 +1045,31 @@ var PlayerController = /** @class */ (function () {
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
  *
+ * Explore.ts
+ *
+ * Incal Infinite explore state
+ *
+ */
+var Explore = /** @class */ (function () {
+    function Explore(game) {
+        this.id = 12;
+        this.name = "explore";
+        this.game = game;
+    }
+    Explore.prototype.onEnteringState = function (stateArgs) { };
+    Explore.prototype.onLeavingState = function () { };
+    Explore.prototype.onUpdateActionButtons = function (stateArgs) { };
+    return Explore;
+}());
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * IncalInfinite implementation : © Evan Pulgino <evan.pulgino@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ *
  * GameEnd.ts
  *
  * Incal Infinite game end state
@@ -1052,7 +1078,7 @@ var PlayerController = /** @class */ (function () {
 var GameEnd = /** @class */ (function () {
     function GameEnd(game) {
         this.id = 99;
-        this.name = "GameEnd";
+        this.name = "gameEnd";
         this.game = game;
     }
     GameEnd.prototype.onEnteringState = function (stateArgs) { };
@@ -1077,7 +1103,7 @@ var GameEnd = /** @class */ (function () {
 var GameSetup = /** @class */ (function () {
     function GameSetup(game) {
         this.id = 1;
-        this.name = "GameSetup";
+        this.name = "gameSetup";
         this.game = game;
     }
     GameSetup.prototype.onEnteringState = function (stateArgs) { };
@@ -1102,7 +1128,7 @@ var GameSetup = /** @class */ (function () {
 var GorgoDiscard = /** @class */ (function () {
     function GorgoDiscard(game) {
         this.id = 11;
-        this.name = "GorgoDiscard";
+        this.name = "gorgoDiscard";
         this.game = game;
     }
     GorgoDiscard.prototype.onEnteringState = function (stateArgs) { };

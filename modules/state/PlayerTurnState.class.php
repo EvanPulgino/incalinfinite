@@ -41,7 +41,10 @@ class PlayerTurnState {
         );
 
         // Save the current location for explore phase
-        $this->game->setGameStateValue(GAME_STATE_LABEL_SELECTED_LOCATION, $location->getTileId());
+        $this->game->setGameStateValue(
+            GAME_STATE_LABEL_SELECTED_LOCATION,
+            $location->getTileId()
+        );
 
         // Move the ship - aka set new ship location
         $this->game->setGameStateValue(
@@ -97,6 +100,8 @@ class PlayerTurnState {
         // If the ship passes the enemy, activate them
         if ($doesShipPassEnemy) {
             $this->activateEnemy();
+        } else {
+            $this->game->gamestate->nextState(TRANSITION_EXPLORE_LOCATION);
         }
     }
 
@@ -218,6 +223,8 @@ class PlayerTurnState {
                 ]
             );
         }
+
+        $this->game->gamestate->nextState(TRANSITION_EXPLORE_LOCATION);
     }
 
     private function activatePresidentsHunchbacks() {
@@ -264,6 +271,8 @@ class PlayerTurnState {
                 "player_id" => $activePlayer->getId(),
             ]
         );
+
+        $this->game->gamestate->nextState(TRANSITION_EXPLORE_LOCATION);
     }
 
     private function activateGorgoTheDirty() {
@@ -359,6 +368,8 @@ class PlayerTurnState {
                 "card" => $damageCard->getUiData(),
             ]
         );
+
+        $this->game->gamestate->nextState(TRANSITION_EXPLORE_LOCATION);
     }
 
     private function activateDarkness() {
@@ -403,5 +414,7 @@ class PlayerTurnState {
                 "player_id" => $activePlayer->getId(),
             ]
         );
+
+        $this->game->gamestate->nextState(TRANSITION_EXPLORE_LOCATION);
     }
 }

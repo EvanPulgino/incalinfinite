@@ -20,7 +20,7 @@ class GorgoDiscard implements State {
 
   constructor(game: any) {
     this.id = 11;
-    this.name = "GorgoDiscard";
+    this.name = "gorgoDiscard";
     this.game = game;
   }
 
@@ -53,7 +53,7 @@ class GorgoDiscard implements State {
   discard(event): void {
     const target = event.target;
     const playerId = target.id.split("-")[2];
-    
+
     this.game.ajaxcallwrapper("selectPlayer", {
       playerId: playerId,
     });

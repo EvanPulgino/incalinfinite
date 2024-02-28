@@ -49,12 +49,16 @@ class GorgoDiscardState {
         // Notify players
         $this->game->notifyAllPlayers(
             "discardCardFromOtherPlayer",
-            clienttranslate('${player_name} discards ${card_name} from the hand of ${player_name2}'),
+            clienttranslate(
+                '${player_name} discards ${card_name} from the hand of ${player_name2}'
+            ),
             [
                 "player_name" => $activePlayer->getName(),
                 "player_id" => $activePlayer->getId(),
                 "player_id2" => $playerId,
-                "player_name2" => $this->game->playerController->getPlayer($playerId)->getName(),
+                "player_name2" => $this->game->playerController
+                    ->getPlayer($playerId)
+                    ->getName(),
                 "card_name" => $cardToDiscard->getName(),
                 "card" => $cardToDiscard->getUiData(),
             ]
@@ -72,5 +76,7 @@ class GorgoDiscardState {
                 "player_id" => $activePlayer->getId(),
             ]
         );
+
+        $this->game->gamestate->nextState(TRANSITION_EXPLORE_LOCATION);
     }
 }

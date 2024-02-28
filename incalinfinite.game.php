@@ -53,6 +53,7 @@ class IncalInfinite extends Table {
         $this->locationController = new LocationController();
         $this->playerController = new PlayerController();
 
+        $this->states[STATE_EXPLORE] = new ExploreState($this);
         $this->states[STATE_GORGO_DISCARD] = new GorgoDiscardState($this);
         $this->states[STATE_NEXT_PLAYER] = new NextPlayerState($this);
         $this->states[STATE_PASS_TURN] = new PassTurnState($this);
@@ -637,6 +638,10 @@ class IncalInfinite extends Table {
             GAME_STATE_LABEL_ENEMY,
             rand(ENEMY_BERGS, ENEMY_DARKNESS)
         );
+    }
+
+    public function argExplore() {
+        return $this->states[STATE_EXPLORE]->getArgs();
     }
 
     public function argGorgoDiscard() {
