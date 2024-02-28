@@ -55,6 +55,27 @@ class PlayerController extends APP_GameClass {
         return $this->getPlayers([$playerId])[0];
     }
 
+    public function getOtherPlayers($playerId) {
+        $players = $this->getPlayers();
+        $otherPlayers = [];
+        foreach ($players as $player) {
+            if ($player->getId() != $playerId) {
+                $otherPlayers[] = $player;
+            }
+        }
+        return $otherPlayers;
+    }
+
+    public function getOtherPlayersUiData($playerId) {
+        $players = $this->getOtherPlayers($playerId);
+        $playersUiData = [];
+        foreach ($players as $player) {
+            $playersUiData[] = $player->getUiData();
+        }
+
+        return $playersUiData;
+    }
+
     /**
      * Gets an array of IncalInfinitePlayer objects for all/specifed player IDs
      *

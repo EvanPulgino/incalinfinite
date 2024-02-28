@@ -70,6 +70,7 @@ class GameBody extends GameBasics {
     this.notifqueue.setSynchronous("cardDrawn", 1000);
     this.notifqueue.setSynchronous("cardDrawnPrivate", 1000);
     this.notifqueue.setSynchronous("discardCard", 1000);
+    this.notifqueue.setSynchronous("discardCardFromOtherPlayer", 1000);
     this.notifqueue.setSynchronous("discardShuffled", 1000);
     this.notifqueue.setSynchronous("gainDamageFromEnemy", 1000);
     this.notifqueue.setSynchronous("gainDamageFromEnemyPrivate", 1000);
@@ -120,6 +121,11 @@ class GameBody extends GameBasics {
     this.playerController.decrementHandCount(notif.args.player_id);
   }
 
+  notif_discardCardFromOtherPlayer(notif: any): void {
+    this.cardController.discardCard(notif.args.card, notif.args.player_id2);
+    this.playerController.decrementHandCount(notif.args.player_id2);
+  }
+
   notif_discardShuffled(notif: any): void {
     this.cardController.shuffleDiscardIntoDeck(notif.args.cards);
   }
@@ -134,7 +140,11 @@ class GameBody extends GameBasics {
   }
 
   notif_gainDamageFromEnemyPrivate(notif: any): void {
-    console.log("gainDamageFromEnemyPrivate", notif.args.card, notif.args.player_id);
+    console.log(
+      "gainDamageFromEnemyPrivate",
+      notif.args.card,
+      notif.args.player_id
+    );
     this.cardController.gainDamageFromEnemyActivePlayer(
       notif.args.card,
       notif.args.player_id

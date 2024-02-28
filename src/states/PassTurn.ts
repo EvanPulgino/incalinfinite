@@ -20,7 +20,7 @@ class PassTurn implements State {
   connections: any;
 
   constructor(game: any) {
-    this.id = 12;
+    this.id = 13;
     this.name = "passTurn";
     this.game = game;
     this.connections = {};

@@ -52,4 +52,11 @@ class action_incalinfinite extends APP_GameAction {
         $this->game->states[STATE_PLAYER_TURN]->pass();
         self::ajaxResponse();
     }
+
+    public function selectPlayer() {
+        self::setAjaxMode();
+        $playerId = self::getArg("playerId", AT_posint, true);
+        $this->game->states[STATE_GORGO_DISCARD]->selectPlayer($playerId);
+        self::ajaxResponse();
+    }
 }

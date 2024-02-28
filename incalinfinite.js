@@ -399,6 +399,7 @@ var GameBody = /** @class */ (function (_super) {
         this.notifqueue.setSynchronous("cardDrawn", 1000);
         this.notifqueue.setSynchronous("cardDrawnPrivate", 1000);
         this.notifqueue.setSynchronous("discardCard", 1000);
+        this.notifqueue.setSynchronous("discardCardFromOtherPlayer", 1000);
         this.notifqueue.setSynchronous("discardShuffled", 1000);
         this.notifqueue.setSynchronous("gainDamageFromEnemy", 1000);
         this.notifqueue.setSynchronous("gainDamageFromEnemyPrivate", 1000);
@@ -431,6 +432,10 @@ var GameBody = /** @class */ (function (_super) {
     GameBody.prototype.notif_discardCard = function (notif) {
         this.cardController.discardCard(notif.args.card, notif.args.player_id);
         this.playerController.decrementHandCount(notif.args.player_id);
+    };
+    GameBody.prototype.notif_discardCardFromOtherPlayer = function (notif) {
+        this.cardController.discardCard(notif.args.card, notif.args.player_id2);
+        this.playerController.decrementHandCount(notif.args.player_id2);
     };
     GameBody.prototype.notif_discardShuffled = function (notif) {
         this.cardController.shuffleDiscardIntoDeck(notif.args.cards);
@@ -471,6 +476,7 @@ var GameState = /** @class */ (function () {
     function GameState(game) {
         this.gameEnd = new GameEnd(game);
         this.gameSetup = new GameSetup(game);
+        this.gorgoDiscard = new GorgoDiscard(game);
         this.nextPlayer = new NextPlayer(game);
         this.passTurn = new PassTurn(game);
         this.playerTurn = new PlayerTurn(game);
@@ -1088,6 +1094,52 @@ var GameSetup = /** @class */ (function () {
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
  *
+ * GorgoDiscard.ts
+ *
+ * Incal Infinite gorgo discard state
+ *
+ */
+var GorgoDiscard = /** @class */ (function () {
+    function GorgoDiscard(game) {
+        this.id = 11;
+        this.name = "GorgoDiscard";
+        this.game = game;
+    }
+    GorgoDiscard.prototype.onEnteringState = function (stateArgs) { };
+    GorgoDiscard.prototype.onLeavingState = function () { };
+    GorgoDiscard.prototype.onUpdateActionButtons = function (stateArgs) {
+        var _this = this;
+        if (stateArgs.isCurrentPlayerActive) {
+            var otherPlayers = stateArgs.args["otherPlayers"];
+            // Add action button for each player
+            for (var key in otherPlayers) {
+                var player = otherPlayers[key];
+                gameui.addActionButton("discard-button-" + player.id, _(player.name), function (event) {
+                    _this.discard(event);
+                });
+                dojo.addClass("discard-button-" + player.id, "incal-button");
+                dojo.addClass("discard-button-" + player.id, "incal-button-" + player.color);
+            }
+        }
+    };
+    GorgoDiscard.prototype.discard = function (event) {
+        var target = event.target;
+        var playerId = target.id.split("-")[2];
+        this.game.ajaxcallwrapper("selectPlayer", {
+            playerId: playerId,
+        });
+    };
+    return GorgoDiscard;
+}());
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * IncalInfinite implementation : © Evan Pulgino <evan.pulgino@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ *
  * NextPlayer.ts
  *
  * Incal Infinite next player state
@@ -1120,7 +1172,7 @@ var NextPlayer = /** @class */ (function () {
  */
 var PassTurn = /** @class */ (function () {
     function PassTurn(game) {
-        this.id = 12;
+        this.id = 13;
         this.name = "passTurn";
         this.game = game;
         this.connections = {};
@@ -1242,7 +1294,7 @@ var PlayerTurn = /** @class */ (function () {
             var locationTiles = dojo.query(".locationtile");
             for (var key in locationTiles) {
                 var locationTile = locationTiles[key];
-                if (locationTile.id && !this.enemyOnLocation(locationTile.id)) {
+                if (locationTile.id && !this.enemyOnLocation(locationTile.id) && !this.enemyWillMoveToShipLocation(locationTile.id)) {
                     // Make tile clickable
                     dojo.addClass(locationTile, "incal-clickable");
                     // Add event listener for tile click
@@ -1273,6 +1325,21 @@ var PlayerTurn = /** @class */ (function () {
         // Check if enemy silhouette is on location
         var enemyDiv = dojo.query("#".concat(locationId, " #enemy"));
         return enemyDiv.length > 0;
+    };
+    PlayerTurn.prototype.enemyWillMoveToShipLocation = function (locationId) {
+        var metaShip = dojo.query("#metaship");
+        var metaShipLocation = metaShip[0].parentNode.parentNode.id;
+        if (metaShipLocation === locationId) {
+            var metaShipPosition = parseInt(metaShip[0].parentNode.id.split("-")[2]);
+            var enemyPosition = parseInt(dojo.query("#enemy")[0].parentNode.id.split("-")[2]);
+            if (enemyPosition === 0 || metaShipPosition === 10) {
+                return true;
+            }
+            if (enemyPosition - 2 === metaShipPosition) {
+                return true;
+            }
+        }
+        return false;
     };
     PlayerTurn.prototype.pass = function () {
         this.resetUX();

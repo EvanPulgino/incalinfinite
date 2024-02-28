@@ -16,12 +16,14 @@
 class GameState {
   gameEnd: GameEnd;
   gameSetup: GameSetup;
+  gorgoDiscard: GorgoDiscard;
   nextPlayer: NextPlayer;
   passTurn: PassTurn;
   playerTurn: PlayerTurn;
   constructor(game: any) {
     this.gameEnd = new GameEnd(game);
     this.gameSetup = new GameSetup(game);
+    this.gorgoDiscard = new GorgoDiscard(game);
     this.nextPlayer = new NextPlayer(game);
     this.passTurn = new PassTurn(game);
     this.playerTurn = new PlayerTurn(game);

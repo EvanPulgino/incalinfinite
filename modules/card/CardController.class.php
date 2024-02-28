@@ -283,6 +283,20 @@ class CardController extends APP_GameClass {
         return $handUiData;
     }
 
+    public function getPlayerHandNoDamage($playerId) {
+        $hand = $this->getPlayerHand($playerId);
+        if (!$hand) {
+            return [];
+        }
+        $cards = [];
+        foreach ($hand as $card) {
+            if ($card->getType() != CARD_DAMAGE) {
+                $cards[] = $card;
+            }
+        }
+        return $cards;
+    }
+
     /**
      * Get the number of cards in a player's hand
      *

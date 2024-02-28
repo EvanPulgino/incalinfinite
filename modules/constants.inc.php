@@ -20,6 +20,7 @@ define("ACTION_DISCARD_CARD", "discardCard");
 define("ACTION_EXPLORE_LOCATION", "exploreLocation");
 define("ACTION_MOVE_METASHIP", "moveMetaship");
 define("ACTION_PASS", "pass");
+define("ACTION_SELECT_PLAYER", "selectPlayer");
 
 /** Card Types */
 define("CARD_ANIMAH", "animah");
@@ -108,6 +109,7 @@ define("GAME_STATE_LABEL_POWER_DESTROY_AVAILABLE", "powerDestroyAvailable");
 define("GAME_STATE_LABEL_POWER_DISCARD_AVAILABLE", "powerDiscardAvailable");
 define("GAME_STATE_LABEL_POWER_MOVE_AVAILABLE", "powerMoveAvailable");
 define("GAME_STATE_LABEL_POWER_TALK_AVAILABLE", "powerTalkAvailable");
+define("GAME_STATE_LABEL_SELECTED_LOCATION", "selectedLocation");
 
 /** Game State Label IDs */
 define("GAME_STATE_LABEL_ID_ENEMY_LOCATION", 10);
@@ -117,6 +119,7 @@ define("GAME_STATE_LABEL_ID_POWER_DESTROY_AVAILABLE", 13);
 define("GAME_STATE_LABEL_ID_POWER_DISCARD_AVAILABLE", 14);
 define("GAME_STATE_LABEL_ID_POWER_MOVE_AVAILABLE", 15);
 define("GAME_STATE_LABEL_ID_POWER_TALK_AVAILABLE", 16);
+define("GAME_STATE_LABEL_ID_SELECTED_LOCATION", 17);
 define("GAME_STATE_LABEL_ID_ENEMY", 100);
 
 /** Location IDs */
@@ -219,14 +222,16 @@ define("STATE_ACTION_NEXT_PLAYER", "stNextPlayer");
 /** State Arguments */
 define("STATE_ARGUMENTS_EXPLORE", "argExplore");
 define("STATE_ARGUMENTS_GAME_END", "argGameEnd");
+define("STATE_ARGUMENTS_GORGO_DISCARD", "argGorgoDiscard");
 define("STATE_ARGUMENTS_PASS_TURN", "argPassTurn");
 define("STATE_ARGUMENTS_PLAYER_TURN", "argPlayerTurn");
 
 /** State IDs */
 define("STATE_GAME_SETUP", 1);
 define("STATE_PLAYER_TURN", 10);
-define("STATE_EXPLORE", 11);
-define("STATE_PASS_TURN", 12);
+define("STATE_GORGO_DISCARD", 11);
+define("STATE_EXPLORE", 12);
+define("STATE_PASS_TURN", 13);
 define("STATE_NEXT_PLAYER", 20);
 define("STATE_TRANSFIGURATION_RITUAL", 30);
 define("STATE_TRANSFIGURATION_RITUAL_DARKNESS", 40);
@@ -236,6 +241,7 @@ define("STATE_GAME_END", 99);
 define("STATE_NAME_EXPLORE", "explore");
 define("STATE_NAME_GAME_END", "gameEnd");
 define("STATE_NAME_GAME_SETUP", "gameSetup");
+define("STATE_NAME_GORGO_DISCARD", "gorgoDiscard");
 define("STATE_NAME_NEXT_PLAYER", "nextPlayer");
 define("STATE_NAME_PASS_TURN", "passTurn");
 define("STATE_NAME_PLAYER_TURN", "playerTurn");
@@ -260,5 +266,6 @@ define(
 define("TRANSITION_END_GAME", "endGame");
 define("TRANSITION_END_TURN", "endTurn");
 define("TRANSITION_EXPLORE_LOCATION", "exploreLocation");
+define("TRANSITION_GORGO_DISCARD", "gorgoDiscard");
 define("TRANSITION_NEXT_PLAYER", "nextPlayer");
 define("TRANSITION_PASS_TURN", "passTurn");

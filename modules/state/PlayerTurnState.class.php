@@ -40,6 +40,9 @@ class PlayerTurnState {
             $locationKey
         );
 
+        // Save the current location for explore phase
+        $this->game->setGameStateValue(GAME_STATE_LABEL_SELECTED_LOCATION, $location->getTileId());
+
         // Move the ship - aka set new ship location
         $this->game->setGameStateValue(
             GAME_STATE_LABEL_METASHIP_LOCATION,
@@ -292,6 +295,8 @@ class PlayerTurnState {
                 "destinationPosition" => $destinationPosition,
             ]
         );
+
+        $this->game->gamestate->nextState(TRANSITION_GORGO_DISCARD);
     }
 
     private function activateNecrobot() {

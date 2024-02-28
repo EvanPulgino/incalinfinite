@@ -78,7 +78,26 @@ $machinestates = [
             TRANSITION_BEGIN_TRANSFIGURATION_RITUAL => STATE_GAME_END,
             TRANSITION_BEGIN_TRANSFIGURATION_RITUAL_DARKNESS => STATE_GAME_END,
             TRANSITION_END_GAME => STATE_GAME_END,
+            TRANSITION_EXPLORE_LOCATION => STATE_EXPLORE,
+            TRANSITION_GORGO_DISCARD => STATE_GORGO_DISCARD,
             TRANSITION_PASS_TURN => STATE_PASS_TURN,
+        ],
+    ],
+
+    STATE_GORGO_DISCARD => [
+        "name" => STATE_NAME_GORGO_DISCARD,
+        "description" => clienttranslate(
+            '${actplayer} must select a player to discard a random non-damage card from their hand'
+        ),
+        "descriptionmyturn" => clienttranslate(
+            '${you} must select a player to discard a random non-damage card from their hand'
+        ),
+        "type" => STATE_TYPE_ACTIVE_PLAYER,
+        "args" => STATE_ARGUMENTS_GORGO_DISCARD,
+        "possibleactions" => [ACTION_SELECT_PLAYER],
+        "transitions
+        " => [
+            TRANSITION_END_GAME => STATE_GAME_END,
             TRANSITION_EXPLORE_LOCATION => STATE_EXPLORE,
         ],
     ],

@@ -33,7 +33,7 @@ class PlayerTurn implements State {
 
       for (var key in locationTiles) {
         var locationTile = locationTiles[key];
-        if (locationTile.id && !this.enemyOnLocation(locationTile.id)) {
+        if (locationTile.id && !this.enemyOnLocation(locationTile.id) && !this.enemyWillMoveToShipLocation(locationTile.id)) {
           // Make tile clickable
           dojo.addClass(locationTile, "incal-clickable");
           // Add event listener for tile click
@@ -75,6 +75,24 @@ class PlayerTurn implements State {
     // Check if enemy silhouette is on location
     const enemyDiv = dojo.query(`#${locationId} #enemy`);
     return enemyDiv.length > 0;
+  }
+
+  enemyWillMoveToShipLocation(locationId): boolean {
+    const metaShip = dojo.query("#metaship");
+    const metaShipLocation = metaShip[0].parentNode.parentNode.id;
+
+    if (metaShipLocation === locationId) {
+      const metaShipPosition = parseInt(metaShip[0].parentNode.id.split("-")[2]);
+      const enemyPosition = parseInt(dojo.query("#enemy")[0].parentNode.id.split("-")[2]);
+      if (enemyPosition === 0 || metaShipPosition === 10) {
+        return true;
+      }
+      if (enemyPosition - 2 === metaShipPosition) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   pass(): void {

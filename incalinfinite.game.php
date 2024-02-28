@@ -44,6 +44,7 @@ class IncalInfinite extends Table {
             GAME_STATE_LABEL_POWER_MOVE_AVAILABLE => GAME_STATE_LABEL_ID_POWER_MOVE_AVAILABLE,
             GAME_STATE_LABEL_POWER_TALK_AVAILABLE => GAME_STATE_LABEL_ID_POWER_TALK_AVAILABLE,
             GAME_STATE_LABEL_ENEMY => GAME_STATE_LABEL_ID_ENEMY,
+            GAME_STATE_LABEL_SELECTED_LOCATION => GAME_STATE_LABEL_ID_SELECTED_LOCATION,
         ]);
 
         $this->cardController = new CardController(
@@ -52,6 +53,7 @@ class IncalInfinite extends Table {
         $this->locationController = new LocationController();
         $this->playerController = new PlayerController();
 
+        $this->states[STATE_GORGO_DISCARD] = new GorgoDiscardState($this);
         $this->states[STATE_NEXT_PLAYER] = new NextPlayerState($this);
         $this->states[STATE_PASS_TURN] = new PassTurnState($this);
         $this->states[STATE_PLAYER_TURN] = new PlayerTurnState($this);
@@ -109,6 +111,7 @@ class IncalInfinite extends Table {
             GAME_STATE_LABEL_POWER_TALK_AVAILABLE,
             1
         );
+        self::setGameStateInitialValue(GAME_STATE_LABEL_SELECTED_LOCATION, "");
 
         // Init game statistics
         // (note: statistics used in this file must be defined in your stats.inc.php file)
@@ -428,7 +431,7 @@ class IncalInfinite extends Table {
             clienttranslate("Ability: ") .
             "</span>";
         $text .= clienttranslate(
-            "It is impossible to travel to the Location occupied by the President's Hunchbacks."
+            "It is impossible to travel to the Location occupied by the President's Hunchbacks. It is also impossible to move to the Location the President's Hunchbacks will move to after being passsed."
         );
         $text .= "<br><br>";
         $text .=
@@ -634,6 +637,10 @@ class IncalInfinite extends Table {
             GAME_STATE_LABEL_ENEMY,
             rand(ENEMY_BERGS, ENEMY_DARKNESS)
         );
+    }
+
+    public function argGorgoDiscard() {
+        return $this->states[STATE_GORGO_DISCARD]->getArgs();
     }
 
     public function argPassTurn() {
