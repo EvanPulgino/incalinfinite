@@ -1320,7 +1320,10 @@ var PlayerTurn = /** @class */ (function () {
             var locationTiles = dojo.query(".locationtile");
             for (var key in locationTiles) {
                 var locationTile = locationTiles[key];
-                if (locationTile.id && !this.enemyOnLocation(locationTile.id) && !this.enemyWillMoveToShipLocation(locationTile.id)) {
+                if (locationTile.id &&
+                    !this.enemyOnLocation(locationTile.id) &&
+                    !this.enemyWillMoveToShipLocation(locationTile.id) &&
+                    !this.isLocationClosed(locationTile.id, stateArgs.args["locationsStatus"])) {
                     // Make tile clickable
                     dojo.addClass(locationTile, "incal-clickable");
                     // Add event listener for tile click
@@ -1366,6 +1369,16 @@ var PlayerTurn = /** @class */ (function () {
             }
         }
         return false;
+    };
+    PlayerTurn.prototype.isLocationClosed = function (locationTileId, locationsStatus) {
+        // Check if location is closed
+        for (var key in locationsStatus) {
+            var status = locationsStatus[key];
+            if (status.location.key === locationTileId) {
+                console.log("status: ", status);
+                return status.isClosed;
+            }
+        }
     };
     PlayerTurn.prototype.pass = function () {
         this.resetUX();

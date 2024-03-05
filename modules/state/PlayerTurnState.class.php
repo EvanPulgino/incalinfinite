@@ -24,7 +24,9 @@ class PlayerTurnState {
     }
 
     public function getArgs() {
-        return [];
+        return [
+            "locationsStatus" => $this->game->getLocationsStatusUiData(),
+        ];
     }
 
     public function moveMetaship($locationKey) {

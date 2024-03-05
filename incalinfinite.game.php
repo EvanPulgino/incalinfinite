@@ -164,6 +164,7 @@ class IncalInfinite extends Table {
         $result[
             "locationCards"
         ] = $this->cardController->getLocationTileCardsUiData();
+        $result["locationsStatus"] = $this->getLocationsStatusUiData();
         $result["metashipLocation"] = $this->getMetashipLocation();
         $result["metashipName"] = METASHIP_NAME;
         $result[
@@ -270,6 +271,35 @@ class IncalInfinite extends Table {
 
         // All other enemies start between Suicide Alley and counter-clockwise location
         return 11;
+    }
+
+    public function getLocationsStatus() {
+        $locations = $this->locationController->getAllLocations();
+        $locationsStatus = [];
+
+        foreach ($locations as $locationKey => $location) {
+            $cards = $this->cardController->getCardsAtLocationTile(
+                $location->getTilePosition()
+            );
+            $locationsStatus[] = new LocationStatus(
+                $location,
+                $cards,
+                $this->countPowersAvailable()
+            );
+        }
+
+        return $locationsStatus;
+    }
+
+    public function getLocationsStatusUiData() {
+        $locationsStatus = $this->getLocationsStatus();
+        $locationsStatusUiData = [];
+
+        foreach ($locationsStatus as $key => $locationsStatus) {
+            $locationsStatusUiData[] = $locationsStatus->getUiData();
+        }
+
+        return $locationsStatusUiData;
     }
 
     public function getMetashipLocation() {
@@ -597,6 +627,16 @@ class IncalInfinite extends Table {
         $tooltip .= "</div>";
         $tooltip .= "</div>";
         return $tooltip;
+    }
+
+    private function countPowersAvailable() {
+        $powerCount = 0;
+        foreach (POWER_GAME_STATE_KEYS as $powerKey) {
+            if (self::getGameStateValue($powerKey) == 1) {
+                $powerCount++;
+            }
+        }
+        return $powerCount;
     }
 
     private function getPowerTooltipText($powerId) {

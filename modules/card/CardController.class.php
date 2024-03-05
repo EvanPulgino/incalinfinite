@@ -144,6 +144,25 @@ class CardController extends APP_GameClass {
     }
 
     /**
+     * Get all cards at a location tile
+     *
+     * @param int $locationTilePosition The position of the location tile
+     * @return Card[]|null - An array of cards or null if no cards
+     */
+    public function getCardsAtLocationTile($locationTilePosition) {
+        $cards = $this->cards->getCardsInLocation(CARD_LOCATION_LOCATION_TILE, $locationTilePosition);
+        if (!$cards) {
+            return null;
+        }
+        $cardObjects = [];
+        foreach ($cards as $card) {
+            $cardObjects[] = new Card($card);
+        }
+        return $cardObjects;
+
+    }
+
+    /**
      * Get all cards in the deck
      *
      * @return Card[]|null - An array of cards or null if no cards left

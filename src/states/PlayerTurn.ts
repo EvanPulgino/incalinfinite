@@ -33,7 +33,15 @@ class PlayerTurn implements State {
 
       for (var key in locationTiles) {
         var locationTile = locationTiles[key];
-        if (locationTile.id && !this.enemyOnLocation(locationTile.id) && !this.enemyWillMoveToShipLocation(locationTile.id)) {
+        if (
+          locationTile.id &&
+          !this.enemyOnLocation(locationTile.id) &&
+          !this.enemyWillMoveToShipLocation(locationTile.id) &&
+          !this.isLocationClosed(
+            locationTile.id,
+            stateArgs.args["locationsStatus"]
+          )
+        ) {
           // Make tile clickable
           dojo.addClass(locationTile, "incal-clickable");
           // Add event listener for tile click
@@ -82,8 +90,12 @@ class PlayerTurn implements State {
     const metaShipLocation = metaShip[0].parentNode.parentNode.id;
 
     if (metaShipLocation === locationId) {
-      const metaShipPosition = parseInt(metaShip[0].parentNode.id.split("-")[2]);
-      const enemyPosition = parseInt(dojo.query("#enemy")[0].parentNode.id.split("-")[2]);
+      const metaShipPosition = parseInt(
+        metaShip[0].parentNode.id.split("-")[2]
+      );
+      const enemyPosition = parseInt(
+        dojo.query("#enemy")[0].parentNode.id.split("-")[2]
+      );
       if (enemyPosition === 0 || metaShipPosition === 10) {
         return true;
       }
@@ -93,6 +105,17 @@ class PlayerTurn implements State {
     }
 
     return false;
+  }
+
+  isLocationClosed(locationTileId, locationsStatus): boolean {
+    // Check if location is closed
+    for (var key in locationsStatus) {
+      var status = locationsStatus[key];
+      if (status.location.key === locationTileId) {
+        console.log("status: ", status)
+        return status.isClosed;
+      }
+    }
   }
 
   pass(): void {
