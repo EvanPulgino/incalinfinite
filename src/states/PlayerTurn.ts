@@ -39,7 +39,8 @@ class PlayerTurn implements State {
           !this.enemyWillMoveToShipLocation(locationTile.id) &&
           !this.isLocationClosed(
             locationTile.id,
-            stateArgs.args["locationsStatus"]
+            stateArgs.args["locationsStatus"],
+            stateArgs.args["playerHand"]
           )
         ) {
           // Make tile clickable
@@ -107,13 +108,17 @@ class PlayerTurn implements State {
     return false;
   }
 
-  isLocationClosed(locationTileId, locationsStatus): boolean {
+  isLocationClosed(locationTileId, locationsStatus, playerHand): boolean {
     // Check if location is closed
     for (var key in locationsStatus) {
       var status = locationsStatus[key];
       if (status.location.key === locationTileId) {
-        console.log("status: ", status)
-        return status.isClosed;
+        if (locationTileId === "suicidealley") {
+          if (this.playerHasJohnDiFool(playerHand)) {
+            return false;
+          }
+          return status.isClosed;
+        }
       }
     }
   }
@@ -124,6 +129,14 @@ class PlayerTurn implements State {
     this.game.ajaxcallwrapper("pass", {});
   }
 
+  playerHasJohnDiFool(hand): boolean {
+    for (var key in hand) {
+      if (hand[key].type === "johndifool") {
+        return true;
+      }
+    }
+    return false;
+  }
   resetUX(): void {
     // Remove clickable style from tiles
     dojo.query(".locationtile").removeClass("incal-clickable");

@@ -24,8 +24,13 @@ class PlayerTurnState {
     }
 
     public function getArgs() {
+        $activePlayer = $this->game->getActivePlayer();
+
         return [
             "locationsStatus" => $this->game->getLocationsStatusUiData(),
+            "playerHand" => $this->game->cardController->getPlayerHandUiData(
+                $activePlayer->getId()
+            ),
         ];
     }
 

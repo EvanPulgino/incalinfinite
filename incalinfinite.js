@@ -1323,7 +1323,7 @@ var PlayerTurn = /** @class */ (function () {
                 if (locationTile.id &&
                     !this.enemyOnLocation(locationTile.id) &&
                     !this.enemyWillMoveToShipLocation(locationTile.id) &&
-                    !this.isLocationClosed(locationTile.id, stateArgs.args["locationsStatus"])) {
+                    !this.isLocationClosed(locationTile.id, stateArgs.args["locationsStatus"], stateArgs.args["playerHand"])) {
                     // Make tile clickable
                     dojo.addClass(locationTile, "incal-clickable");
                     // Add event listener for tile click
@@ -1370,13 +1370,17 @@ var PlayerTurn = /** @class */ (function () {
         }
         return false;
     };
-    PlayerTurn.prototype.isLocationClosed = function (locationTileId, locationsStatus) {
+    PlayerTurn.prototype.isLocationClosed = function (locationTileId, locationsStatus, playerHand) {
         // Check if location is closed
         for (var key in locationsStatus) {
             var status = locationsStatus[key];
             if (status.location.key === locationTileId) {
-                console.log("status: ", status);
-                return status.isClosed;
+                if (locationTileId === "suicidealley") {
+                    if (this.playerHasJohnDiFool(playerHand)) {
+                        return false;
+                    }
+                    return status.isClosed;
+                }
             }
         }
     };
@@ -1384,6 +1388,14 @@ var PlayerTurn = /** @class */ (function () {
         this.resetUX();
         // Pass turn
         this.game.ajaxcallwrapper("pass", {});
+    };
+    PlayerTurn.prototype.playerHasJohnDiFool = function (hand) {
+        for (var key in hand) {
+            if (hand[key].type === "johndifool") {
+                return true;
+            }
+        }
+        return false;
     };
     PlayerTurn.prototype.resetUX = function () {
         // Remove clickable style from tiles
