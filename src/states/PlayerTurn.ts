@@ -33,13 +33,18 @@ class PlayerTurn implements State {
 
       for (var key in locationTiles) {
         var locationTile = locationTiles[key];
+        var locationStatus = this.getMatchingLocationStatus(
+          locationTile.id,
+          stateArgs.args["locationsStatus"]
+        );
+
         if (
           locationTile.id &&
           !this.enemyOnLocation(locationTile.id) &&
           !this.enemyWillMoveToShipLocation(locationTile.id) &&
-          !this.isLocationClosed(
+          this.playerCanExploreLocation(
             locationTile.id,
-            stateArgs.args["locationsStatus"],
+            locationStatus,
             stateArgs.args["playerHand"]
           )
         ) {
@@ -86,7 +91,7 @@ class PlayerTurn implements State {
     return enemyDiv.length > 0;
   }
 
-  enemyWillMoveToShipLocation(locationId): boolean {
+  enemyWillMoveToShipLocation(locationId: string): boolean {
     const metaShip = dojo.query("#metaship");
     const metaShipLocation = metaShip[0].parentNode.parentNode.id;
 
@@ -108,18 +113,28 @@ class PlayerTurn implements State {
     return false;
   }
 
-  isLocationClosed(locationTileId, locationsStatus, playerHand): boolean {
-    // Check if location is closed
+  getMatchingLocationStatus(
+    locationTileId: string,
+    locationsStatus: LocationStatus[]
+  ): LocationStatus {
     for (var key in locationsStatus) {
-      var status = locationsStatus[key];
-      if (status.location.key === locationTileId) {
-        if (locationTileId === "suicidealley") {
-          if (this.playerHasJohnDiFool(playerHand)) {
-            return false;
-          }
-          return status.isClosed;
-        }
+      if (locationsStatus[key].location.key === locationTileId) {
+        return locationsStatus[key];
       }
+    }
+  }
+
+  isLocationClosed(
+    locationTileId: string,
+    locationStatus: LocationStatus,
+    hand: Card[]
+  ): boolean {
+    // Check if location is closed
+    if (locationTileId === "suicidealley") {
+      if (this.playerHasJohnDiFool(hand)) {
+        return false;
+      }
+      return locationStatus.isClosed;
     }
   }
 
@@ -129,7 +144,93 @@ class PlayerTurn implements State {
     this.game.ajaxcallwrapper("pass", {});
   }
 
-  playerHasJohnDiFool(hand): boolean {
+  playerCanExploreLocation(
+    locationTileId: string,
+    locationStatus: LocationStatus,
+    hand: Card[]
+  ): boolean {
+    if (this.isLocationClosed(locationTileId, locationStatus, hand)) {
+      return false;
+    }
+
+    // If location isn't closed, John Difool is always playable
+    if (this.playerHasJohnDiFool(hand)) {
+      return true;
+    }
+
+    switch (locationTileId) {
+      case "centralcalculator":
+        return this.playerCanExploreCentralCalculator(locationStatus, hand);
+      case "technocity":
+        return this.playerCanExploreTechnoCity(locationStatus, hand);
+      default:
+        return true;
+    }
+  }
+
+  playerCanExploreCentralCalculator(
+    locationStatus: LocationStatus,
+    hand: Card[]
+  ): boolean {
+    // Get character on central calculator
+    const character = locationStatus.cards[0].type;
+
+    // Check if player has a card that can be used to explore central calculator
+    for (var key in hand) {
+      if (hand[key].type === character) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  playerCanExplorePsychoratsDump(
+    locationStatus: LocationStatus,
+    hand: Card[]
+  ): boolean {
+    // Get the characters on Psychorats Dump
+    var characters = [];
+    for (var key in locationStatus.cards) {
+      characters.push(locationStatus.cards[key].type);
+    }
+
+    // Check if player has a character not present on Psychorats Dump
+    for (var key in hand) {
+      if (!characters.includes(hand[key].type)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  playerCanExploreTechnoCity(
+    locationStatus: LocationStatus,
+    hand: Card[]
+  ): boolean {
+    // Get the characters on Techno City
+    var characters = [];
+    for (var key in locationStatus.cards) {
+      characters.push(locationStatus.cards[key].type);
+    }
+
+    // Both character types are not set yet, so player can explore
+    if (characters.length < 2) {
+      return true;
+    }
+
+    // Check if player has a card that can be used to explore Techno City
+    for (var key in hand) {
+      if (characters.includes(hand[key].type)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  playerHasJohnDiFool(hand: Card[]): boolean {
     for (var key in hand) {
       if (hand[key].type === "johndifool") {
         return true;

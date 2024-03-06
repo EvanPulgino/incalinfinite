@@ -45,6 +45,7 @@ class IncalInfinite extends Table {
             GAME_STATE_LABEL_POWER_TALK_AVAILABLE => GAME_STATE_LABEL_ID_POWER_TALK_AVAILABLE,
             GAME_STATE_LABEL_ENEMY => GAME_STATE_LABEL_ID_ENEMY,
             GAME_STATE_LABEL_SELECTED_LOCATION => GAME_STATE_LABEL_ID_SELECTED_LOCATION,
+            GAME_STATE_LABEL_CRYSTAL_FOREST_FIRST => GAME_STATE_LABEL_ID_CRYSTAL_FOREST_FIRST,
         ]);
 
         $this->cardController = new CardController(
@@ -128,6 +129,9 @@ class IncalInfinite extends Table {
             $this->getEnemy()
         );
 
+        // Determine the value of the first Crystal Forest card
+        $this->determineCrystalForestFirst();
+        
         // Activate first player (which is in general a good idea :) )
         $this->activeNextPlayer();
 
@@ -365,6 +369,26 @@ class IncalInfinite extends Table {
                 return $this->getEnemyTooltipTextDarkness();
             default:
                 return "";
+        }
+    }
+
+    private function determineCrystalForestFirst() {
+        $crystalForest = $this->locationController->getLocationFromKey(
+            LOCATION_KEYS[LOCATION_CRYSTAL_FOREST]
+        );
+        if ($crystalForest == null) {
+            self::setGameStateInitialValue(
+                GAME_STATE_LABEL_CRYSTAL_FOREST_FIRST,
+                0
+            );
+        } else {
+            $card = $this->cardController->getCardsAtLocationTile(
+                $crystalForest->getTilePosition()
+            )[0];
+            self::setGameStateInitialValue(
+                GAME_STATE_LABEL_CRYSTAL_FOREST_FIRST,
+                $card->getValue()
+            );
         }
     }
 

@@ -68,12 +68,15 @@ class LocationController extends APP_GameClass {
      * Get the location object from the location key
      *
      * @param string $locationKey - The key of the location
-     * @return Location - The location object
+     * @return Location | null - The location object
      */
     public function getLocationFromKey($locationKey) {
         $locationId = $this->getLocationIdFromKey($locationKey);
         $sql = "SELECT * FROM location WHERE location_tile_id = $locationId";
         $data = self::getObjectFromDB($sql);
+        if (!$data) {
+            return null;
+        }
         return new Location($data);
     }
 

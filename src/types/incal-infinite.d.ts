@@ -47,6 +47,13 @@ declare class LocationTile {
   tooltip: string;
 }
 
+declare class LocationStatus {
+  location: LocationTile;
+  maxCards: number;
+  cards: Card[];
+  isClosed: boolean;
+}
+
 declare class PowerChit {
   id: number;
   cssClass: string;
