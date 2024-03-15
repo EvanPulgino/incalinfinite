@@ -131,7 +131,7 @@ class IncalInfinite extends Table {
 
         // Determine the value of the first Crystal Forest card
         $this->determineCrystalForestFirst();
-        
+
         // Activate first player (which is in general a good idea :) )
         $this->activeNextPlayer();
 
@@ -158,6 +158,9 @@ class IncalInfinite extends Table {
         $result[
             "currentPlayerHand"
         ] = $this->cardController->getPlayerHandUiData($current_player_id);
+        $result["crystalForestFirst"] = $this->getCrystalForestFirst();
+        $result["crystalForestPosition"] = $this->locationController
+            ->getPositionFromKey(LOCATION_KEYS[LOCATION_CRYSTAL_FOREST]);
         $result["deck"] = $this->cardController->getDeckUiData();
         $result["discard"] = $this->cardController->getDiscardUiData();
         $result["enemy"] = $this->buildEnemyObject();
@@ -243,6 +246,10 @@ class IncalInfinite extends Table {
         }
 
         return $players;
+    }
+
+    public function getCrystalForestFirst() {
+        return self::getGameStateValue(GAME_STATE_LABEL_CRYSTAL_FOREST_FIRST);
     }
 
     /**

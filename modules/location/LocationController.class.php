@@ -80,6 +80,16 @@ class LocationController extends APP_GameClass {
         return new Location($data);
     }
 
+    public function getPositionFromKey($locationKey) {
+        $locationId = $this->getLocationIdFromKey($locationKey);
+        $sql = "SELECT location_tile_position FROM location WHERE location_tile_id = $locationId";
+        $position = self::getUniqueValueFromDB($sql);
+        if (!$position) {
+            return null;
+        }
+        return $position;
+    }
+
     /**
      * Create a location record
      *

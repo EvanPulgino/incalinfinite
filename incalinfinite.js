@@ -384,6 +384,7 @@ var GameBody = /** @class */ (function (_super) {
         this.cardController.setupDiscard(gamedata.discard);
         this.cardController.setupPlayerHand(gamedata.currentPlayerHand);
         this.cardController.setupLocationCards(gamedata.locationCards);
+        this.cardController.sortCrystalForest(gamedata.crystalForestPosition, gamedata.crystalForestFirst);
         this.setupNotifications();
     };
     /**
@@ -574,12 +575,45 @@ var CardController = /** @class */ (function () {
             this.createCardElement(card, cardDiv, "player-hand");
         }
     };
+    CardController.prototype.sortCrystalForest = function (position, firstValue) {
+        if (position) {
+            var cards = dojo.query(".card", "card-container-" + position);
+            var order = 1;
+            var nextValue = firstValue;
+            var nextCard = this.getCardWithValue(cards, firstValue);
+            while (nextCard !== null) {
+                nextCard.style.order = order.toString();
+                order++;
+                nextValue = nextValue == 5 ? 1 : nextValue + 1;
+                nextCard = this.getCardWithValue(cards, nextValue);
+            }
+        }
+    };
     CardController.prototype.getCardCssClass = function (card) {
         var cssClass = card.type;
         if (card.type !== "damage" && card.type !== "johndifool") {
             cssClass += "-" + card.value;
         }
         return cssClass;
+    };
+    CardController.prototype.getCardValue = function (cardElement) {
+        var value = 0;
+        cardElement.classList.forEach(function (className) {
+            if (className !== "card" && className !== "johndifool") {
+                value = parseInt(className.split("-")[1]);
+            }
+        });
+        return value;
+    };
+    CardController.prototype.getCardWithValue = function (cards, value) {
+        for (var _i = 0, cards_5 = cards; _i < cards_5.length; _i++) {
+            var card = cards_5[_i];
+            var cardValue = this.getCardValue(card);
+            if (cardValue !== 0 && cardValue == value) {
+                return card;
+            }
+        }
+        return null;
     };
     CardController.prototype.createCardElement = function (card, cardDiv, parentDiv) {
         this.ui.createHtml(cardDiv, parentDiv);

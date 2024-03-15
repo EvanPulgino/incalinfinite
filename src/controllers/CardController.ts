@@ -78,12 +78,49 @@ class CardController {
     }
   }
 
+  sortCrystalForest(position: number, firstValue: number): void {
+    if (position) {
+      const cards = dojo.query(".card", "card-container-" + position);
+
+      var order = 1;
+      var nextValue = firstValue;
+      var nextCard = this.getCardWithValue(cards, firstValue);
+
+      while (nextCard !== null) {
+        nextCard.style.order = order.toString();
+        order++;
+        nextValue = nextValue == 5 ? 1 : nextValue + 1;
+        nextCard = this.getCardWithValue(cards, nextValue);
+      }
+    }
+  }
+
   getCardCssClass(card: Card): string {
     let cssClass = card.type;
     if (card.type !== "damage" && card.type !== "johndifool") {
       cssClass += "-" + card.value;
     }
     return cssClass;
+  }
+
+  getCardValue(cardElement: HTMLElement): number {
+    var value = 0;
+    cardElement.classList.forEach((className) => {
+      if (className !== "card" && className !== "johndifool") {
+        value = parseInt(className.split("-")[1]);
+      }
+    });
+    return value;
+  }
+
+  getCardWithValue(cards: HTMLElement[], value: number): HTMLElement {
+    for (const card of cards) {
+      var cardValue = this.getCardValue(card);
+      if (cardValue !== 0 && cardValue == value) {
+        return card;
+      }
+    }
+    return null;
   }
 
   createCardElement(card: Card, cardDiv: string, parentDiv: string): void {

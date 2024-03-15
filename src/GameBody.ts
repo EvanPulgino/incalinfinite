@@ -53,6 +53,7 @@ class GameBody extends GameBasics {
     this.cardController.setupDiscard(gamedata.discard);
     this.cardController.setupPlayerHand(gamedata.currentPlayerHand);
     this.cardController.setupLocationCards(gamedata.locationCards);
+    this.cardController.sortCrystalForest(gamedata.crystalForestPosition, gamedata.crystalForestFirst);
     this.setupNotifications();
   }
 
