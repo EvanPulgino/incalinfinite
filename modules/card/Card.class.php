@@ -132,7 +132,7 @@ class Card {
         return [
             "id" => $this->id,
             "type" => $this->type,
-            "value" => $this->value,
+            "value" => intval($this->value),
             "location" => $this->location,
             "locationArg" => $this->locationArg,
             "name" => $this->getName(),

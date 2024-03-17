@@ -155,7 +155,7 @@ class LocationStatus {
             $sum = $sum + $card->getValue();
         }
 
-        if ($sum > 7 && $sum < 11) {
+        if ($sum > 7) {
             return true;
         }
 

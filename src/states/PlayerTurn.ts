@@ -30,6 +30,9 @@ class PlayerTurn implements State {
     if (stateArgs.isCurrentPlayerActive) {
       // Get all location tiles
       const locationTiles = dojo.query(".locationtile");
+      const charactersInHand = this.removeDamageFromHand(
+        stateArgs.args["playerHand"]
+      );
 
       for (var key in locationTiles) {
         var locationTile = locationTiles[key];
@@ -45,7 +48,7 @@ class PlayerTurn implements State {
           this.playerCanExploreLocation(
             locationTile.id,
             locationStatus,
-            stateArgs.args["playerHand"]
+            charactersInHand
           )
         ) {
           // Make tile clickable
@@ -124,6 +127,14 @@ class PlayerTurn implements State {
     }
   }
 
+  /**
+   * Checks if a location is closed
+   *
+   * @param {string} locationTileId - The id of the location tile that was clicked
+   * @param {LocationStatus} locationStatus - The status of the location tile
+   * @param hand - The current player's hand with damage cards removed
+   * @returns {boolean} - Whether the location is closed
+   */
   isLocationClosed(
     locationTileId: string,
     locationStatus: LocationStatus,
@@ -131,6 +142,7 @@ class PlayerTurn implements State {
   ): boolean {
     // Check if location is closed
     if (locationTileId === "suicidealley") {
+      // If player has John DiFool they can always explore Suicide Alley
       if (this.playerHasJohnDiFool(hand)) {
         return false;
       }
@@ -144,11 +156,20 @@ class PlayerTurn implements State {
     this.game.ajaxcallwrapper("pass", {});
   }
 
+  /**
+   * Checks if a player has at least one card that can be used to explore a location
+   *
+   * @param {string} locationTileId - The id of the location tile that was clicked
+   * @param {LocationStatus} locationStatus - The status of the location tile
+   * @param {Card[]} hand - The current player's hand with damage cards removed
+   * @returns
+   */
   playerCanExploreLocation(
     locationTileId: string,
     locationStatus: LocationStatus,
     hand: Card[]
   ): boolean {
+    // Check if location is closed
     if (this.isLocationClosed(locationTileId, locationStatus, hand)) {
       return false;
     }
@@ -158,9 +179,18 @@ class PlayerTurn implements State {
       return true;
     }
 
+    // Check if player can explore location based on location tile id
     switch (locationTileId) {
+      case "acidlake":
+        return this.playerCanExploreAcidLake(locationStatus, hand);
+      case "aquaend":
+        return this.playerCanExploreAquaend(locationStatus, hand);
       case "centralcalculator":
         return this.playerCanExploreCentralCalculator(locationStatus, hand);
+      case "crystalforest":
+        return this.playerCanExploreCrystalForest(locationStatus, hand);
+      case "psychoratsdump":
+        return this.playerCanExplorePsychoratsDump(locationStatus, hand);
       case "technocity":
         return this.playerCanExploreTechnoCity(locationStatus, hand);
       default:
@@ -168,12 +198,165 @@ class PlayerTurn implements State {
     }
   }
 
+  /**
+   * Checks if a player has at least one card that can be used to explore Acid Lake
+   * Acid Lake can contain 2 sets of different characters, each set can contain 3 characters
+   * A player cannot explore Acid Lake if:
+   *  - Both character types are set and the player does not have a character that is not present on Acid Lake
+   *  - One character set is at max count and the player does not have a different character in their hand
+   *
+   * @param {LocationStatus} locationStatus - The status of the location tile
+   * @param {Card[]} hand - The current player's hand with damage cards removed
+   * @returns {boolean} - Whether the player can explore Acid Lake
+   */
+  playerCanExploreAcidLake(
+    locationStatus: LocationStatus,
+    hand: Card[]
+  ): boolean {
+    // Get the characters on Acid Lake
+    var characters = [];
+    for (var key in locationStatus.cards) {
+      characters.push(locationStatus.cards[key].type);
+    }
+
+    // Both character types are not set yet, so player can start a new set
+    if (characters.length < 2) {
+      //If only one character is present...
+      if (characters.length === 1) {
+        // Get the count of the character
+        var countOfCharacter = locationStatus.cards.filter(
+          (card) => card.type === characters[0]
+        ).length;
+        // If character is at max count...
+        if (countOfCharacter === 3) {
+          // Check if a player has a different character in their hand
+          for (var key in hand) {
+            if (hand[key].type !== characters[0]) {
+              return true;
+            }
+          }
+          // If no different character is found, player cannot explore
+          return false;
+        }
+      }
+
+      // Any character can be played
+      return true;
+    }
+
+    // Get characters that are under the max of 3
+    var charactersUnderMax = [];
+    for (var characterKey in characters) {
+      var character = characters[characterKey];
+      var countOfCharacter = locationStatus.cards.filter(
+        (card) => card.type === character
+      ).length;
+      // If character is under max count it is playable
+      if (countOfCharacter < 3) {
+        charactersUnderMax.push(character);
+      }
+    }
+
+    // Check if player has a card that can be used to explore Acid Lake
+    for (var key in hand) {
+      if (charactersUnderMax.includes(hand[key].type)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Checks if a player has at least one card that can be used to explore Aquaend
+   * Aquaend can contain 2 sets of different characters, each set can contain 2 characters
+   * A player cannot explore Aquaend if:
+   *  - Both character types are set and the player does not have a character that is not present on Aquaend
+   *  - One character set is at max count and the player does not have a different character in their hand
+   *
+   * @param {LocationStatus} locationStatus - The status of the location tile
+   * @param {Card[]} hand - The current player's hand with damage cards removed
+   * @returns {boolean} - Whether the player can explore Aquaend
+   */
+  playerCanExploreAquaend(
+    locationStatus: LocationStatus,
+    hand: Card[]
+  ): boolean {
+    // Get the characters on Aquaend
+    var characters = [];
+    for (var key in locationStatus.cards) {
+      characters.push(locationStatus.cards[key].type);
+    }
+
+    // Both character types are not set yet, so player can start a new set
+    if (characters.length < 2) {
+      //If only one character is present...
+      if (characters.length === 1) {
+        // Get the count of the character
+        var countOfCharacter = locationStatus.cards.filter(
+          (card) => card.type === characters[0]
+        ).length;
+        // If character is at max count...
+        if (countOfCharacter === 2) {
+          // Check if a player has a different character in their hand
+          for (var key in hand) {
+            if (hand[key].type !== characters[0]) {
+              return true;
+            }
+          }
+          // If no different character is found, player cannot explore
+          return false;
+        }
+      }
+
+      // Any character can be played
+      return true;
+    }
+
+    // Get characters that are under the max of 3
+    var charactersUnderMax = [];
+    for (var characterKey in characters) {
+      var character = characters[characterKey];
+      var countOfCharacter = locationStatus.cards.filter(
+        (card) => card.type === character
+      ).length;
+      // If character is under max count it is playable
+      if (countOfCharacter < 2) {
+        charactersUnderMax.push(character);
+      }
+    }
+
+    // Check if player has a card that can be used to explore Acid Lake
+    for (var key in hand) {
+      if (charactersUnderMax.includes(hand[key].type)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Checks if a player has at least one card that can be used to explore Central Calculator
+   * Central Calculator can contain 1 character set with a max of 4 characters
+   * A player cannot explore Central Calculator if:
+   *  - The player does not have a character that is present on Central Calculator
+   *
+   * @param {LocationStatus} locationStatus - The status of the location tile
+   * @param {Card[]} hand - The current player's hand with damage cards removed
+   * @returns {boolean} - Whether the player can explore Central Calculator
+   */
   playerCanExploreCentralCalculator(
     locationStatus: LocationStatus,
     hand: Card[]
   ): boolean {
     // Get character on central calculator
     const character = locationStatus.cards[0].type;
+
+    // If no character is set, player can start a new set
+    if (!character) {
+      return true;
+    }
 
     // Check if player has a card that can be used to explore central calculator
     for (var key in hand) {
@@ -185,6 +368,61 @@ class PlayerTurn implements State {
     return false;
   }
 
+  /**
+   * Checks if a player has at least one card that can be used to explore Crystal Forest
+   * In Crystal Forest cards must be player in ascending order of their value and 5 wraps around to 1
+   * A player cannot explore Crystal Forest if:
+   *  - The player does not have a character card of the next value in the sequence
+   *
+   * @param {LocationStatus} locationStatus - The status of the location tile
+   * @param {Card[]} hand - The current player's hand with damage cards removed
+   * @returns {boolean} - Whether the player can explore Crystal Forest
+   */
+  playerCanExploreCrystalForest(
+    locationStatus: LocationStatus,
+    hand: Card[]
+  ): boolean {
+    // If no cards are set, player can start a new set
+    if (locationStatus.cards.length === 0) {
+      return true;
+    }
+
+    // Get the highest value on Crystal Forest
+    var highestValue: number = 0;
+    for (var key in locationStatus.cards) {
+      if (locationStatus.cards[key].value > highestValue) {
+        highestValue = locationStatus.cards[key].value;
+      }
+    }
+
+    // Get the next value in the sequence
+    var nextValue: number = 0;
+    if (highestValue == 5) {
+      nextValue = 1;
+    } else {
+      nextValue = highestValue + 1;
+    }
+
+    // Check if player has a card that can be used to explore Crystal Forest
+    for (var key in hand) {
+      if (hand[key].value === nextValue) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Checks if a player has at least one card that can be used to explore Psychorats Dump
+   * Psychorats Dump can contain 5 unique characters
+   * A player cannot explore Psychorats Dump if:
+   *  - The player only has characters that are present on Psychorats Dump
+   *
+   * @param {LocationStatus} locationStatus - The status of the location tile
+   * @param {Card[]} hand - The current player's hand with damage cards removed
+   * @returns {boolean} - Whether the player can explore Psychorats Dump
+   */
   playerCanExplorePsychoratsDump(
     locationStatus: LocationStatus,
     hand: Card[]
@@ -205,6 +443,17 @@ class PlayerTurn implements State {
     return false;
   }
 
+  /**
+   * Checks if a player has at least one card that can be used to explore Techno City
+   * Techno City can contain 2 sets of different characters, one set can contain 3 characters and the other can contain 2 characters
+   * A player cannot explore Techno City if:
+   *  - Both character types are set and the player does not have a character that is not present on Acid Lake
+   *  - One character set at max count and the player does not have a different character in their hand
+   *
+   * @param {LocationStatus} locationStatus - The status of the location tile
+   * @param {Card[]} hand - The current player's hand with damage cards removed
+   * @returns {boolean} - Whether the player can explore Techno City
+   */
   playerCanExploreTechnoCity(
     locationStatus: LocationStatus,
     hand: Card[]
@@ -215,14 +464,47 @@ class PlayerTurn implements State {
       characters.push(locationStatus.cards[key].type);
     }
 
-    // Both character types are not set yet, so player can explore
+    // Both character types are not set yet, so player can start a new set
     if (characters.length < 2) {
+      //If only one character is present...
+      if (characters.length === 1) {
+        // Get the count of the character
+        var countOfCharacter = locationStatus.cards.filter(
+          (card) => card.type === characters[0]
+        ).length;
+        // If character is at max count...
+        if (countOfCharacter === 3) {
+          // Check if a player has a different character in their hand
+          for (var key in hand) {
+            if (hand[key].type !== characters[0]) {
+              return true;
+            }
+          }
+          // If no different character is found, player cannot explore
+          return false;
+        }
+      }
+
+      // Any character can be played
       return true;
     }
 
-    // Check if player has a card that can be used to explore Techno City
+    // Get characters that are under the max of 3
+    var charactersUnderMax = [];
+    for (var characterKey in characters) {
+      var character = characters[characterKey];
+      var countOfCharacter = locationStatus.cards.filter(
+        (card) => card.type === character
+      ).length;
+      // If character is under max count it is playable
+      if (countOfCharacter < 3) {
+        charactersUnderMax.push(character);
+      }
+    }
+
+    // Check if player has a card that can be used to explore Acid Lake
     for (var key in hand) {
-      if (characters.includes(hand[key].type)) {
+      if (charactersUnderMax.includes(hand[key].type)) {
         return true;
       }
     }
@@ -238,6 +520,11 @@ class PlayerTurn implements State {
     }
     return false;
   }
+
+  removeDamageFromHand(hand: Card[]): Card[] {
+    return hand.filter((card) => card.type !== "damage");
+  }
+
   resetUX(): void {
     // Remove clickable style from tiles
     dojo.query(".locationtile").removeClass("incal-clickable");
