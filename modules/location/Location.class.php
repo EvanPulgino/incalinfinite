@@ -98,6 +98,11 @@ class Location {
         return $this->incalChit;
     }
 
+    /**
+     * Get the location's key - a unique text identifier for the location
+     *
+     * @return string
+     */
     public function getKey() {
         return LOCATION_KEYS[$this->tileId];
     }
@@ -118,16 +123,21 @@ class Location {
      */
     public function getUiData() {
         return [
-            "id" => $this->id,
+            "id" => intval($this->id),
             "name" => $this->getName(),
-            "tileId" => $this->tileId,
-            "tilePosition" => $this->tilePosition,
-            "incalChit" => $this->incalChit,
+            "tileId" => intval($this->tileId),
+            "tilePosition" => intval($this->tilePosition),
+            "incalChit" => intval($this->incalChit),
             "key" => $this->getKey(),
-            "tooltip" => $this->tooltip,
+            "tooltip" => $this->getTooltip(),
         ];
     }
 
+    /**
+     * Build the HTML tooltip for the location
+     *
+     * @return string - The HTML tooltip for the location
+     */
     private function buildTooltip() {
         return "<div class='incal-tooltip'>
             <div class='tooltip-title title-location'>{$this->getName()}<div class='location-hexagon'></div></div>
@@ -136,6 +146,11 @@ class Location {
         </div>";
     }
 
+    /**
+     * Get the HTML tooltip text for the location
+     *
+     * @return string - The HTML tooltip text for the location
+     */
     private function getTooltipText() {
         switch ($this->getKey()) {
             case "acidlake":
@@ -161,6 +176,11 @@ class Location {
         }
     }
 
+    /**
+     * Get the HTML tooltip text for the Acid Lake location
+     *
+     * @return string - The HTML tooltip text for the Acid Lake location
+     */
     private function getTooltipTextAcidlake() {
         $text =
             '<span class="text-bold">' .
@@ -173,6 +193,11 @@ class Location {
         return $text;
     }
 
+    /**
+     * Get the HTML tooltip text for the Aqua End location
+     *
+     * @return string - The HTML tooltip text for the Aqua End location
+     */
     private function getTooltipTextAquaend() {
         $text =
             '<span class="text-bold">' .
@@ -185,6 +210,11 @@ class Location {
         return $text;
     }
 
+    /**
+     * Get the HTML tooltip text for the Central Calculator location
+     *
+     * @return string - The HTML tooltip text for the Central Calculator location
+     */
     private function getTooltipTextCentralCalculator() {
         $text =
             '<span class="text-bold">' .
@@ -197,6 +227,11 @@ class Location {
         return $text;
     }
 
+    /**
+     * Get the HTML tooltip text for the Crystal Forest location
+     *
+     * @return string - The HTML tooltip text for the Crystal Forest location
+     */
     private function getTooltipTextCrystalForest() {
         $text = clienttranslate(
             "This location requires that the cards are placed in a certain order. Only the value of the card is taken into account here, not the character. Starting with the card placed at the location at the start of the game, the following cards must be placed in ascending order one after the other. If the last card placed is a card of value 5, the next card must be a card of value 1."
@@ -213,6 +248,11 @@ class Location {
         return $text;
     }
 
+    /**
+     * Get the HTML tooltip text for the Ourgar-gan location
+     *
+     * @return string - The HTML tooltip text for the Ourgar-gan location
+     */
     private function getTooltipTextOurgargan() {
         $text =
             '<span class="text-bold">' .
@@ -225,6 +265,11 @@ class Location {
         return $text;
     }
 
+    /**
+     * Get the HTML tooltip text for the Psychorats Dump location
+     *
+     * @return string - The HTML tooltip text for the Psychorats Dump location
+     */
     private function getTooltipTextPsychoratsDump() {
         $text =
             '<span class="text-bold">' .
@@ -237,6 +282,11 @@ class Location {
         return $text;
     }
 
+    /**
+     * Get the HTML tooltip text for the Suicide Alley location
+     *
+     * @return string - The HTML tooltip text for Suicide Alley location
+     */
     private function getTooltipTextSuicideAlley() {
         $text = clienttranslate(
             "Unlike the other locations, Suicide Alley does not allow Revelation but works as follows: a player who has moved the Meta-ship to this location must activate one or more Powers: "
@@ -253,6 +303,11 @@ class Location {
         return $text;
     }
 
+    /**
+     * Get the HTML tooltip text for the Techno City location
+     *
+     * @return string - The HTML tooltip text for Techno City location
+     */
     private function getTooltipTextTechnoCity() {
         $text =
             '<span class="text-bold">' .
@@ -265,6 +320,11 @@ class Location {
         return $text;
     }
 
+    /**
+     * Get the HTML tooltip text for the Undergroun River location
+     *
+     * @return string - The HTML tooltip text for Underground River location
+     */
     private function getTooltipTextUndergroundRiver() {
         $text = clienttranslate(
             "It is only possible to explore this location by placing a single character card from your hand. Once the card has been placed, the player reveals the top card of the deck and places it at the location. Then add up the values of all the cards at the location."
