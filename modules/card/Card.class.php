@@ -128,18 +128,28 @@ class Card {
         return $this->tooltip;
     }
 
+    /**
+     * Get the UI data of the card
+     *
+     * @return array - The UI data of the card
+     */
     public function getUiData() {
         return [
-            "id" => $this->id,
+            "id" => intval($this->id),
             "type" => $this->type,
             "value" => intval($this->value),
             "location" => $this->location,
-            "locationArg" => $this->locationArg,
+            "locationArg" => intval($this->locationArg),
             "name" => $this->getName(),
             "tooltip" => $this->getTooltip(),
         ];
     }
 
+    /**
+     * Build the name used in the UX of the card
+     *
+     * @return string - The translated name of the card
+     */
     private function buildName() {
         switch ($this->type) {
             case CARD_DAMAGE:
@@ -154,6 +164,11 @@ class Card {
         }
     }
 
+    /**
+     * Build the HTML tooltip of the card
+     *
+     * @return string - The HTML tooltip of the card
+     */
     private function buildTooltip() {
         return '<div id="card-tooltip-' .
             $this->id .
@@ -163,6 +178,11 @@ class Card {
             "</div>";
     }
 
+    /**
+     * Build the HTML title section of the tooltip
+     *
+     * @return string - The HTML title section of the tooltip
+     */
     private function buildTooltipTitle() {
         if ($this->type == CARD_DAMAGE) {
             return $this->buildTooltipTitleDamage();
@@ -184,6 +204,11 @@ class Card {
             "</div>";
     }
 
+    /**
+     * Build the HTML body section of the tooltip
+     *
+     * @return string - The HTML body section of the tooltip
+     */
     private function buildTooltipBody() {
         $cardClass = $this->type;
         if ($this->value > 0) {
@@ -199,6 +224,11 @@ class Card {
             "</div>";
     }
 
+    /**
+     * Build the HTML text section of the tooltip for a damage card
+     *
+     * @return string - The HTML text section of the tooltip for a damage card
+     */
     private function buildTooltipTitleDamage() {
         return '<div class="tooltip-title title-' .
             $this->type .
@@ -209,6 +239,11 @@ class Card {
             "</div>";
     }
 
+    /**
+     * Build the HTML text section of the tooltip for a John Difool card
+     *
+     * @return string - The HTML text section of the tooltip for a John Difool card
+     */
     private function buildTooltipTitleJohnDifool() {
         return '<div class="tooltip-title title-' .
             $this->type .
@@ -220,6 +255,11 @@ class Card {
             "</div>";
     }
 
+    /**
+     * Build the HTML text section of the tooltip
+     *
+     * @return string - The HTML text section of the tooltip
+     */
     private function buildTooltipText() {
         return '<div class="tooltip-text">' .
             $this->getTooltipTextHeader() .
@@ -228,6 +268,11 @@ class Card {
             "</div>";
     }
 
+    /**
+     * Get the HTML text section of the tooltip header
+     *
+     * @return string - The HTML text section of the tooltip header
+     */
     private function getTooltipTextHeader() {
         switch ($this->type) {
             case CARD_DAMAGE:
@@ -245,6 +290,11 @@ class Card {
         }
     }
 
+    /**
+     * Get the HTML text section of the tooltip body
+     *
+     * @return string - The HTML text section of the tooltip body
+     */
     private function getTooltipTextBody() {
         switch ($this->type) {
             case CARD_DAMAGE:
@@ -256,6 +306,11 @@ class Card {
         }
     }
 
+    /**
+     * Get the HTML text section of the tooltip for a damage card
+     *
+     * @return string - The HTML text section of the tooltip for a damage card
+     */
     private function getTooltipTextDamage() {
         $text = clienttranslate(
             "Damage cards are unplayable. The only way to get rid of them is to activate the "
@@ -271,6 +326,11 @@ class Card {
         return $text;
     }
 
+    /**
+     * Get the HTML text section of the tooltop for a John DiFool card
+     *
+     * @return string - The HTML text section for the tooltip for a John DiFool card
+     */
     private function getTooltipTextJohnDifool() {
         $text = clienttranslate("John Difool is considered a wild card.");
         $text .= "<br><br>";
@@ -306,6 +366,11 @@ class Card {
         return $text;
     }
 
+    /**
+     * Get the HTML text section of the tooltop for a character card
+     *
+     * @return string - The HTML text section for the tooltip for a character card
+     */
     private function getTooltipTextRegular() {
         return clienttranslate(
             "During the Explore action, it is possible to play several cards as long as they are identical, i.e. with the same chracter (the value of the card not being taken into account)."
