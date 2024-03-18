@@ -55,6 +55,12 @@ class PlayerController extends APP_GameClass {
         return $this->getPlayers([$playerId])[0];
     }
 
+    /**
+     * Gets an array of IncalInfinitePlayer objects for all players except the specified player ID
+     *
+     * @param int $playerId The ID of the player to not include
+     * @return IncalInfinitePlayer[] - An array of player objects
+     */
     public function getOtherPlayers($playerId) {
         $players = $this->getPlayers();
         $otherPlayers = [];
@@ -66,6 +72,12 @@ class PlayerController extends APP_GameClass {
         return $otherPlayers;
     }
 
+    /**
+     * Gets an array of player data formatted for the UI for all players except the specified player ID
+     *
+     * @param int $playerId The ID of the player to not include
+     * @return array - An array of players formatted for the UI
+     */
     public function getOtherPlayersUiData($playerId) {
         $players = $this->getOtherPlayers($playerId);
         $playersUiData = [];
