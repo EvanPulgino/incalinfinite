@@ -55,6 +55,11 @@ class LocationController extends APP_GameClass {
         return $locationObjects;
     }
 
+    /**
+     * Get UI data for all locations
+     *
+     * @return array - An array of location UI data
+     */
     public function getAllLocationsUiData() {
         $locations = $this->getAllLocations();
         $locationUiData = [];
@@ -80,6 +85,12 @@ class LocationController extends APP_GameClass {
         return new Location($data);
     }
 
+    /**
+     * Get the position of the location from the location key
+     *
+     * @param string $locationKey - The key of the location
+     * @return int | null - The position of the location
+     */
     public function getPositionFromKey($locationKey) {
         $locationId = $this->getLocationIdFromKey($locationKey);
         $sql = "SELECT location_tile_position FROM location WHERE location_tile_id = $locationId";
@@ -138,6 +149,11 @@ class LocationController extends APP_GameClass {
         return array_slice($incalChitPool, 0, 5);
     }
 
+    /**
+     * Randomizes the location tiles used in the game
+     * 
+     * @return array - An array of location tiles
+     */
     private function randomizeLocationTiles() {
         // Base pool of location tiles
         $locationTiles = [1, 2, 3, 4, 5, 6, 7, 8];
