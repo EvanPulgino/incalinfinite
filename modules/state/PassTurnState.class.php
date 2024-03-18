@@ -23,6 +23,11 @@ class PassTurnState {
         $this->game = $game;
     }
 
+    /**
+     * Get the arguments for the passTurn state
+     *
+     * @return array
+     */
     public function getArgs() {
         $activePlayer = $this->game->getActivePlayer();
 
@@ -33,6 +38,11 @@ class PassTurnState {
         ];
     }
 
+    /**
+     * Discard a card from the active player's hand
+     *
+     * @param int $cardId - The ID of the card to discard
+     */
     public function discardCard($cardId) {
         // Get player and card objects
         $activePlayer = $this->game->getActivePlayer();
@@ -53,13 +63,14 @@ class PassTurnState {
             ]
         );
 
-        // Draw cards until the player has 4 cards
+        // Determine how many cards to draw - hand size is 4
         $cardsToDraw =
             4 -
             $this->game->cardController->getPlayerHandCount(
                 $activePlayer->getId()
             );
 
+        // Draw cards
         while ($cardsToDraw > 0) {
             $this->game->cardController->drawCard($activePlayer, $this->game);
             $cardsToDraw--;

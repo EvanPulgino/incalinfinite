@@ -23,6 +23,11 @@ class GorgoDiscardState {
         $this->game = $game;
     }
 
+    /**
+     * Get the arguments for the gorgoDiscard state
+     *
+     * @return array
+     */
     public function getArgs() {
         $activePlayer = $this->game->getActivePlayer();
 
@@ -33,14 +38,23 @@ class GorgoDiscardState {
         ];
     }
 
+    /**
+     * Select a player to discard a card from
+     *
+     * @param int $playerId - The ID of the player to discard a card from
+     */
     public function selectPlayer($playerId) {
+        // Get active player - AKA player taking the action
         $activePlayer = $this->game->getActivePlayer();
 
+        // Get the hand of the player to discard from without damage cards
         $playerHand = $this->game->cardController->getPlayerHandNoDamage(
             $playerId
         );
+        // Shuffle the hand
         shuffle($playerHand);
 
+        // Get the card to discard
         $cardToDiscard = array_shift($playerHand);
 
         // Discard the card
@@ -77,6 +91,7 @@ class GorgoDiscardState {
             ]
         );
 
+        // Transition to the next state
         $this->game->gamestate->nextState(TRANSITION_EXPLORE_LOCATION);
     }
 }

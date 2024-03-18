@@ -23,6 +23,11 @@ class PlayerTurnState {
         $this->game = $game;
     }
 
+    /**
+     * Get the arguments for the playerTurn state
+     *
+     * @return array
+     */
     public function getArgs() {
         $activePlayer = $this->game->getActivePlayer();
 
@@ -34,7 +39,13 @@ class PlayerTurnState {
         ];
     }
 
+    /**
+     * Move the Meta-ship to a new location
+     *
+     * @param string $locationKey - The key of the location to move to
+     */
     public function moveMetaship($locationKey) {
+        // Get active player
         $activePlayer = $this->game->getActivePlayer();
 
         // Get current ship location
@@ -64,6 +75,7 @@ class PlayerTurnState {
         $firstStep = $currentLocation == 10 ? 0 : $currentLocation + 2;
         $locationPath[] = $firstStep;
 
+        // Get the path to the new location
         $nextStep = $firstStep;
         while ($nextStep != $location->getTilePosition()) {
             $nextStep = $nextStep + 2;
@@ -108,13 +120,18 @@ class PlayerTurnState {
         if ($doesShipPassEnemy) {
             $this->activateEnemy();
         } else {
+            // Transition to the next state
             $this->game->gamestate->nextState(TRANSITION_EXPLORE_LOCATION);
         }
     }
 
+    /**
+     * Pass the turn
+     */
     public function pass() {
         $activePlayer = $this->game->getActivePlayer();
 
+        // Notify players of the pass
         $this->game->notifyAllPlayers(
             "message",
             clienttranslate('${player_name} passes'),
@@ -123,10 +140,15 @@ class PlayerTurnState {
             ]
         );
 
+        // Transition to the next state
         $this->game->gamestate->nextState(TRANSITION_PASS_TURN);
     }
 
+    /**
+     * Determine if the ship passes the enemy
+     */
     private function doesShipPassEnemy($locationPath, $enemyPosition) {
+        // Determine which tile is after the enemy
         $tileAfterEnemy = 0;
 
         if ($enemyPosition % 2 == 0) {
@@ -143,6 +165,7 @@ class PlayerTurnState {
             }
         }
 
+        // Check if the ship passes the enemy
         foreach ($locationPath as $step) {
             if ($step == $tileAfterEnemy) {
                 return true;
@@ -152,9 +175,14 @@ class PlayerTurnState {
         return false;
     }
 
+    /**
+     * Activate the enemy
+     */
     private function activateEnemy() {
+        // Get the enemy used in the game
         $enemy = $this->game->getEnemy();
 
+        // Activate the enemy
         switch ($enemy) {
             case ENEMY_BERGS:
                 $this->activateBergs();
@@ -177,7 +205,14 @@ class PlayerTurnState {
         }
     }
 
+    /**
+     * Activate the Bergs
+     *
+     * The Bergs move one step counter-clockwise. If they return to their start position, the players lose.
+     * Otherwise, a Damage card is added to the discard pile.
+     */
     private function activateBergs() {
+        // Get active player
         $activePlayer = $this->game->getActivePlayer();
 
         // Get enemy position
@@ -185,7 +220,7 @@ class PlayerTurnState {
             GAME_STATE_LABEL_ENEMY_LOCATION
         );
 
-        // Determine destination position
+        // Determine destination position for the enemy
         if ($enemyPosition == 1) {
             $destinationPosition = 11;
         } else {
@@ -208,6 +243,7 @@ class PlayerTurnState {
         );
 
         if ($destinationPosition == 11) {
+            // If the Bergs return to their start position, the players lose
             $this->game->notifyAllPlayers(
                 "message",
                 clienttranslate(
@@ -231,10 +267,17 @@ class PlayerTurnState {
             );
         }
 
+        // Transition to the next state
         $this->game->gamestate->nextState(TRANSITION_EXPLORE_LOCATION);
     }
 
+    /**
+     * Activate the President's Hunchbacks
+     *
+     * The President's Hunchbacks move one step counter-clockwise. A Damage card is added to the discard pile.
+     */
     private function activatePresidentsHunchbacks() {
+        // Get active player
         $activePlayer = $this->game->getActivePlayer();
 
         // Get enemy position
@@ -279,12 +322,17 @@ class PlayerTurnState {
             ]
         );
 
+        // Transition to the next state
         $this->game->gamestate->nextState(TRANSITION_EXPLORE_LOCATION);
     }
 
+    /**
+     * Activate Gorgo-the-dirty
+     *
+     * Gorgo-the-dirty moves one step counter-clockwise. If they return to their start position, the players lose.
+     * Otherwise the player chooses a player to discard a non-damage card at random.
+     */
     private function activateGorgoTheDirty() {
-        $activePlayer = $this->game->getActivePlayer();
-
         // Get enemy position
         $enemyPosition = $this->game->getGameStateValue(
             GAME_STATE_LABEL_ENEMY_LOCATION
@@ -312,9 +360,15 @@ class PlayerTurnState {
             ]
         );
 
+        // Transition to the next state
         $this->game->gamestate->nextState(TRANSITION_GORGO_DISCARD);
     }
 
+    /**
+     * Activate the Necrobot
+     *
+     * The Necrobot moves one step counter-clockwise. The player gains a damage card from the supply.
+     */
     private function activateNecrobot() {
         $activePlayer = $this->game->getActivePlayer();
 
@@ -376,9 +430,15 @@ class PlayerTurnState {
             ]
         );
 
+        // Transition to the next state
         $this->game->gamestate->nextState(TRANSITION_EXPLORE_LOCATION);
     }
 
+    /**
+     * Activate the Darkness
+     *
+     * The Darkness moves one step counter-clockwise. A Damage card is added to the discard pile.
+     */
     private function activateDarkness() {
         $activePlayer = $this->game->getActivePlayer();
 
