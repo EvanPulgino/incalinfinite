@@ -36,6 +36,7 @@ class IncalInfinite extends Table {
         parent::__construct();
 
         self::initGameStateLabels([
+            GAME_STATE_LABEL_ENEMY => GAME_STATE_LABEL_ID_ENEMY,
             GAME_STATE_LABEL_ENEMY_LOCATION => GAME_STATE_LABEL_ID_ENEMY_LOCATION,
             GAME_STATE_LABEL_METASHIP_LOCATION => GAME_STATE_LABEL_ID_METASHIP_LOCATION,
             GAME_STATE_LABEL_PLAYER_COUNT => GAME_STATE_LABEL_ID_PLAYER_COUNT,
@@ -43,9 +44,10 @@ class IncalInfinite extends Table {
             GAME_STATE_LABEL_POWER_DISCARD_AVAILABLE => GAME_STATE_LABEL_ID_POWER_DISCARD_AVAILABLE,
             GAME_STATE_LABEL_POWER_MOVE_AVAILABLE => GAME_STATE_LABEL_ID_POWER_MOVE_AVAILABLE,
             GAME_STATE_LABEL_POWER_TALK_AVAILABLE => GAME_STATE_LABEL_ID_POWER_TALK_AVAILABLE,
-            GAME_STATE_LABEL_ENEMY => GAME_STATE_LABEL_ID_ENEMY,
             GAME_STATE_LABEL_SELECTED_LOCATION => GAME_STATE_LABEL_ID_SELECTED_LOCATION,
             GAME_STATE_LABEL_CRYSTAL_FOREST_FIRST => GAME_STATE_LABEL_ID_CRYSTAL_FOREST_FIRST,
+            GAME_STATE_LABEL_ENEMY_REALTIME => GAME_STATE_LABEL_ID_ENEMY_REALTIME,
+            GAME_STATE_LABEL_ENEMY_ASYNC => GAME_STATE_LABEL_ID_ENEMY_ASYNC,
         ]);
 
         $this->cardController = new CardController(
@@ -76,6 +78,8 @@ class IncalInfinite extends Table {
     protected function setupNewGame($players, $options = []) {
         $gameInfo = self::getGameinfos();
         $this->playerController->setupPlayers($players, $gameInfo);
+
+        self::determineEnemy();
 
         self::reattributeColorsBasedOnPreferences(
             $players,
@@ -159,8 +163,11 @@ class IncalInfinite extends Table {
             "currentPlayerHand"
         ] = $this->cardController->getPlayerHandUiData($current_player_id);
         $result["crystalForestFirst"] = $this->getCrystalForestFirst();
-        $result["crystalForestPosition"] = $this->locationController
-            ->getPositionFromKey(LOCATION_KEYS[LOCATION_CRYSTAL_FOREST]);
+        $result[
+            "crystalForestPosition"
+        ] = $this->locationController->getPositionFromKey(
+            LOCATION_KEYS[LOCATION_CRYSTAL_FOREST]
+        );
         $result["deck"] = $this->cardController->getDeckUiData();
         $result["discard"] = $this->cardController->getDiscardUiData();
         $result["enemy"] = $this->buildEnemyObject();
@@ -704,11 +711,39 @@ class IncalInfinite extends Table {
         }
     }
 
+    public function isAsync() {
+        if (self::getGameStateValue(GAME_STATE_LABEL_ENEMY_REALTIME) == null) {
+            return true;
+        }
+        return false;
+    }
+
+    private function determineEnemy() {
+        if (self::isAsync()) {
+            self::setGameStateValue(
+                GAME_STATE_LABEL_ENEMY,
+                self::getGameStateValue(GAME_STATE_LABEL_ENEMY_ASYNC)
+            );
+        } else {
+            self::setGameStateValue(
+                GAME_STATE_LABEL_ENEMY,
+                self::getGameStateValue(GAME_STATE_LABEL_ENEMY_REALTIME)
+            );
+        }
+    }
+
     private function randomizeEnemy() {
-        self::setGameStateValue(
-            GAME_STATE_LABEL_ENEMY,
-            rand(ENEMY_BERGS, ENEMY_DARKNESS)
-        );
+        if (self::isAsync()) {
+            self::setGameStateValue(
+                GAME_STATE_LABEL_ENEMY,
+                rand(ENEMY_BERGS, ENEMY_NECROBOT)
+            );
+        } else {
+            self::setGameStateValue(
+                GAME_STATE_LABEL_ENEMY,
+                rand(ENEMY_BERGS, ENEMY_DARKNESS)
+            );
+        }
     }
 
     public function argExplore() {
