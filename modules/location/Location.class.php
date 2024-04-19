@@ -289,7 +289,7 @@ class Location {
      */
     private function getTooltipTextSuicideAlley() {
         $text = clienttranslate(
-            "Unlike the other locations, Suicide Alley does not allow Revelation but works as follows: a player who has moved the Meta-ship to this location must activate one or more Powers: "
+            "Unlike the other locations, Suicide Alley does not allow Revelation but works as follows: that player who has moved the Metacraft to this location must activate one or more Powers: "
         );
         $text .=
             '<span class="text-bold">' .

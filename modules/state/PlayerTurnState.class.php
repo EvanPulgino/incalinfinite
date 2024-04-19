@@ -100,7 +100,7 @@ class PlayerTurnState {
         $this->game->notifyAllPlayers(
             "message",
             clienttranslate(
-                '${player_name} moves the Meta-ship to ${locationName}'
+                '${player_name} moves the Metacraft to ${locationName}'
             ),
             [
                 "player_name" => $activePlayer->getName(),
@@ -302,7 +302,7 @@ class PlayerTurnState {
         $this->game->notifyAllPlayers(
             "moveEnemy",
             clienttranslate(
-                "The President's Hunchbacks move one step counter-clockwise"
+                "The Prezident's Hunchbacks move one step counter-clockwise"
             ),
             [
                 "destinationPosition" => $destinationPosition,
@@ -354,7 +354,7 @@ class PlayerTurnState {
         // Notify players of enemy move
         $this->game->notifyAllPlayers(
             "moveEnemy",
-            clienttranslate("Gorgo-the-dirty move one step counter-clockwise"),
+            clienttranslate("Gorgo the Fool move one step counter-clockwise"),
             [
                 "destinationPosition" => $destinationPosition,
             ]
@@ -393,7 +393,7 @@ class PlayerTurnState {
         // Notify players of enemy move
         $this->game->notifyAllPlayers(
             "moveEnemy",
-            clienttranslate("The Necrobot move one step counter-clockwise"),
+            clienttranslate("The Necrodroid move one step counter-clockwise"),
             [
                 "destinationPosition" => $destinationPosition,
             ]
@@ -463,7 +463,7 @@ class PlayerTurnState {
         // Notify players of enemy move
         $this->game->notifyAllPlayers(
             "moveEnemy",
-            clienttranslate("The Darkness move one step counter-clockwise"),
+            clienttranslate("The Great Darkness move one step counter-clockwise"),
             [
                 "destinationPosition" => $destinationPosition,
             ]

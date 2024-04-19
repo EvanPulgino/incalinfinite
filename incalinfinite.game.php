@@ -478,7 +478,7 @@ class IncalInfinite extends Table {
             clienttranslate("Initial Placement: ") .
             "</span>";
         $text .= clienttranslate(
-            "The President's Hunchbacks are placed on the the Location tile just before Suicide Alley clockwise"
+            "The Prezident's Hunchbacks are placed on the the Location tile just before Suicide Alley clockwise"
         );
         $text .= "<br><br>";
         $text .=
@@ -492,7 +492,7 @@ class IncalInfinite extends Table {
             clienttranslate("Activation: ") .
             "</span>";
         $text .= clienttranslate(
-            "When the Meta-ship passes over the President's Hunchbacks, they move one Location counterclockwise anf then a Damage Card is added to the discard pile."
+            "When the Metacraft passes over the Prezident's Hunchbacks, they move one Location counterclockwise anf then a Damage Card is added to the discard pile."
         );
         $text .= "<br><br>";
         $text .=
@@ -500,7 +500,7 @@ class IncalInfinite extends Table {
             clienttranslate("Ability: ") .
             "</span>";
         $text .= clienttranslate(
-            "It is impossible to travel to the Location occupied by the President's Hunchbacks. It is also impossible to move to the Location the President's Hunchbacks will move to after being passsed."
+            "It is impossible to travel to the Location occupied by the Prezident's Hunchbacks. It is also impossible to move to the Location the Prezident's Hunchbacks will move to after being passsed."
         );
         $text .= "<br><br>";
         $text .=
@@ -519,7 +519,7 @@ class IncalInfinite extends Table {
             clienttranslate("Initial Placement: ") .
             "</span>";
         $text .= clienttranslate(
-            "Gorgo-the-dirty is placed in the gap just before Suicide Alley clockwise"
+            "Gorgo the Fool is placed in the gap just before Suicide Alley clockwise"
         );
         $text .= "<br><br>";
         $text .=
@@ -533,7 +533,7 @@ class IncalInfinite extends Table {
             clienttranslate("Activation: ") .
             "</span>";
         $text .= clienttranslate(
-            "When the Meta-ship passes Gorgo-the-dirty, they move one gap counterclockwise. The player randomly picks a non-Damage card from another player's hand and it discards it. Finally, a Damage card is added to the discard pile."
+            "When the Metacraft passes Gorgo the Fool, they move one gap counterclockwise. The player randomly picks a non-Damage card from another player's hand and it discards it. Finally, a Damage card is added to the discard pile."
         );
         $text .= "<br><br>";
         $text .=
@@ -541,7 +541,7 @@ class IncalInfinite extends Table {
             clienttranslate("Additional Defeat Condition: ") .
             "</span>";
         $text .= clienttranslate(
-            "When Gorgo-the-dirty returns to their starting location the players lose."
+            "When Gorgo the Fool returns to their starting location the players lose."
         );
         return $text;
     }
@@ -552,7 +552,7 @@ class IncalInfinite extends Table {
             clienttranslate("Initial Placement: ") .
             "</span>";
         $text .= clienttranslate(
-            "The Necrobot is placed in the gap just before Suicide Alley clockwise"
+            "The Necrodroid is placed in the gap just before Suicide Alley clockwise"
         );
         $text .= "<br><br>";
         $text .=
@@ -566,7 +566,7 @@ class IncalInfinite extends Table {
             clienttranslate("Activation: ") .
             "</span>";
         $text .= clienttranslate(
-            "When the Meta-ship passes the Necrobot, they move one gap counterclockwise. The active player takes a Damage card from the reserve and places it directly in their hand."
+            "When the Metacraft passes the Necrodroid, they move one gap counterclockwise. The active player takes a Damage card from the reserve and places it directly in their hand."
         );
         $text .= "<br><br>";
         $text .=
@@ -574,7 +574,7 @@ class IncalInfinite extends Table {
             clienttranslate("Additional Defeat Condition: ") .
             "</span>";
         $text .= clienttranslate(
-            "When the Necrobot returns to their starting location the players lose."
+            "When the Necrodroid returns to their starting location the players lose."
         );
         return $text;
     }
@@ -593,7 +593,7 @@ class IncalInfinite extends Table {
             clienttranslate("Initial Placement: ") .
             "</span>";
         $text .= clienttranslate(
-            "The Darkness is placed in the gap just before Suicide Alley clockwise"
+            "The Great Darkness is placed in the gap just before Suicide Alley clockwise"
         );
         $text .= "<br><br>";
         $text .=
@@ -607,7 +607,7 @@ class IncalInfinite extends Table {
             clienttranslate("Activation: ") .
             "</span>";
         $text .= clienttranslate(
-            "When the Meta-ship passes the Darkness, it moves one gap counterclockwise and a Damage card is added to the discard pile."
+            "When the Metacraft passes the Great Darkness, it moves one gap counterclockwise and a Damage card is added to the discard pile."
         );
         $text .= "<br><br>";
         $text .=

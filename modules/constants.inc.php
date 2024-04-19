@@ -75,11 +75,11 @@ define("ENEMY_RANDOM", 7);
 define("ENEMY_NAME_BERGS", clienttranslate("The Bergs"));
 define(
     "ENEMY_NAME_PRESIDENTS_HUNCHBACKS",
-    clienttranslate("The President's Hunchbacks")
+    clienttranslate("The Prezident's Hunchbacks")
 );
-define("ENEMY_NAME_GORGO_THE_DIRTY", clienttranslate("Gorgo-the-dirty"));
-define("ENEMY_NAME_NECROBOT", clienttranslate("The Necrobot"));
-define("ENEMY_NAME_DARKNESS", clienttranslate("The Darkness"));
+define("ENEMY_NAME_GORGO_THE_DIRTY", clienttranslate("Gorgo the Fool"));
+define("ENEMY_NAME_NECROBOT", clienttranslate("The Necrodroid"));
+define("ENEMY_NAME_DARKNESS", clienttranslate("The Great Darkness"));
 
 /** Enemy Map */
 define("ENEMIES", [
@@ -140,20 +140,20 @@ define("LOCATION_UNDERGROUND_RIVER", 8);
 define("LOCATION_SUICIDE_ALLEY", 9);
 
 /** Location Names */
-define("LOCATION_NAME_ACID_LAKE", clienttranslate("Acid Lake"));
+define("LOCATION_NAME_ACID_LAKE", clienttranslate("The Acid Lake"));
 define("LOCATION_NAME_AQUAEND", clienttranslate("Aquaend"));
 define(
     "LOCATION_NAME_CENTRAL_CALCULATOR",
-    clienttranslate("The Central Calculator")
+    clienttranslate("The Central Computer")
 );
 define("LOCATION_NAME_CRYSTAL_FOREST", clienttranslate("The Crystal Forest"));
-define("LOCATION_NAME_OURGAR_GAN", clienttranslate("Ourgar-gan"));
+define("LOCATION_NAME_OURGAR_GAN", clienttranslate("Orgargan"));
 define(
     "LOCATION_NAME_PSYCHORATS_DUMP",
     clienttranslate("The Psychorats' Dump")
 );
 define("LOCATION_NAME_SUICIDE_ALLEY", clienttranslate("Suicide Alley"));
-define("LOCATION_NAME_TECHNO_CITY", clienttranslate("Techno City"));
+define("LOCATION_NAME_TECHNO_CITY", clienttranslate("TechnoCity"));
 define(
     "LOCATION_NAME_UNDERGROUND_RIVER",
     clienttranslate("The Underground River")
