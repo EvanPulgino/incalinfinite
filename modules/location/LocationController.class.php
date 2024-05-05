@@ -86,6 +86,21 @@ class LocationController extends APP_GameClass {
     }
 
     /**
+     * Get the location object from the location position
+     *
+     * @param int $position - The position of the location
+     * @return Location | null - The location object
+     */
+    public function getLocationFromPosition($position) {
+        $sql = "SELECT * FROM location WHERE location_tile_position = $position";
+        $data = self::getObjectFromDB($sql);
+        if (!$data) {
+            return null;
+        }
+        return new Location($data);
+    }
+
+    /**
      * Get the position of the location from the location key
      *
      * @param string $locationKey - The key of the location

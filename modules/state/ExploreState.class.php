@@ -24,8 +24,18 @@ class ExploreState {
     }
 
     public function getArgs() {
+        // Get current ship location
+        $currentLocation = $this->game->getGameStateValue(
+            GAME_STATE_LABEL_METASHIP_LOCATION
+        );
+
+        // Get location object
+        $location = $this->game->locationController->getLocationFromPosition(
+            $currentLocation
+        );
+
         return [
-            "statusMessage" => clienttranslate("Exploring location..."),
+            "locationName" => $location->getName(),
         ];
     }
 }
