@@ -62,10 +62,10 @@ $machinestates = [
     STATE_PLAYER_TURN => [
         "name" => STATE_NAME_PLAYER_TURN,
         "description" => clienttranslate(
-            '${actplayer} must move the Meta-ship, pass, or attempt the Transfiguration Ritual'
+            '${actplayer} must move the Metacraft, pass, or attempt the Transfiguration Ritual'
         ),
         "descriptionmyturn" => clienttranslate(
-            '${you} must move the Meta-ship, pass, or attempt the Transfiguration Ritual'
+            '${you} must move the Metacraft, pass, or attempt the Transfiguration Ritual'
         ),
         "type" => STATE_TYPE_ACTIVE_PLAYER,
         "args" => STATE_ARGUMENTS_PLAYER_TURN,
