@@ -128,30 +128,64 @@ class Explore implements State {
     } else {
       dojo.addClass(cardDiv, "incal-card-selected");
       if (card.type !== "johndifool") {
+        // If the card is not John Difool, set the selected character to the card type and remove one from the playable count
         this.selectedCharacter = card.type;
-        this.disableNonSelectedCharacters();
+        this.playableCardCounts[card.type] -= 1;
+      } else {
+        // If John Difool is selected, don't set the selected character and remove one from the playable count of each character
+        for (var characterKey in this.characterPool) {
+          this.playableCardCounts[this.characterPool[characterKey]] -= 1;
+        }
       }
+      this.disableCharacters();
     }
 
     const selectedCards = dojo.query(".incal-card-selected");
     if (selectedCards.length > 0) {
       dojo.removeClass("confirm-play-cards-button", "incal-button-disabled");
     } else {
-      this.selectedCharacter = "";
+      if (card.type === "johndifool") {
+        for (var characterKey in this.characterPool) {
+          this.playableCardCounts[this.characterPool[characterKey]] += 1;
+        }
+      } else {
+        this.playableCardCounts[card.type] += 1;
+        this.selectedCharacter = "";
+      }
       this.enablePlayableCards(this.locationStatus, this.playerHand);
       dojo.addClass("confirm-play-cards-button", "incal-button-disabled");
     }
   }
 
   /**
-   * Disable clickable cards that aren't the selected character
+   * Disable clickable cards that aren't playable anymore
    */
-  disableNonSelectedCharacters(): void {
+  disableCharacters(): void {
     const clickableCards = dojo.query(".incal-clickable");
+    const selectedCards = dojo.query(".incal-card-selected");
+    var selectedCardClasses = [];
+    for (const card of selectedCards) {
+      const cardClasses = card.className.split(" ");
+      for (const cardClass of cardClasses) {
+        if (
+          cardClass !== "incal-card-selected" ||
+          cardClass !== "card" ||
+          cardClass !== "incal-clickable" ||
+          cardClass !== "incal-card-disabled"
+        ) {
+          selectedCardClasses.push(cardClass);
+        }
+      }
+    }
     var validCardClasses = [];
     validCardClasses.push("johndifool");
     for (var i = 1; i < 6; i++) {
-      validCardClasses.push(this.selectedCharacter + "-" + i);
+      const cardClass = this.selectedCharacter + "-" + i;
+      if (selectedCardClasses.includes(cardClass)) {
+        validCardClasses.push(cardClass);
+      } else if (this.playableCardCounts[cardClass] > 0) {
+        validCardClasses.push(cardClass);
+      }
     }
 
     for (const card of clickableCards) {
@@ -164,12 +198,9 @@ class Explore implements State {
         dojo.removeClass(card, "incal-clickable");
         dojo.disconnect(this.connections[cardId]);
         delete this.connections[cardId];
-        console.log(this.connections);
       }
     }
   }
-
-  enableSelectableCards(): void {}
 
   /**
    * Get all the cards which are playable at a loction and enable them
@@ -349,7 +380,7 @@ class Explore implements State {
   getPlayableCardsForOurgargan(locationStatus: LocationStatus, hand: Card[]) {
     var playableCharacterCounts = [];
 
-    // Add max of all other characters (using handsize as max value)
+    // Add max of all characters (using handsize as max value)
     for (var characterKey in this.characterPool) {
       var characterFromPool = this.characterPool[characterKey];
       playableCharacterCounts[characterFromPool] = 4;
@@ -499,11 +530,45 @@ class Explore implements State {
     }
   }
 
+  /**
+   * Get all the cards which are playable at Underground River and enable them
+   *
+   * Underground River can contain any cards whose total adds up 8, 9, or 10
+   * A player cannot explore TechnoCity if:
+   *  - The total value of cards on Underground River is 8, 9, or 10 (if we get to this point, we know the total value is less than 8)
+   *
+   * Players are only allowed to play one card at Underground River so all cards are enabled
+   *
+   * @param {LocationStatus} locationStatus - The status of the location tile
+   * @param {Card[]} hand - The current player's hand with damage cards removed
+   */
   getPlayableCardsForUndergroundRiver(
     locationStatus: LocationStatus,
     hand: Card[]
   ) {
-    console.log("Underground River");
+    var playableCharacterCounts = [];
+
+    // Allow 1 of all characters
+    for (var characterKey in this.characterPool) {
+      var characterFromPool = this.characterPool[characterKey];
+      playableCharacterCounts[characterFromPool] = 1;
+    }
+
+    // John Difool is always playable
+    playableCharacterCounts["johndifool"] = 1;
+
+    // Set the playable card counts so we handle unenabling/reenabling them later
+    this.playableCardCounts = playableCharacterCounts;
+
+    // Enable the cards that can be played
+    for (var handKey in hand) {
+      var cardInHand = hand[handKey];
+      if (playableCharacterCounts[cardInHand.type] > 0) {
+        this.createCardAction(cardInHand);
+      } else {
+        this.disableCard(cardInHand);
+      }
+    }
   }
 
   removeDamageFromHand(hand: Card[]): Card[] {
