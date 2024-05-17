@@ -336,8 +336,40 @@ class Explore implements State {
     console.log("Crystal Forest");
   }
 
+  /**
+   * Get all the cards which are playable at Orgargan
+   *
+   * Cards at Orgargan is always playable as long as total valie is less than 11
+   * A player cannot explore Psychorats Dump if:
+   *  - The total value of cards on Orgargan is 11 or more (if we get to this point, we know the total value is less than 11)
+   *
+   * @param {LocationStatus} locationStatus - The status of the location tile
+   * @param {Card[]} hand - The current player's hand with damage cards removed
+   */
   getPlayableCardsForOurgargan(locationStatus: LocationStatus, hand: Card[]) {
-    console.log("Ourgargan");
+    var playableCharacterCounts = [];
+
+    // Add max of all other characters (using handsize as max value)
+    for (var characterKey in this.characterPool) {
+      var characterFromPool = this.characterPool[characterKey];
+      playableCharacterCounts[characterFromPool] = 4;
+    }
+
+    // John Difool is always playable
+    playableCharacterCounts["johndifool"] = 1;
+
+    // Set the playable card counts so we handle unenabling/reenabling them later
+    this.playableCardCounts = playableCharacterCounts;
+
+    // Enable the cards that can be played
+    for (var handKey in hand) {
+      var cardInHand = hand[handKey];
+      if (playableCharacterCounts[cardInHand.type] > 0) {
+        this.createCardAction(cardInHand);
+      } else {
+        this.disableCard(cardInHand);
+      }
+    }
   }
 
   /**
@@ -452,8 +484,6 @@ class Explore implements State {
 
     // John Difool is always playable
     playableCharacterCounts["johndifool"] = 1;
-
-    console.log(playableCharacterCounts);
 
     // Set the playable card counts so we handle unenabling/reenabling them later
     this.playableCardCounts = playableCharacterCounts;
