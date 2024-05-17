@@ -256,6 +256,7 @@ class Explore implements State {
     // Set the playable card counts so we handle unenabling/reenabling them later
     this.playableCardCounts = playableCharacterCounts;
 
+    // Enable the cards that can be played
     for (var handKey in hand) {
       var cardInHand = hand[handKey];
       if (playableCharacterCounts[cardInHand.type] > 0) {
@@ -310,6 +311,7 @@ class Explore implements State {
     // Set the playable card counts so we handle unenabling/reenabling them later
     this.playableCardCounts = playableCharacterCounts;
 
+    // Enable the cards that can be played
     for (var handKey in hand) {
       var cardInHand = hand[handKey];
       if (playableCharacterCounts[cardInHand.type] > 0) {
@@ -374,6 +376,7 @@ class Explore implements State {
     // Set the playable card counts so we handle unenabling/reenabling them later
     this.playableCardCounts = playableCharacterCounts;
 
+    // Enable the cards that can be played
     for (var handKey in hand) {
       var cardInHand = hand[handKey];
       if (playableCharacterCounts[cardInHand.type] > 0) {
@@ -391,8 +394,79 @@ class Explore implements State {
     console.log("Suicide Alley");
   }
 
+  /**
+   * Get all the cards which are playable at TechnoCity and enable them
+   *
+   * TechnoCity can contain 2 sets of different characters, one set can have 3 cards and the other 2 cards
+   * A player cannot explore TechnoCity if:
+   *  - Both character types are set and the player does not have a character that is not present on Acid Lake
+   *  - One character set is at max count and the player does not have a different playable character in their hand
+   *
+   * @param {LocationStatus} locationStatus - The status of the location tile
+   * @param {Card[]} hand - The current player's hand with damage cards removed
+   */
   getPlayableCardsForTechnoCity(locationStatus: LocationStatus, hand: Card[]) {
-    console.log("TechnoCity");
+    // Get the characters on TechnoCity
+    var characterCards = [];
+    for (var key in locationStatus.cards) {
+      characterCards.push(locationStatus.cards[key].type);
+    }
+    const characters = characterCards.filter(this.game.onlyUnique);
+
+    var playableCharacterCounts = [];
+
+    var setOfThreeExists = false;
+
+    // Check if a set of 3 characters already exists
+    for (var characterKey in characters) {
+      var character = characters[characterKey];
+      var count = characterCards.filter((card) => card === character).length;
+      if (count === 3) {
+        setOfThreeExists = true;
+      }
+    }
+    // For each character already on TechnoCity, get the number of cards that can still be played
+    for (var characterKey in characters) {
+      var character = characters[characterKey];
+      var count = characterCards.filter((card) => card === character).length;
+      if (setOfThreeExists) {
+        playableCharacterCounts[character] = 2 - count;
+      } else {
+        playableCharacterCounts[character] = 3 - count;
+      }
+    }
+
+    // Both character types are not set, so add max of all other characters
+    if (playableCharacterCounts.length < 2) {
+      for (var characterKey in this.characterPool) {
+        var characterFromPool = this.characterPool[characterKey];
+        if (characters.indexOf(characterFromPool) === -1) {
+          if (setOfThreeExists) {
+            playableCharacterCounts[characterFromPool] = 2;
+          } else {
+            playableCharacterCounts[characterFromPool] = 3;
+          }
+        }
+      }
+    }
+
+    // John Difool is always playable
+    playableCharacterCounts["johndifool"] = 1;
+
+    console.log(playableCharacterCounts);
+
+    // Set the playable card counts so we handle unenabling/reenabling them later
+    this.playableCardCounts = playableCharacterCounts;
+
+    // Enable the cards that can be played
+    for (var handKey in hand) {
+      var cardInHand = hand[handKey];
+      if (playableCharacterCounts[cardInHand.type] > 0) {
+        this.createCardAction(cardInHand);
+      } else {
+        this.disableCard(cardInHand);
+      }
+    }
   }
 
   getPlayableCardsForUndergroundRiver(
