@@ -1240,15 +1240,30 @@ var Explore = /** @class */ (function () {
         }
         var validCardClasses = [];
         validCardClasses.push("johndifool");
-        for (var i = 1; i < 6; i++) {
-            var cardClass = this.selectedCharacter + "-" + i;
-            if (selectedCardClasses.includes(cardClass)) {
-                validCardClasses.push(cardClass);
-            }
-            else if (this.playableCardCounts[cardClass] > 0) {
-                validCardClasses.push(cardClass);
+        // If no selected character, John Difool was clicked, a card is valid if there is room for it to be played
+        if (this.selectedCharacter === "") {
+            for (var characterKey in this.characterPool) {
+                var character = this.characterPool[characterKey];
+                for (var i = 1; i < 6; i++) {
+                    var cardClass = character + "-" + i;
+                    if (this.playableCardCounts[character] > 0) {
+                        validCardClasses.push(cardClass);
+                    }
+                }
             }
         }
+        else {
+            for (var i = 1; i < 6; i++) {
+                var cardClass = this.selectedCharacter + "-" + i;
+                if (selectedCardClasses.includes(cardClass)) {
+                    validCardClasses.push(cardClass);
+                }
+                else if (this.playableCardCounts[this.selectedCharacter] > 0) {
+                    validCardClasses.push(cardClass);
+                }
+            }
+        }
+        console.log(validCardClasses);
         for (var _b = 0, clickableCards_1 = clickableCards; _b < clickableCards_1.length; _b++) {
             var card = clickableCards_1[_b];
             var cardClasses = card.className.split(" ");
@@ -1400,8 +1415,53 @@ var Explore = /** @class */ (function () {
             }
         }
     };
+    /**
+     * Get all the cards which are playable at The Central Computer.
+     *
+     * The Central Computer can contain 1 set of characters with a max of 4 cards
+     * A player cannot explore The Central Computer if:
+     *  - They do not have a character that is not present on The Central Computer
+     *
+     * @param {LocationStatus} locationStatus - The status of the location tile
+     * @param {Card[]} hand - The current player's hand with damage cards removed
+     */
     Explore.prototype.getPlayableCardsForCentralCalculator = function (locationStatus, hand) {
-        console.log("Central Calculator");
+        // Get the characters on The Central Computer
+        var characterCards = [];
+        for (var key in locationStatus.cards) {
+            characterCards.push(locationStatus.cards[key].type);
+        }
+        var characters = characterCards.filter(this.game.onlyUnique);
+        var playableCharacterCounts = [];
+        // For each character already on The Central Computer, get the number of cards that can still be played
+        for (var characterKey in characters) {
+            var character = characters[characterKey];
+            var count = characterCards.filter(function (card) { return card === character; }).length;
+            playableCharacterCounts[character] = 4 - count;
+        }
+        // If no characters are set, add max of all characters
+        // This shouldn't happen, but just in case
+        if (characters.length === 0) {
+            for (var characterKey in this.characterPool) {
+                var characterFromPool = this.characterPool[characterKey];
+                playableCharacterCounts[characterFromPool] = 4;
+            }
+        }
+        // John Difool is always playable
+        playableCharacterCounts["johndifool"] = 1;
+        console.log(playableCharacterCounts);
+        // Set the playable card counts so we handle unenabling/reenabling them later
+        this.playableCardCounts = playableCharacterCounts;
+        // Enable the cards that can be played
+        for (var handKey in hand) {
+            var cardInHand = hand[handKey];
+            if (playableCharacterCounts[cardInHand.type] > 0) {
+                this.createCardAction(cardInHand);
+            }
+            else {
+                this.disableCard(cardInHand);
+            }
+        }
     };
     Explore.prototype.getPlayableCardsForCrystalForest = function (locationStatus, hand) {
         console.log("Crystal Forest");
