@@ -190,11 +190,14 @@ html {
 .incal-card-selected {
   border: 2px solid #fbcb0a !important;
   box-shadow: 0 0 10px #fbcb0a !important;
+  outline: 4px solid green !important;
   cursor: pointer;
 }
 
 .incal-clickable {
   cursor: pointer;
+  border: 2px solid #fbcb0a !important;
+  box-shadow: 0 0 10px #fbcb0a !important;
   outline: 4px solid red;
 }
 

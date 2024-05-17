@@ -103,9 +103,11 @@ $machinestates = [
 
     STATE_EXPLORE => [
         "name" => STATE_NAME_EXPLORE,
-        "description" => clienttranslate('${actplayer} must play 1 or more character cards at ${locationName}'),
+        "description" => clienttranslate(
+            '${actplayer} must play ${locationMessage}'
+        ),
         "descriptionmyturn" => clienttranslate(
-            '${you} must play 1 or more character cards at ${locationName}'
+            '${you} must play ${locationMessage}'
         ),
         "type" => STATE_TYPE_ACTIVE_PLAYER,
         "args" => STATE_ARGUMENTS_EXPLORE,

@@ -214,10 +214,11 @@ class PlayerTurn implements State {
     hand: Card[]
   ): boolean {
     // Get the characters on Acid Lake
-    var characters = [];
+    var characterCards = [];
     for (var key in locationStatus.cards) {
-      characters.push(locationStatus.cards[key].type);
+      characterCards.push(locationStatus.cards[key].type);
     }
+    const characters = characterCards.filter(this.game.onlyUnique);
 
     // Both character types are not set yet, so player can start a new set
     if (characters.length < 2) {
@@ -283,10 +284,11 @@ class PlayerTurn implements State {
     hand: Card[]
   ): boolean {
     // Get the characters on Aquaend
-    var characters = [];
+    var characterCards = [];
     for (var key in locationStatus.cards) {
-      characters.push(locationStatus.cards[key].type);
+      characterCards.push(locationStatus.cards[key].type);
     }
+    const characters = characterCards.filter(this.game.onlyUnique);
 
     // Both character types are not set yet, so player can start a new set
     if (characters.length < 2) {
@@ -313,7 +315,7 @@ class PlayerTurn implements State {
       return true;
     }
 
-    // Get characters that are under the max of 3
+    // Get characters that are under the max of 2
     var charactersUnderMax = [];
     for (var characterKey in characters) {
       var character = characters[characterKey];
@@ -428,10 +430,11 @@ class PlayerTurn implements State {
     hand: Card[]
   ): boolean {
     // Get the characters on Psychorats Dump
-    var characters = [];
+    var characterCards = [];
     for (var key in locationStatus.cards) {
-      characters.push(locationStatus.cards[key].type);
+      characterCards.push(locationStatus.cards[key].type);
     }
+    const characters = characterCards.filter(this.game.onlyUnique);
 
     // Check if player has a character not present on Psychorats Dump
     for (var key in hand) {
@@ -459,10 +462,11 @@ class PlayerTurn implements State {
     hand: Card[]
   ): boolean {
     // Get the characters on Techno City
-    var characters = [];
+    var characterCards = [];
     for (var key in locationStatus.cards) {
-      characters.push(locationStatus.cards[key].type);
+      characterCards.push(locationStatus.cards[key].type);
     }
+    const characters = characterCards.filter(this.game.onlyUnique);
 
     // Both character types are not set yet, so player can start a new set
     if (characters.length < 2) {

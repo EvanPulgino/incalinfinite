@@ -24,6 +24,9 @@ class ExploreState {
     }
 
     public function getArgs() {
+        // Get active player
+        $activePlayer = $this->game->getActivePlayer();
+
         // Get current ship location
         $currentLocation = $this->game->getGameStateValue(
             GAME_STATE_LABEL_METASHIP_LOCATION
@@ -34,8 +37,29 @@ class ExploreState {
             $currentLocation
         );
 
+        // Get location status
+        $locationStatus = $this->game->getLocationStatus($location->getKey());
+
         return [
-            "locationName" => $location->getName(),
+            "locationMessage" => $this->getLocationMessage($location),
+            "locationStatus" => $locationStatus->getUiData(),
+            "playerHand" => $this->game->cardController->getPlayerHandUiData(
+                $activePlayer->getId()
+            ),
         ];
+    }
+
+    private function getLocationMessage(Location $location) {
+        if ($location->getKey() === LOCATION_KEYS[LOCATION_PSYCHORATS_DUMP]) {
+            return clienttranslate("must play exactly 1 character card at") .
+                " " .
+                $location->getName();
+        }
+
+        return clienttranslate(
+            "must play 1 or more cards of a single charcter type at"
+        ) .
+            " " .
+            $location->getName();
     }
 }

@@ -291,6 +291,22 @@ class IncalInfinite extends Table {
         return 11;
     }
 
+    public function getLocationStatus($locationKey) {
+        $location = $this->locationController->getLocationFromKey($locationKey);
+
+        $cards = $this->cardController->getCardsAtLocationTile(
+            $location->getTilePosition()
+        );
+
+        $locationStatus = new LocationStatus(
+            $location,
+            $cards,
+            $this->countPowersAvailable()
+        );
+
+        return $locationStatus;
+    }
+
     public function getLocationsStatus() {
         $locations = $this->locationController->getAllLocations();
         $locationsStatus = [];
@@ -310,10 +326,10 @@ class IncalInfinite extends Table {
     }
 
     public function getLocationsStatusUiData() {
-        $locationsStatus = $this->getLocationsStatus();
+        $locationsStatuses = $this->getLocationsStatus();
         $locationsStatusUiData = [];
 
-        foreach ($locationsStatus as $key => $locationsStatus) {
+        foreach ($locationsStatuses as $key => $locationsStatus) {
             $locationsStatusUiData[] = $locationsStatus->getUiData();
         }
 

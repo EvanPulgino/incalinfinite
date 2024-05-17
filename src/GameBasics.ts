@@ -371,4 +371,16 @@ class GameBasics extends GameGui {
       if (clone.parentNode) clone.parentNode.removeChild(clone);
     }, duration);
   }
+
+  /**
+   * Get the unique values from an array
+   * 
+   * @param value
+   * @param index
+   * @param array
+   * @returns
+   */
+  onlyUnique(value, index, array) {
+    return array.indexOf(value) === index;
+  }
 }

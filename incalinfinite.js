@@ -340,6 +340,17 @@ var GameBasics = /** @class */ (function (_super) {
                 clone.parentNode.removeChild(clone);
         }, duration);
     };
+    /**
+     * Get the unique values from an array
+     *
+     * @param value
+     * @param index
+     * @param array
+     * @returns
+     */
+    GameBasics.prototype.onlyUnique = function (value, index, array) {
+        return array.indexOf(value) === index;
+    };
     return GameBasics;
 }(GameGui));
 /**
@@ -1089,10 +1100,328 @@ var Explore = /** @class */ (function () {
         this.id = 12;
         this.name = "explore";
         this.game = game;
+        this.connections = {};
+        this.characterPool = [
+            "animah",
+            "deepo",
+            "kill",
+            "metabaron",
+            "solune",
+            "tanatah",
+        ];
+        this.locationStatus = null;
+        this.playerHand = [];
+        this.selectedCharacter = "";
+        this.playableCardCounts = [];
     }
-    Explore.prototype.onEnteringState = function (stateArgs) { };
+    Explore.prototype.onEnteringState = function (stateArgs) {
+        if (stateArgs.isCurrentPlayerActive) {
+            this.playerHand = stateArgs.args["playerHand"];
+            this.locationStatus = stateArgs.args["locationStatus"];
+            var charactersInHand = this.removeDamageFromHand(this.playerHand);
+            for (var _i = 0, _a = this.playerHand; _i < _a.length; _i++) {
+                var card = _a[_i];
+                if (card.type === "damage") {
+                    this.disableCard(card);
+                }
+            }
+            this.enablePlayableCards(this.locationStatus, this.playerHand);
+        }
+    };
     Explore.prototype.onLeavingState = function () { };
-    Explore.prototype.onUpdateActionButtons = function (stateArgs) { };
+    Explore.prototype.onUpdateActionButtons = function (stateArgs) {
+        var _this = this;
+        if (stateArgs.isCurrentPlayerActive) {
+            // Create action button for Confirm play cards action
+            gameui.addActionButton("confirm-play-cards-button", _("Confirm"), function () {
+                _this.confirmPlayCards();
+            });
+            var button = dojo.byId("confirm-play-cards-button");
+            dojo.addClass(button, "incal-button");
+            dojo.addClass(button, "incal-button-disabled");
+        }
+    };
+    Explore.prototype.confirmPlayCards = function () {
+        console.log("Confirm play cards");
+    };
+    /**
+     * Create an action and highlight a card that can be played
+     *
+     * @param card
+     */
+    Explore.prototype.createCardAction = function (card) {
+        var _this = this;
+        var cardId = card.id;
+        var cardDivId = "card-" + cardId;
+        dojo.addClass(cardDivId, "incal-clickable");
+        if (this.connections[cardId] === undefined) {
+            this.connections[cardId] = dojo.connect(dojo.byId(cardDivId), "onclick", function () {
+                _this.selectCard(card);
+            });
+        }
+    };
+    /**
+     * Disable a card so it cannot be played
+     *
+     * @param {Card} card
+     */
+    Explore.prototype.disableCard = function (card) {
+        var cardId = card.id;
+        dojo.addClass("card-wrapper-" + cardId, "incal-card-disabled");
+    };
+    /**
+     * Handle selecting a card to play.
+     *
+     * If the card is already selected, deselect it.
+     * If the card is not selected, select it.
+     * If there are no selected cards, disable the confirm button
+     * If there are selected cards, enable the confirm button
+     *
+     * @param {Card} card - The id of the card that was clicked
+     */
+    Explore.prototype.selectCard = function (card) {
+        var cardDivId = "card-" + card.id;
+        var cardDiv = dojo.byId(cardDivId);
+        if (dojo.hasClass(cardDiv, "incal-card-selected")) {
+            dojo.removeClass(cardDiv, "incal-card-selected");
+        }
+        else {
+            dojo.addClass(cardDiv, "incal-card-selected");
+            if (card.type !== "johndifool") {
+                this.selectedCharacter = card.type;
+                this.disableNonSelectedCharacters();
+            }
+        }
+        var selectedCards = dojo.query(".incal-card-selected");
+        if (selectedCards.length > 0) {
+            dojo.removeClass("confirm-play-cards-button", "incal-button-disabled");
+        }
+        else {
+            this.selectedCharacter = "";
+            this.enablePlayableCards(this.locationStatus, this.playerHand);
+            dojo.addClass("confirm-play-cards-button", "incal-button-disabled");
+        }
+    };
+    /**
+     * Disable clickable cards that aren't the selected character
+     */
+    Explore.prototype.disableNonSelectedCharacters = function () {
+        var clickableCards = dojo.query(".incal-clickable");
+        var validCardClasses = [];
+        validCardClasses.push("johndifool");
+        for (var i = 1; i < 6; i++) {
+            validCardClasses.push(this.selectedCharacter + "-" + i);
+        }
+        for (var _i = 0, clickableCards_1 = clickableCards; _i < clickableCards_1.length; _i++) {
+            var card = clickableCards_1[_i];
+            var cardClasses = card.className.split(" ");
+            var intersection = cardClasses.filter(function (value) {
+                return validCardClasses.includes(value);
+            });
+            if (intersection.length === 0) {
+                var cardId = card.id.split("-")[1];
+                dojo.removeClass(card, "incal-clickable");
+                dojo.disconnect(this.connections[cardId]);
+                delete this.connections[cardId];
+                console.log(this.connections);
+            }
+        }
+    };
+    Explore.prototype.enableSelectableCards = function () { };
+    /**
+     * Get all the cards which are playable at a loction and enable them
+     *
+     * @param {LocationStatus} locationStatus - The status of the location tile
+     * @param {Card[]} hand - The current player's hand with damage cards removed
+     */
+    Explore.prototype.enablePlayableCards = function (locationStatus, playerHand) {
+        var locationKey = locationStatus.location.key;
+        var hand = this.removeDamageFromHand(playerHand);
+        switch (locationKey) {
+            case "acidlake":
+                this.enablePlayableCardsForAcidLake(locationStatus, hand);
+                break;
+            case "aquaend":
+                this.getPlayableCardsForAquaend(locationStatus, hand);
+                break;
+            case "centralcalculator":
+                this.getPlayableCardsForCentralCalculator(locationStatus, hand);
+                break;
+            case "crystalforest":
+                this.getPlayableCardsForCrystalForest(locationStatus, hand);
+                break;
+            case "ourgargan":
+                this.getPlayableCardsForOurgargan(locationStatus, hand);
+                break;
+            case "psychoratsdump":
+                this.getPlayableCardsForPsychoratsDump(locationStatus, hand);
+                break;
+            case "suicidealley":
+                this.getPlayableCardsForSuicideAlley(locationStatus, hand);
+                break;
+            case "technocity":
+                this.getPlayableCardsForTechnoCity(locationStatus, hand);
+                break;
+            case "undergroundriver":
+                this.getPlayableCardsForUndergroundRiver(locationStatus, hand);
+                break;
+        }
+    };
+    /**
+     * Get all the cards which are playable at Acid Lake and enable them
+     *
+     * Acid Lake can contain 2 sets of different characters, each set can contain 3 characters
+     * A player cannot explore Acid Lake if:
+     *  - Both character types are set and the player does not have a character that is not present on Acid Lake
+     *  - One character set is at max count and the player does not have a different character in their hand
+     *
+     * @param {LocationStatus} locationStatus - The status of the location tile
+     * @param {Card[]} hand - The current player's hand with damage cards removed
+     */
+    Explore.prototype.enablePlayableCardsForAcidLake = function (locationStatus, hand) {
+        // Get the characters on Acid Lake
+        var characterCards = [];
+        for (var key in locationStatus.cards) {
+            characterCards.push(locationStatus.cards[key].type);
+        }
+        var characters = characterCards.filter(this.game.onlyUnique);
+        var playableCharacterCounts = [];
+        // For each character already on Acid Lake, get the number of cards that can still be played
+        for (var characterKey in characters) {
+            var character = characters[characterKey];
+            var count = characterCards.filter(function (card) { return card === character; }).length;
+            playableCharacterCounts[character] = 3 - count;
+        }
+        // Both character types are not set, so add max of all other characters
+        if (playableCharacterCounts.length < 2) {
+            for (var characterKey in this.characterPool) {
+                var characterFromPool = this.characterPool[characterKey];
+                if (characters.indexOf(characterFromPool) === -1) {
+                    playableCharacterCounts[characterFromPool] = 3;
+                }
+            }
+        }
+        // John Difool is always playable
+        playableCharacterCounts["johndifool"] = 1;
+        // Set the playable card counts so we handle unenabling/reenabling them later
+        this.playableCardCounts = playableCharacterCounts;
+        for (var handKey in hand) {
+            var cardInHand = hand[handKey];
+            if (playableCharacterCounts[cardInHand.type] > 0) {
+                this.createCardAction(cardInHand);
+            }
+            else {
+                this.disableCard(cardInHand);
+            }
+        }
+    };
+    /**
+     * Get all the cards which are playable at Aquaend.
+     *
+     * Aquaend can contain 2 sets of different characters, each set can contain 2 characters
+     * A player cannot explore Aquaend if:
+     *  - Both character types are set and the player does not have a character that is not present on Aquaend
+     *  - One character set is at max count and the player does not have a different character in their hand
+     *
+     * @param {LocationStatus} locationStatus - The status of the location tile
+     * @param {Card[]} hand - The current player's hand with damage cards removed
+     */
+    Explore.prototype.getPlayableCardsForAquaend = function (locationStatus, hand) {
+        // Get the characters on Aquaend
+        var characterCards = [];
+        for (var key in locationStatus.cards) {
+            characterCards.push(locationStatus.cards[key].type);
+        }
+        var characters = characterCards.filter(this.game.onlyUnique);
+        var playableCharacterCounts = [];
+        // For each character already on Aquaend, get the number of cards that can still be played
+        for (var characterKey in characters) {
+            var character = characters[characterKey];
+            var count = characterCards.filter(function (card) { return card === character; }).length;
+            playableCharacterCounts[character] = 2 - count;
+        }
+        // Both character types are not set, so add max of all other characters
+        if (playableCharacterCounts.length < 2) {
+            for (var characterKey in this.characterPool) {
+                var characterFromPool = this.characterPool[characterKey];
+                if (characters.indexOf(characterFromPool) === -1) {
+                    playableCharacterCounts[characterFromPool] = 2;
+                }
+            }
+        }
+        // John Difool is always playable
+        playableCharacterCounts["johndifool"] = 1;
+        // Set the playable card counts so we handle unenabling/reenabling them later
+        this.playableCardCounts = playableCharacterCounts;
+        for (var handKey in hand) {
+            var cardInHand = hand[handKey];
+            if (playableCharacterCounts[cardInHand.type] > 0) {
+                this.createCardAction(cardInHand);
+            }
+            else {
+                this.disableCard(cardInHand);
+            }
+        }
+    };
+    Explore.prototype.getPlayableCardsForCentralCalculator = function (locationStatus, hand) {
+        console.log("Central Calculator");
+    };
+    Explore.prototype.getPlayableCardsForCrystalForest = function (locationStatus, hand) {
+        console.log("Crystal Forest");
+    };
+    Explore.prototype.getPlayableCardsForOurgargan = function (locationStatus, hand) {
+        console.log("Ourgargan");
+    };
+    /**
+     * Get all the cards which are playable at Psychorats Dump.
+     *
+     * Psychorats can contain 1 max card of each character type
+     * A player cannot explore Psychorats Dump if:
+     *  - All cards in the player's hand are already on Psychorats Dump
+     *
+     * @param {LocationStatus} locationStatus - The status of the location tile
+     * @param {Card[]} hand - The current player's hand with damage cards removed
+     */
+    Explore.prototype.getPlayableCardsForPsychoratsDump = function (locationStatus, hand) {
+        // Get the characters on Psychorats Dump
+        var characterCards = [];
+        for (var key in locationStatus.cards) {
+            characterCards.push(locationStatus.cards[key].type);
+        }
+        var characters = characterCards.filter(this.game.onlyUnique);
+        var playableCharacterCounts = [];
+        // For each character not on Psychorats Dump, get the number of cards that can still be played
+        for (var characterKey in this.characterPool) {
+            if (characters.indexOf(this.characterPool[characterKey]) === -1) {
+                playableCharacterCounts[this.characterPool[characterKey]] = 1;
+            }
+        }
+        // John Difool is always playable
+        playableCharacterCounts["johndifool"] = 1;
+        // Set the playable card counts so we handle unenabling/reenabling them later
+        this.playableCardCounts = playableCharacterCounts;
+        for (var handKey in hand) {
+            var cardInHand = hand[handKey];
+            if (playableCharacterCounts[cardInHand.type] > 0) {
+                this.createCardAction(cardInHand);
+            }
+            else {
+                this.disableCard(cardInHand);
+            }
+        }
+    };
+    Explore.prototype.getPlayableCardsForSuicideAlley = function (locationStatus, hand) {
+        console.log("Suicide Alley");
+    };
+    Explore.prototype.getPlayableCardsForTechnoCity = function (locationStatus, hand) {
+        console.log("TechnoCity");
+    };
+    Explore.prototype.getPlayableCardsForUndergroundRiver = function (locationStatus, hand) {
+        console.log("Underground River");
+    };
+    Explore.prototype.removeDamageFromHand = function (hand) {
+        return hand.filter(function (card) { return card.type !== "damage"; });
+    };
     return Explore;
 }());
 /**
@@ -1484,10 +1813,11 @@ var PlayerTurn = /** @class */ (function () {
      */
     PlayerTurn.prototype.playerCanExploreAcidLake = function (locationStatus, hand) {
         // Get the characters on Acid Lake
-        var characters = [];
+        var characterCards = [];
         for (var key in locationStatus.cards) {
-            characters.push(locationStatus.cards[key].type);
+            characterCards.push(locationStatus.cards[key].type);
         }
+        var characters = characterCards.filter(this.game.onlyUnique);
         // Both character types are not set yet, so player can start a new set
         if (characters.length < 2) {
             //If only one character is present...
@@ -1540,10 +1870,11 @@ var PlayerTurn = /** @class */ (function () {
      */
     PlayerTurn.prototype.playerCanExploreAquaend = function (locationStatus, hand) {
         // Get the characters on Aquaend
-        var characters = [];
+        var characterCards = [];
         for (var key in locationStatus.cards) {
-            characters.push(locationStatus.cards[key].type);
+            characterCards.push(locationStatus.cards[key].type);
         }
+        var characters = characterCards.filter(this.game.onlyUnique);
         // Both character types are not set yet, so player can start a new set
         if (characters.length < 2) {
             //If only one character is present...
@@ -1565,7 +1896,7 @@ var PlayerTurn = /** @class */ (function () {
             // Any character can be played
             return true;
         }
-        // Get characters that are under the max of 3
+        // Get characters that are under the max of 2
         var charactersUnderMax = [];
         for (var characterKey in characters) {
             var character = characters[characterKey];
@@ -1658,10 +1989,11 @@ var PlayerTurn = /** @class */ (function () {
      */
     PlayerTurn.prototype.playerCanExplorePsychoratsDump = function (locationStatus, hand) {
         // Get the characters on Psychorats Dump
-        var characters = [];
+        var characterCards = [];
         for (var key in locationStatus.cards) {
-            characters.push(locationStatus.cards[key].type);
+            characterCards.push(locationStatus.cards[key].type);
         }
+        var characters = characterCards.filter(this.game.onlyUnique);
         // Check if player has a character not present on Psychorats Dump
         for (var key in hand) {
             if (!characters.includes(hand[key].type)) {
@@ -1683,10 +2015,11 @@ var PlayerTurn = /** @class */ (function () {
      */
     PlayerTurn.prototype.playerCanExploreTechnoCity = function (locationStatus, hand) {
         // Get the characters on Techno City
-        var characters = [];
+        var characterCards = [];
         for (var key in locationStatus.cards) {
-            characters.push(locationStatus.cards[key].type);
+            characterCards.push(locationStatus.cards[key].type);
         }
+        var characters = characterCards.filter(this.game.onlyUnique);
         // Both character types are not set yet, so player can start a new set
         if (characters.length < 2) {
             //If only one character is present...

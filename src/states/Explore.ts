@@ -17,14 +17,392 @@ class Explore implements State {
   id: number;
   name: string;
   game: any;
+  connections: any;
+  characterPool: string[];
+  locationStatus: LocationStatus;
+  playerHand: Card[];
+  selectedCharacter: string;
+  playableCardCounts: any[];
 
   constructor(game: any) {
     this.id = 12;
     this.name = "explore";
     this.game = game;
+    this.connections = {};
+    this.characterPool = [
+      "animah",
+      "deepo",
+      "kill",
+      "metabaron",
+      "solune",
+      "tanatah",
+    ];
+    this.locationStatus = null;
+    this.playerHand = [];
+    this.selectedCharacter = "";
+    this.playableCardCounts = [];
   }
 
-  onEnteringState(stateArgs: StateArgs): void {}
+  onEnteringState(stateArgs: StateArgs): void {
+    if (stateArgs.isCurrentPlayerActive) {
+      this.playerHand = stateArgs.args["playerHand"];
+      this.locationStatus = stateArgs.args["locationStatus"];
+      const charactersInHand = this.removeDamageFromHand(this.playerHand);
+
+      for (const card of this.playerHand) {
+        if (card.type === "damage") {
+          this.disableCard(card);
+        }
+      }
+
+      this.enablePlayableCards(this.locationStatus, this.playerHand);
+    }
+  }
   onLeavingState(): void {}
-  onUpdateActionButtons(stateArgs: StateArgs): void {}
+  onUpdateActionButtons(stateArgs: StateArgs): void {
+    if (stateArgs.isCurrentPlayerActive) {
+      // Create action button for Confirm play cards action
+      gameui.addActionButton("confirm-play-cards-button", _("Confirm"), () => {
+        this.confirmPlayCards();
+      });
+
+      const button = dojo.byId("confirm-play-cards-button");
+
+      dojo.addClass(button, "incal-button");
+      dojo.addClass(button, "incal-button-disabled");
+    }
+  }
+
+  confirmPlayCards(): void {
+    console.log("Confirm play cards");
+  }
+
+  /**
+   * Create an action and highlight a card that can be played
+   *
+   * @param card
+   */
+  createCardAction(card: Card): void {
+    const cardId = card.id;
+    const cardDivId = "card-" + cardId;
+
+    dojo.addClass(cardDivId, "incal-clickable");
+    if (this.connections[cardId] === undefined) {
+      this.connections[cardId] = dojo.connect(
+        dojo.byId(cardDivId),
+        "onclick",
+        () => {
+          this.selectCard(card);
+        }
+      );
+    }
+  }
+
+  /**
+   * Disable a card so it cannot be played
+   *
+   * @param {Card} card
+   */
+  disableCard(card: Card): void {
+    const cardId = card.id;
+
+    dojo.addClass("card-wrapper-" + cardId, "incal-card-disabled");
+  }
+
+  /**
+   * Handle selecting a card to play.
+   *
+   * If the card is already selected, deselect it.
+   * If the card is not selected, select it.
+   * If there are no selected cards, disable the confirm button
+   * If there are selected cards, enable the confirm button
+   *
+   * @param {Card} card - The id of the card that was clicked
+   */
+  selectCard(card: Card): void {
+    const cardDivId = "card-" + card.id;
+    const cardDiv = dojo.byId(cardDivId);
+
+    if (dojo.hasClass(cardDiv, "incal-card-selected")) {
+      dojo.removeClass(cardDiv, "incal-card-selected");
+    } else {
+      dojo.addClass(cardDiv, "incal-card-selected");
+      if (card.type !== "johndifool") {
+        this.selectedCharacter = card.type;
+        this.disableNonSelectedCharacters();
+      }
+    }
+
+    const selectedCards = dojo.query(".incal-card-selected");
+    if (selectedCards.length > 0) {
+      dojo.removeClass("confirm-play-cards-button", "incal-button-disabled");
+    } else {
+      this.selectedCharacter = "";
+      this.enablePlayableCards(this.locationStatus, this.playerHand);
+      dojo.addClass("confirm-play-cards-button", "incal-button-disabled");
+    }
+  }
+
+  /**
+   * Disable clickable cards that aren't the selected character
+   */
+  disableNonSelectedCharacters(): void {
+    const clickableCards = dojo.query(".incal-clickable");
+    var validCardClasses = [];
+    validCardClasses.push("johndifool");
+    for (var i = 1; i < 6; i++) {
+      validCardClasses.push(this.selectedCharacter + "-" + i);
+    }
+
+    for (const card of clickableCards) {
+      const cardClasses = card.className.split(" ");
+      const intersection = cardClasses.filter((value) =>
+        validCardClasses.includes(value)
+      );
+      if (intersection.length === 0) {
+        const cardId = card.id.split("-")[1];
+        dojo.removeClass(card, "incal-clickable");
+        dojo.disconnect(this.connections[cardId]);
+        delete this.connections[cardId];
+        console.log(this.connections);
+      }
+    }
+  }
+
+  enableSelectableCards(): void {}
+
+  /**
+   * Get all the cards which are playable at a loction and enable them
+   *
+   * @param {LocationStatus} locationStatus - The status of the location tile
+   * @param {Card[]} hand - The current player's hand with damage cards removed
+   */
+  enablePlayableCards(locationStatus: LocationStatus, playerHand: Card[]) {
+    const locationKey = locationStatus.location.key;
+    const hand = this.removeDamageFromHand(playerHand);
+
+    switch (locationKey) {
+      case "acidlake":
+        this.enablePlayableCardsForAcidLake(locationStatus, hand);
+        break;
+      case "aquaend":
+        this.getPlayableCardsForAquaend(locationStatus, hand);
+        break;
+      case "centralcalculator":
+        this.getPlayableCardsForCentralCalculator(locationStatus, hand);
+        break;
+      case "crystalforest":
+        this.getPlayableCardsForCrystalForest(locationStatus, hand);
+        break;
+      case "ourgargan":
+        this.getPlayableCardsForOurgargan(locationStatus, hand);
+        break;
+      case "psychoratsdump":
+        this.getPlayableCardsForPsychoratsDump(locationStatus, hand);
+        break;
+      case "suicidealley":
+        this.getPlayableCardsForSuicideAlley(locationStatus, hand);
+        break;
+      case "technocity":
+        this.getPlayableCardsForTechnoCity(locationStatus, hand);
+        break;
+      case "undergroundriver":
+        this.getPlayableCardsForUndergroundRiver(locationStatus, hand);
+        break;
+    }
+  }
+
+  /**
+   * Get all the cards which are playable at Acid Lake and enable them
+   *
+   * Acid Lake can contain 2 sets of different characters, each set can contain 3 characters
+   * A player cannot explore Acid Lake if:
+   *  - Both character types are set and the player does not have a character that is not present on Acid Lake
+   *  - One character set is at max count and the player does not have a different character in their hand
+   *
+   * @param {LocationStatus} locationStatus - The status of the location tile
+   * @param {Card[]} hand - The current player's hand with damage cards removed
+   */
+  enablePlayableCardsForAcidLake(locationStatus: LocationStatus, hand: Card[]) {
+    // Get the characters on Acid Lake
+    var characterCards = [];
+    for (var key in locationStatus.cards) {
+      characterCards.push(locationStatus.cards[key].type);
+    }
+    const characters = characterCards.filter(this.game.onlyUnique);
+
+    var playableCharacterCounts = [];
+
+    // For each character already on Acid Lake, get the number of cards that can still be played
+    for (var characterKey in characters) {
+      var character = characters[characterKey];
+      var count = characterCards.filter((card) => card === character).length;
+      playableCharacterCounts[character] = 3 - count;
+    }
+
+    // Both character types are not set, so add max of all other characters
+    if (playableCharacterCounts.length < 2) {
+      for (var characterKey in this.characterPool) {
+        var characterFromPool = this.characterPool[characterKey];
+        if (characters.indexOf(characterFromPool) === -1) {
+          playableCharacterCounts[characterFromPool] = 3;
+        }
+      }
+    }
+
+    // John Difool is always playable
+    playableCharacterCounts["johndifool"] = 1;
+
+    // Set the playable card counts so we handle unenabling/reenabling them later
+    this.playableCardCounts = playableCharacterCounts;
+
+    for (var handKey in hand) {
+      var cardInHand = hand[handKey];
+      if (playableCharacterCounts[cardInHand.type] > 0) {
+        this.createCardAction(cardInHand);
+      } else {
+        this.disableCard(cardInHand);
+      }
+    }
+  }
+
+  /**
+   * Get all the cards which are playable at Aquaend.
+   *
+   * Aquaend can contain 2 sets of different characters, each set can contain 2 characters
+   * A player cannot explore Aquaend if:
+   *  - Both character types are set and the player does not have a character that is not present on Aquaend
+   *  - One character set is at max count and the player does not have a different character in their hand
+   *
+   * @param {LocationStatus} locationStatus - The status of the location tile
+   * @param {Card[]} hand - The current player's hand with damage cards removed
+   */
+  getPlayableCardsForAquaend(locationStatus: LocationStatus, hand: Card[]) {
+    // Get the characters on Aquaend
+    var characterCards = [];
+    for (var key in locationStatus.cards) {
+      characterCards.push(locationStatus.cards[key].type);
+    }
+    const characters = characterCards.filter(this.game.onlyUnique);
+
+    var playableCharacterCounts = [];
+
+    // For each character already on Aquaend, get the number of cards that can still be played
+    for (var characterKey in characters) {
+      var character = characters[characterKey];
+      var count = characterCards.filter((card) => card === character).length;
+      playableCharacterCounts[character] = 2 - count;
+    }
+
+    // Both character types are not set, so add max of all other characters
+    if (playableCharacterCounts.length < 2) {
+      for (var characterKey in this.characterPool) {
+        var characterFromPool = this.characterPool[characterKey];
+        if (characters.indexOf(characterFromPool) === -1) {
+          playableCharacterCounts[characterFromPool] = 2;
+        }
+      }
+    }
+
+    // John Difool is always playable
+    playableCharacterCounts["johndifool"] = 1;
+
+    // Set the playable card counts so we handle unenabling/reenabling them later
+    this.playableCardCounts = playableCharacterCounts;
+
+    for (var handKey in hand) {
+      var cardInHand = hand[handKey];
+      if (playableCharacterCounts[cardInHand.type] > 0) {
+        this.createCardAction(cardInHand);
+      } else {
+        this.disableCard(cardInHand);
+      }
+    }
+  }
+
+  getPlayableCardsForCentralCalculator(
+    locationStatus: LocationStatus,
+    hand: Card[]
+  ) {
+    console.log("Central Calculator");
+  }
+
+  getPlayableCardsForCrystalForest(
+    locationStatus: LocationStatus,
+    hand: Card[]
+  ) {
+    console.log("Crystal Forest");
+  }
+
+  getPlayableCardsForOurgargan(locationStatus: LocationStatus, hand: Card[]) {
+    console.log("Ourgargan");
+  }
+
+  /**
+   * Get all the cards which are playable at Psychorats Dump.
+   *
+   * Psychorats can contain 1 max card of each character type
+   * A player cannot explore Psychorats Dump if:
+   *  - All cards in the player's hand are already on Psychorats Dump
+   *
+   * @param {LocationStatus} locationStatus - The status of the location tile
+   * @param {Card[]} hand - The current player's hand with damage cards removed
+   */
+  getPlayableCardsForPsychoratsDump(
+    locationStatus: LocationStatus,
+    hand: Card[]
+  ) {
+    // Get the characters on Psychorats Dump
+    var characterCards = [];
+    for (var key in locationStatus.cards) {
+      characterCards.push(locationStatus.cards[key].type);
+    }
+    const characters = characterCards.filter(this.game.onlyUnique);
+
+    var playableCharacterCounts = [];
+
+    // For each character not on Psychorats Dump, get the number of cards that can still be played
+    for (var characterKey in this.characterPool) {
+      if (characters.indexOf(this.characterPool[characterKey]) === -1) {
+        playableCharacterCounts[this.characterPool[characterKey]] = 1;
+      }
+    }
+
+    // John Difool is always playable
+    playableCharacterCounts["johndifool"] = 1;
+
+    // Set the playable card counts so we handle unenabling/reenabling them later
+    this.playableCardCounts = playableCharacterCounts;
+
+    for (var handKey in hand) {
+      var cardInHand = hand[handKey];
+      if (playableCharacterCounts[cardInHand.type] > 0) {
+        this.createCardAction(cardInHand);
+      } else {
+        this.disableCard(cardInHand);
+      }
+    }
+  }
+
+  getPlayableCardsForSuicideAlley(
+    locationStatus: LocationStatus,
+    hand: Card[]
+  ) {
+    console.log("Suicide Alley");
+  }
+
+  getPlayableCardsForTechnoCity(locationStatus: LocationStatus, hand: Card[]) {
+    console.log("TechnoCity");
+  }
+
+  getPlayableCardsForUndergroundRiver(
+    locationStatus: LocationStatus,
+    hand: Card[]
+  ) {
+    console.log("Underground River");
+  }
+
+  removeDamageFromHand(hand: Card[]): Card[] {
+    return hand.filter((card) => card.type !== "damage");
+  }
 }
