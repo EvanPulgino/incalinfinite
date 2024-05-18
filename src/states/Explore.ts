@@ -143,7 +143,13 @@ class Explore implements State {
     const cardDiv = dojo.byId(cardDivId);
 
     if (dojo.hasClass(cardDiv, "incal-card-selected")) {
-      dojo.removeClass(cardDiv, "incal-card-selected");
+      dojo.query(".incal-clickable").forEach((card) => {
+        dojo.removeClass(card, "incal-card-selected");
+        this.disableCard(card);
+      });
+      this.playableCardCounts = [];
+      this.enablePlayableCards(this.locationStatus, this.playerHand);
+      dojo.addClass("confirm-play-cards-button", "incal-button-disabled");
     } else {
       dojo.addClass(cardDiv, "incal-card-selected");
       if (card.type !== "johndifool") {
@@ -159,20 +165,21 @@ class Explore implements State {
       this.disableCharacters();
     }
 
-    const selectedCards = dojo.query(".incal-card-selected");
-    if (selectedCards.length > 0) {
-      dojo.removeClass("confirm-play-cards-button", "incal-button-disabled");
-    } else {
-      if (card.type === "johndifool") {
-        for (var characterKey in this.characterPool) {
-          this.playableCardCounts[this.characterPool[characterKey]] += 1;
-        }
+    if (this.playableCardCounts.length > 0) {
+      const selectedCards = dojo.query(".incal-card-selected");
+      if (selectedCards.length > 0) {
+        dojo.removeClass("confirm-play-cards-button", "incal-button-disabled");
       } else {
-        this.playableCardCounts[card.type] += 1;
-        this.selectedCharacter = "";
+        if (card.type === "johndifool") {
+          for (var characterKey in this.characterPool) {
+            this.playableCardCounts[this.characterPool[characterKey]] += 1;
+          }
+        } else {
+          this.playableCardCounts[card.type] += 1;
+          this.selectedCharacter = "";
+        }
+        dojo.addClass("confirm-play-cards-button", "incal-button-disabled");
       }
-      this.enablePlayableCards(this.locationStatus, this.playerHand);
-      dojo.addClass("confirm-play-cards-button", "incal-button-disabled");
     }
   }
 
@@ -281,6 +288,8 @@ class Explore implements State {
     const locationKey = locationStatus.location.key;
     const hand = this.removeDamageFromHand(playerHand);
 
+    console.log(locationKey);
+
     switch (locationKey) {
       case "acidlake":
         this.enablePlayableCardsForAcidLake(locationStatus, hand);
@@ -324,42 +333,44 @@ class Explore implements State {
    * @param {Card[]} hand - The current player's hand with damage cards removed
    */
   enablePlayableCardsForAcidLake(locationStatus: LocationStatus, hand: Card[]) {
-    // Get the characters on Acid Lake
-    var characterCards = [];
-    for (var key in locationStatus.cards) {
-      characterCards.push(locationStatus.cards[key].type);
-    }
-    const characters = characterCards.filter(this.game.onlyUnique);
+    if (this.playableCardCounts.length === 0) {
+      // Get the characters on Acid Lake
+      var characterCards = [];
+      for (var key in locationStatus.cards) {
+        characterCards.push(locationStatus.cards[key].type);
+      }
+      const characters = characterCards.filter(this.game.onlyUnique);
 
-    var playableCharacterCounts = [];
+      var playableCharacterCounts = [];
 
-    // For each character already on Acid Lake, get the number of cards that can still be played
-    for (var characterKey in characters) {
-      var character = characters[characterKey];
-      var count = characterCards.filter((card) => card === character).length;
-      playableCharacterCounts[character] = 3 - count;
-    }
+      // For each character already on Acid Lake, get the number of cards that can still be played
+      for (var characterKey in characters) {
+        var character = characters[characterKey];
+        var count = characterCards.filter((card) => card === character).length;
+        playableCharacterCounts[character] = 3 - count;
+      }
 
-    // Both character types are not set, so add max of all other characters
-    if (playableCharacterCounts.length < 2) {
-      for (var characterKey in this.characterPool) {
-        var characterFromPool = this.characterPool[characterKey];
-        if (characters.indexOf(characterFromPool) === -1) {
-          playableCharacterCounts[characterFromPool] = 3;
+      // Both character types are not set, so add max of all other characters
+      if (playableCharacterCounts.length < 2) {
+        for (var characterKey in this.characterPool) {
+          var characterFromPool = this.characterPool[characterKey];
+          if (characters.indexOf(characterFromPool) === -1) {
+            playableCharacterCounts[characterFromPool] = 3;
+          }
         }
       }
+
+      // John Difool is always playable
+      playableCharacterCounts["johndifool"] = 1;
+
+      // Set the playable card counts so we handle unenabling/reenabling them later
+      this.playableCardCounts = playableCharacterCounts;
     }
-
-    // John Difool is always playable
-    playableCharacterCounts["johndifool"] = 1;
-
-    // Set the playable card counts so we handle unenabling/reenabling them later
-    this.playableCardCounts = playableCharacterCounts;
 
     // Enable the cards that can be played
     for (var handKey in hand) {
       var cardInHand = hand[handKey];
-      if (playableCharacterCounts[cardInHand.type] > 0) {
+      if (this.playableCardCounts[cardInHand.type] > 0) {
         this.createCardAction(cardInHand);
       }
     }
@@ -377,42 +388,44 @@ class Explore implements State {
    * @param {Card[]} hand - The current player's hand with damage cards removed
    */
   getPlayableCardsForAquaend(locationStatus: LocationStatus, hand: Card[]) {
-    // Get the characters on Aquaend
-    var characterCards = [];
-    for (var key in locationStatus.cards) {
-      characterCards.push(locationStatus.cards[key].type);
-    }
-    const characters = characterCards.filter(this.game.onlyUnique);
+    if (this.playableCardCounts.length === 0) {
+      // Get the characters on Aquaend
+      var characterCards = [];
+      for (var key in locationStatus.cards) {
+        characterCards.push(locationStatus.cards[key].type);
+      }
+      const characters = characterCards.filter(this.game.onlyUnique);
 
-    var playableCharacterCounts = [];
+      var playableCharacterCounts = [];
 
-    // For each character already on Aquaend, get the number of cards that can still be played
-    for (var characterKey in characters) {
-      var character = characters[characterKey];
-      var count = characterCards.filter((card) => card === character).length;
-      playableCharacterCounts[character] = 2 - count;
-    }
+      // For each character already on Aquaend, get the number of cards that can still be played
+      for (var characterKey in characters) {
+        var character = characters[characterKey];
+        var count = characterCards.filter((card) => card === character).length;
+        playableCharacterCounts[character] = 2 - count;
+      }
 
-    // Both character types are not set, so add max of all other characters
-    if (playableCharacterCounts.length < 2) {
-      for (var characterKey in this.characterPool) {
-        var characterFromPool = this.characterPool[characterKey];
-        if (characters.indexOf(characterFromPool) === -1) {
-          playableCharacterCounts[characterFromPool] = 2;
+      // Both character types are not set, so add max of all other characters
+      if (playableCharacterCounts.length < 2) {
+        for (var characterKey in this.characterPool) {
+          var characterFromPool = this.characterPool[characterKey];
+          if (characters.indexOf(characterFromPool) === -1) {
+            playableCharacterCounts[characterFromPool] = 2;
+          }
         }
       }
+
+      // John Difool is always playable
+      playableCharacterCounts["johndifool"] = 1;
+
+      // Set the playable card counts so we handle unenabling/reenabling them later
+      this.playableCardCounts = playableCharacterCounts;
     }
-
-    // John Difool is always playable
-    playableCharacterCounts["johndifool"] = 1;
-
-    // Set the playable card counts so we handle unenabling/reenabling them later
-    this.playableCardCounts = playableCharacterCounts;
 
     // Enable the cards that can be played
     for (var handKey in hand) {
       var cardInHand = hand[handKey];
-      if (playableCharacterCounts[cardInHand.type] > 0) {
+      if (this.playableCardCounts[cardInHand.type] > 0) {
         this.createCardAction(cardInHand);
       }
     }
@@ -432,41 +445,43 @@ class Explore implements State {
     locationStatus: LocationStatus,
     hand: Card[]
   ) {
-    // Get the characters on The Central Computer
-    var characterCards = [];
-    for (var key in locationStatus.cards) {
-      characterCards.push(locationStatus.cards[key].type);
-    }
-    const characters = characterCards.filter(this.game.onlyUnique);
-
-    var playableCharacterCounts = [];
-
-    // For each character already on The Central Computer, get the number of cards that can still be played
-    for (var characterKey in characters) {
-      var character = characters[characterKey];
-      var count = characterCards.filter((card) => card === character).length;
-      playableCharacterCounts[character] = 4 - count;
-    }
-
-    // If no characters are set, add max of all characters
-    // This shouldn't happen, but just in case
-    if (characters.length === 0) {
-      for (var characterKey in this.characterPool) {
-        var characterFromPool = this.characterPool[characterKey];
-        playableCharacterCounts[characterFromPool] = 4;
+    if (this.playableCardCounts.length === 0) {
+      // Get the characters on The Central Computer
+      var characterCards = [];
+      for (var key in locationStatus.cards) {
+        characterCards.push(locationStatus.cards[key].type);
       }
+      const characters = characterCards.filter(this.game.onlyUnique);
+
+      var playableCharacterCounts = [];
+
+      // For each character already on The Central Computer, get the number of cards that can still be played
+      for (var characterKey in characters) {
+        var character = characters[characterKey];
+        var count = characterCards.filter((card) => card === character).length;
+        playableCharacterCounts[character] = 4 - count;
+      }
+
+      // If no characters are set, add max of all characters
+      // This shouldn't happen, but just in case
+      if (characters.length === 0) {
+        for (var characterKey in this.characterPool) {
+          var characterFromPool = this.characterPool[characterKey];
+          playableCharacterCounts[characterFromPool] = 4;
+        }
+      }
+
+      // John Difool is always playable
+      playableCharacterCounts["johndifool"] = 1;
+
+      // Set the playable card counts so we handle unenabling/reenabling them later
+      this.playableCardCounts = playableCharacterCounts;
     }
-
-    // John Difool is always playable
-    playableCharacterCounts["johndifool"] = 1;
-
-    // Set the playable card counts so we handle unenabling/reenabling them later
-    this.playableCardCounts = playableCharacterCounts;
 
     // Enable the cards that can be played
     for (var handKey in hand) {
       var cardInHand = hand[handKey];
-      if (playableCharacterCounts[cardInHand.type] > 0) {
+      if (this.playableCardCounts[cardInHand.type] > 0) {
         this.createCardAction(cardInHand);
       }
     }
@@ -537,6 +552,90 @@ class Explore implements State {
    * @param {Card[]} hand - The current player's hand with damage cards removed
    */
   getPlayableCardsForOurgargan(locationStatus: LocationStatus, hand: Card[]) {
+    if (this.playableCardCounts.length === 0) {
+      var playableCharacterCounts = [];
+
+      // Add max of all characters (using handsize as max value)
+      for (var characterKey in this.characterPool) {
+        var characterFromPool = this.characterPool[characterKey];
+        playableCharacterCounts[characterFromPool] = 4;
+      }
+
+      // John Difool is always playable
+      playableCharacterCounts["johndifool"] = 1;
+
+      // Set the playable card counts so we handle unenabling/reenabling them later
+      this.playableCardCounts = playableCharacterCounts;
+    }
+
+    // Enable the cards that can be played
+    for (var handKey in hand) {
+      var cardInHand = hand[handKey];
+      if (this.playableCardCounts[cardInHand.type] > 0) {
+        this.createCardAction(cardInHand);
+      }
+    }
+  }
+
+  /**
+   * Get all the cards which are playable at Psychorats Dump.
+   *
+   * Psychorats can contain 1 max card of each character type
+   * A player cannot explore Psychorats Dump if:
+   *  - All cards in the player's hand are already on Psychorats Dump
+   *
+   * @param {LocationStatus} locationStatus - The status of the location tile
+   * @param {Card[]} hand - The current player's hand with damage cards removed
+   */
+  getPlayableCardsForPsychoratsDump(
+    locationStatus: LocationStatus,
+    hand: Card[]
+  ) {
+    if (this.playableCardCounts.length === 0) {
+      // Get the characters on Psychorats Dump
+      var characterCards = [];
+      for (var key in locationStatus.cards) {
+        characterCards.push(locationStatus.cards[key].type);
+      }
+      const characters = characterCards.filter(this.game.onlyUnique);
+
+      var playableCharacterCounts = [];
+
+      // For each character not on Psychorats Dump, get the number of cards that can still be played
+      for (var characterKey in this.characterPool) {
+        if (characters.indexOf(this.characterPool[characterKey]) === -1) {
+          playableCharacterCounts[this.characterPool[characterKey]] = 1;
+        }
+      }
+
+      // John Difool is always playable
+      playableCharacterCounts["johndifool"] = 1;
+
+      // Set the playable card counts so we handle unenabling/reenabling them later
+      this.playableCardCounts = playableCharacterCounts;
+    }
+
+    // Enable the cards that can be played
+    for (var handKey in hand) {
+      var cardInHand = hand[handKey];
+      if (this.playableCardCounts[cardInHand.type] > 0) {
+        this.createCardAction(cardInHand);
+      }
+    }
+  }
+
+  /**
+   * Get all the cards which are playable at TechnoCity and enable them
+   *
+   * Suicide Alley can accept any characters and is always possible to playcards
+   *
+   * @param {LocationStatus} locationStatus - The status of the location tile
+   * @param {Card[]} hand - The current player's hand with damage cards removed
+   */
+  getPlayableCardsForSuicideAlley(
+    locationStatus: LocationStatus,
+    hand: Card[]
+  ) {
     var playableCharacterCounts = [];
 
     // Add max of all characters (using handsize as max value)
@@ -561,58 +660,6 @@ class Explore implements State {
   }
 
   /**
-   * Get all the cards which are playable at Psychorats Dump.
-   *
-   * Psychorats can contain 1 max card of each character type
-   * A player cannot explore Psychorats Dump if:
-   *  - All cards in the player's hand are already on Psychorats Dump
-   *
-   * @param {LocationStatus} locationStatus - The status of the location tile
-   * @param {Card[]} hand - The current player's hand with damage cards removed
-   */
-  getPlayableCardsForPsychoratsDump(
-    locationStatus: LocationStatus,
-    hand: Card[]
-  ) {
-    // Get the characters on Psychorats Dump
-    var characterCards = [];
-    for (var key in locationStatus.cards) {
-      characterCards.push(locationStatus.cards[key].type);
-    }
-    const characters = characterCards.filter(this.game.onlyUnique);
-
-    var playableCharacterCounts = [];
-
-    // For each character not on Psychorats Dump, get the number of cards that can still be played
-    for (var characterKey in this.characterPool) {
-      if (characters.indexOf(this.characterPool[characterKey]) === -1) {
-        playableCharacterCounts[this.characterPool[characterKey]] = 1;
-      }
-    }
-
-    // John Difool is always playable
-    playableCharacterCounts["johndifool"] = 1;
-
-    // Set the playable card counts so we handle unenabling/reenabling them later
-    this.playableCardCounts = playableCharacterCounts;
-
-    // Enable the cards that can be played
-    for (var handKey in hand) {
-      var cardInHand = hand[handKey];
-      if (playableCharacterCounts[cardInHand.type] > 0) {
-        this.createCardAction(cardInHand);
-      }
-    }
-  }
-
-  getPlayableCardsForSuicideAlley(
-    locationStatus: LocationStatus,
-    hand: Card[]
-  ) {
-    console.log("Suicide Alley");
-  }
-
-  /**
    * Get all the cards which are playable at TechnoCity and enable them
    *
    * TechnoCity can contain 2 sets of different characters, one set can have 3 cards and the other 2 cards
@@ -624,60 +671,62 @@ class Explore implements State {
    * @param {Card[]} hand - The current player's hand with damage cards removed
    */
   getPlayableCardsForTechnoCity(locationStatus: LocationStatus, hand: Card[]) {
-    // Get the characters on TechnoCity
-    var characterCards = [];
-    for (var key in locationStatus.cards) {
-      characterCards.push(locationStatus.cards[key].type);
-    }
-    const characters = characterCards.filter(this.game.onlyUnique);
-
-    var playableCharacterCounts = [];
-
-    var setOfThreeExists = false;
-
-    // Check if a set of 3 characters already exists
-    for (var characterKey in characters) {
-      var character = characters[characterKey];
-      var count = characterCards.filter((card) => card === character).length;
-      if (count === 3) {
-        setOfThreeExists = true;
+    if (this.playableCardCounts.length === 0) {
+      // Get the characters on TechnoCity
+      var characterCards = [];
+      for (var key in locationStatus.cards) {
+        characterCards.push(locationStatus.cards[key].type);
       }
-    }
-    // For each character already on TechnoCity, get the number of cards that can still be played
-    for (var characterKey in characters) {
-      var character = characters[characterKey];
-      var count = characterCards.filter((card) => card === character).length;
-      if (setOfThreeExists) {
-        playableCharacterCounts[character] = 2 - count;
-      } else {
-        playableCharacterCounts[character] = 3 - count;
-      }
-    }
+      const characters = characterCards.filter(this.game.onlyUnique);
 
-    // Both character types are not set, so add max of all other characters
-    if (playableCharacterCounts.length < 2) {
-      for (var characterKey in this.characterPool) {
-        var characterFromPool = this.characterPool[characterKey];
-        if (characters.indexOf(characterFromPool) === -1) {
-          if (setOfThreeExists) {
-            playableCharacterCounts[characterFromPool] = 2;
-          } else {
-            playableCharacterCounts[characterFromPool] = 3;
+      var playableCharacterCounts = [];
+
+      var setOfThreeExists = false;
+
+      // Check if a set of 3 characters already exists
+      for (var characterKey in characters) {
+        var character = characters[characterKey];
+        var count = characterCards.filter((card) => card === character).length;
+        if (count === 3) {
+          setOfThreeExists = true;
+        }
+      }
+      // For each character already on TechnoCity, get the number of cards that can still be played
+      for (var characterKey in characters) {
+        var character = characters[characterKey];
+        var count = characterCards.filter((card) => card === character).length;
+        if (setOfThreeExists) {
+          playableCharacterCounts[character] = 2 - count;
+        } else {
+          playableCharacterCounts[character] = 3 - count;
+        }
+      }
+
+      // Both character types are not set, so add max of all other characters
+      if (playableCharacterCounts.length < 2) {
+        for (var characterKey in this.characterPool) {
+          var characterFromPool = this.characterPool[characterKey];
+          if (characters.indexOf(characterFromPool) === -1) {
+            if (setOfThreeExists) {
+              playableCharacterCounts[characterFromPool] = 2;
+            } else {
+              playableCharacterCounts[characterFromPool] = 3;
+            }
           }
         }
       }
+
+      // John Difool is always playable
+      playableCharacterCounts["johndifool"] = 1;
+
+      // Set the playable card counts so we handle unenabling/reenabling them later
+      this.playableCardCounts = playableCharacterCounts;
     }
-
-    // John Difool is always playable
-    playableCharacterCounts["johndifool"] = 1;
-
-    // Set the playable card counts so we handle unenabling/reenabling them later
-    this.playableCardCounts = playableCharacterCounts;
 
     // Enable the cards that can be played
     for (var handKey in hand) {
       var cardInHand = hand[handKey];
-      if (playableCharacterCounts[cardInHand.type] > 0) {
+      if (this.playableCardCounts[cardInHand.type] > 0) {
         this.createCardAction(cardInHand);
       }
     }
@@ -699,24 +748,26 @@ class Explore implements State {
     locationStatus: LocationStatus,
     hand: Card[]
   ) {
-    var playableCharacterCounts = [];
+    if (this.playableCardCounts.length === 0) {
+      var playableCharacterCounts = [];
 
-    // Allow 1 of all characters
-    for (var characterKey in this.characterPool) {
-      var characterFromPool = this.characterPool[characterKey];
-      playableCharacterCounts[characterFromPool] = 1;
+      // Allow 1 of all characters
+      for (var characterKey in this.characterPool) {
+        var characterFromPool = this.characterPool[characterKey];
+        playableCharacterCounts[characterFromPool] = 1;
+      }
+
+      // John Difool is always playable
+      playableCharacterCounts["johndifool"] = 1;
+
+      // Set the playable card counts so we handle unenabling/reenabling them later
+      this.playableCardCounts = playableCharacterCounts;
     }
-
-    // John Difool is always playable
-    playableCharacterCounts["johndifool"] = 1;
-
-    // Set the playable card counts so we handle unenabling/reenabling them later
-    this.playableCardCounts = playableCharacterCounts;
 
     // Enable the cards that can be played
     for (var handKey in hand) {
       var cardInHand = hand[handKey];
-      if (playableCharacterCounts[cardInHand.type] > 0) {
+      if (this.playableCardCounts[cardInHand.type] > 0) {
         this.createCardAction(cardInHand);
       }
     }

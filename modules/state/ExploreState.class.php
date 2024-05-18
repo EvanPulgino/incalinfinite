@@ -60,7 +60,7 @@ class ExploreState {
         }
 
         return clienttranslate(
-            "must play 1 or more cards of a single charcter type at"
+            "must play 1 or more cards of a single character type at"
         ) .
             " " .
             $location->getName();
