@@ -41,6 +41,9 @@ class ExploreState {
         $locationStatus = $this->game->getLocationStatus($location->getKey());
 
         return [
+            "crystalForestCurrentValue" => $this->game->getGameStateValue(
+                GAME_STATE_LABEL_CRYSTAL_FOREST_CURRENT_VALUE
+            ),
             "locationMessage" => $this->getLocationMessage($location),
             "locationStatus" => $locationStatus->getUiData(),
             "playerHand" => $this->game->cardController->getPlayerHandUiData(

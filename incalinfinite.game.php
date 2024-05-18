@@ -45,7 +45,7 @@ class IncalInfinite extends Table {
             GAME_STATE_LABEL_POWER_MOVE_AVAILABLE => GAME_STATE_LABEL_ID_POWER_MOVE_AVAILABLE,
             GAME_STATE_LABEL_POWER_TALK_AVAILABLE => GAME_STATE_LABEL_ID_POWER_TALK_AVAILABLE,
             GAME_STATE_LABEL_SELECTED_LOCATION => GAME_STATE_LABEL_ID_SELECTED_LOCATION,
-            GAME_STATE_LABEL_CRYSTAL_FOREST_FIRST => GAME_STATE_LABEL_ID_CRYSTAL_FOREST_FIRST,
+            GAME_STATE_LABEL_CRYSTAL_FOREST_CURRENT_VALUE => GAME_STATE_LABEL_ID_CRYSTAL_FOREST_CURRENT_VALUE,
             GAME_STATE_LABEL_ENEMY_REALTIME => GAME_STATE_LABEL_ID_ENEMY_REALTIME,
             GAME_STATE_LABEL_ENEMY_ASYNC => GAME_STATE_LABEL_ID_ENEMY_ASYNC,
         ]);
@@ -134,7 +134,7 @@ class IncalInfinite extends Table {
         );
 
         // Determine the value of the first Crystal Forest card
-        $this->determineCrystalForestFirst();
+        $this->determineCrystalForestCurrentValue();
 
         // Activate first player (which is in general a good idea :) )
         $this->activeNextPlayer();
@@ -162,7 +162,9 @@ class IncalInfinite extends Table {
         $result[
             "currentPlayerHand"
         ] = $this->cardController->getPlayerHandUiData($current_player_id);
-        $result["crystalForestFirst"] = $this->getCrystalForestFirst();
+        $result[
+            "crystalForestCurrentValue"
+        ] = $this->getCrystalForestCurrentValue();
         $result[
             "crystalForestPosition"
         ] = $this->locationController->getPositionFromKey(
@@ -255,8 +257,10 @@ class IncalInfinite extends Table {
         return $players;
     }
 
-    public function getCrystalForestFirst() {
-        return self::getGameStateValue(GAME_STATE_LABEL_CRYSTAL_FOREST_FIRST);
+    public function getCrystalForestCurrentValue() {
+        return self::getGameStateValue(
+            GAME_STATE_LABEL_CRYSTAL_FOREST_CURRENT_VALUE
+        );
     }
 
     /**
@@ -402,13 +406,13 @@ class IncalInfinite extends Table {
         }
     }
 
-    private function determineCrystalForestFirst() {
+    private function determineCrystalForestCurrentValue() {
         $crystalForest = $this->locationController->getLocationFromKey(
             LOCATION_KEYS[LOCATION_CRYSTAL_FOREST]
         );
         if ($crystalForest == null) {
             self::setGameStateInitialValue(
-                GAME_STATE_LABEL_CRYSTAL_FOREST_FIRST,
+                GAME_STATE_LABEL_CRYSTAL_FOREST_CURRENT_VALUE,
                 0
             );
         } else {
@@ -416,7 +420,7 @@ class IncalInfinite extends Table {
                 $crystalForest->getTilePosition()
             )[0];
             self::setGameStateInitialValue(
-                GAME_STATE_LABEL_CRYSTAL_FOREST_FIRST,
+                GAME_STATE_LABEL_CRYSTAL_FOREST_CURRENT_VALUE,
                 $card->getValue()
             );
         }

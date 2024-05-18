@@ -23,6 +23,8 @@ class Explore implements State {
   playerHand: Card[];
   selectedCharacter: string;
   playableCardCounts: any[];
+  crystalForestInitialValue: number;
+  crystalForestCurrentValue: number;
 
   constructor(game: any) {
     this.id = 12;
@@ -41,14 +43,19 @@ class Explore implements State {
     this.playerHand = [];
     this.selectedCharacter = "";
     this.playableCardCounts = [];
+    this.crystalForestCurrentValue = 0;
   }
 
   onEnteringState(stateArgs: StateArgs): void {
     if (stateArgs.isCurrentPlayerActive) {
       this.playerHand = stateArgs.args["playerHand"];
       this.locationStatus = stateArgs.args["locationStatus"];
-      const charactersInHand = this.removeDamageFromHand(this.playerHand);
-
+      this.crystalForestInitialValue = parseInt(
+        stateArgs.args["crystalForestCurrentValue"]
+      );
+      this.crystalForestCurrentValue = parseInt(
+        stateArgs.args["crystalForestCurrentValue"]
+      );
       for (const card of this.playerHand) {
         if (card.type === "damage") {
           this.disableCard(card);
@@ -86,6 +93,11 @@ class Explore implements State {
     const cardId = card.id;
     const cardDivId = "card-" + cardId;
 
+    // If the card is already clickable, don't do anything
+    if (dojo.hasClass(cardDivId, "incal-clickable")) {
+      return;
+    }
+
     dojo.addClass(cardDivId, "incal-clickable");
     if (this.connections[cardId] === undefined) {
       this.connections[cardId] = dojo.connect(
@@ -106,7 +118,9 @@ class Explore implements State {
   disableCard(card: Card): void {
     const cardId = card.id;
 
-    dojo.addClass("card-wrapper-" + cardId, "incal-card-disabled");
+    dojo.removeClass(card, "incal-clickable");
+    dojo.disconnect(this.connections[cardId]);
+    delete this.connections[cardId];
   }
 
   /**
@@ -120,6 +134,11 @@ class Explore implements State {
    * @param {Card} card - The id of the card that was clicked
    */
   selectCard(card: Card): void {
+    if (this.locationStatus.location.key === "crystalforest") {
+      this.selectAtCrystalForest(card);
+      return;
+    }
+
     const cardDivId = "card-" + card.id;
     const cardDiv = dojo.byId(cardDivId);
 
@@ -154,6 +173,42 @@ class Explore implements State {
       }
       this.enablePlayableCards(this.locationStatus, this.playerHand);
       dojo.addClass("confirm-play-cards-button", "incal-button-disabled");
+    }
+  }
+
+  selectAtCrystalForest(card: Card): void {
+    const cardDivId = "card-" + card.id;
+    const cardDiv = dojo.byId(cardDivId);
+
+    if (dojo.hasClass(cardDiv, "incal-card-selected")) {
+      dojo.query(".incal-clickable").forEach((card) => {
+        dojo.removeClass(card, "incal-card-selected");
+        this.disableCard(card);
+      });
+      this.crystalForestCurrentValue = this.crystalForestInitialValue;
+      this.enablePlayableCards(this.locationStatus, this.playerHand);
+      dojo.addClass("confirm-play-cards-button", "incal-button-disabled");
+    } else {
+      dojo.addClass(cardDiv, "incal-card-selected");
+
+      // Bump the current value of the Crystal Forest
+      if (this.crystalForestCurrentValue === 5) {
+        this.crystalForestCurrentValue = 1;
+      } else {
+        this.crystalForestCurrentValue += 1;
+      }
+      if (card.type !== "johndifool") {
+        // If the card is not John Difool, set the selected character to the card type
+        this.selectedCharacter = card.type;
+      }
+
+      // Rerun enablePlaybleCards to check for cards next in the sequence
+      this.enablePlayableCards(this.locationStatus, this.playerHand);
+    }
+
+    const selectedCards = dojo.query(".incal-card-selected");
+    if (selectedCards.length > 0) {
+      dojo.removeClass("confirm-play-cards-button", "incal-button-disabled");
     }
   }
 
@@ -201,8 +256,6 @@ class Explore implements State {
         }
       }
     }
-
-    console.log(validCardClasses);
 
     for (const card of clickableCards) {
       const cardClasses = card.className.split(" ");
@@ -308,8 +361,6 @@ class Explore implements State {
       var cardInHand = hand[handKey];
       if (playableCharacterCounts[cardInHand.type] > 0) {
         this.createCardAction(cardInHand);
-      } else {
-        this.disableCard(cardInHand);
       }
     }
   }
@@ -363,8 +414,6 @@ class Explore implements State {
       var cardInHand = hand[handKey];
       if (playableCharacterCounts[cardInHand.type] > 0) {
         this.createCardAction(cardInHand);
-      } else {
-        this.disableCard(cardInHand);
       }
     }
   }
@@ -411,8 +460,6 @@ class Explore implements State {
     // John Difool is always playable
     playableCharacterCounts["johndifool"] = 1;
 
-    console.log(playableCharacterCounts);
-
     // Set the playable card counts so we handle unenabling/reenabling them later
     this.playableCardCounts = playableCharacterCounts;
 
@@ -421,17 +468,62 @@ class Explore implements State {
       var cardInHand = hand[handKey];
       if (playableCharacterCounts[cardInHand.type] > 0) {
         this.createCardAction(cardInHand);
-      } else {
-        this.disableCard(cardInHand);
       }
     }
   }
 
+  /**
+   * Get the cards which are playable at Crystal Forest.
+   *
+   * Crystal Forest contains an ascending sequence of cards from 1 to 5. 5 wraps back to 1.
+   * A player cannot explore Crystal Forest if:
+   *  - They do not have a character with a value that is next in the sequence from the current value
+   *
+   * @param {LocationStatus} locationStatus - The status of the location tile
+   * @param {Card[]} hand - The current player's hand with damage cards removed
+   */
   getPlayableCardsForCrystalForest(
     locationStatus: LocationStatus,
     hand: Card[]
   ) {
-    console.log("Crystal Forest");
+    const nextValue =
+      this.crystalForestCurrentValue === 5
+        ? 1
+        : this.crystalForestCurrentValue + 1;
+
+    var playableCharacterCounts = [];
+
+    // Add one of all characters for the time being
+    for (var characterKey in this.characterPool) {
+      var characterFromPool = this.characterPool[characterKey];
+      playableCharacterCounts[characterFromPool] = 1;
+    }
+
+    // John Difool is always playable
+    playableCharacterCounts["johndifool"] = 1;
+
+    // Set the playable card counts so we handle unenabling/reenabling them later
+    this.playableCardCounts = playableCharacterCounts;
+
+    // Enable the cards that can be played
+    for (var handKey in hand) {
+      var cardInHand = hand[handKey];
+      if (this.selectedCharacter !== "") {
+        if (
+          this.selectedCharacter === cardInHand.type &&
+          cardInHand.value === nextValue
+        ) {
+          this.createCardAction(cardInHand);
+        }
+      } else {
+        if (
+          playableCharacterCounts[cardInHand.type] > 0 &&
+          (cardInHand.value === nextValue || cardInHand.type === "johndifool")
+        ) {
+          this.createCardAction(cardInHand);
+        }
+      }
+    }
   }
 
   /**
@@ -464,8 +556,6 @@ class Explore implements State {
       var cardInHand = hand[handKey];
       if (playableCharacterCounts[cardInHand.type] > 0) {
         this.createCardAction(cardInHand);
-      } else {
-        this.disableCard(cardInHand);
       }
     }
   }
@@ -511,8 +601,6 @@ class Explore implements State {
       var cardInHand = hand[handKey];
       if (playableCharacterCounts[cardInHand.type] > 0) {
         this.createCardAction(cardInHand);
-      } else {
-        this.disableCard(cardInHand);
       }
     }
   }
@@ -591,8 +679,6 @@ class Explore implements State {
       var cardInHand = hand[handKey];
       if (playableCharacterCounts[cardInHand.type] > 0) {
         this.createCardAction(cardInHand);
-      } else {
-        this.disableCard(cardInHand);
       }
     }
   }
@@ -632,8 +718,6 @@ class Explore implements State {
       var cardInHand = hand[handKey];
       if (playableCharacterCounts[cardInHand.type] > 0) {
         this.createCardAction(cardInHand);
-      } else {
-        this.disableCard(cardInHand);
       }
     }
   }

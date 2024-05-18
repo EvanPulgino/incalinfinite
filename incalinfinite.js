@@ -395,7 +395,7 @@ var GameBody = /** @class */ (function (_super) {
         this.cardController.setupDiscard(gamedata.discard);
         this.cardController.setupPlayerHand(gamedata.currentPlayerHand);
         this.cardController.setupLocationCards(gamedata.locationCards);
-        this.cardController.sortCrystalForest(gamedata.crystalForestPosition, gamedata.crystalForestFirst);
+        this.cardController.sortCrystalForest(gamedata.crystalForestPosition, gamedata.crystalForestCurrentValue);
         this.setupNotifications();
     };
     /**
@@ -1113,12 +1113,14 @@ var Explore = /** @class */ (function () {
         this.playerHand = [];
         this.selectedCharacter = "";
         this.playableCardCounts = [];
+        this.crystalForestCurrentValue = 0;
     }
     Explore.prototype.onEnteringState = function (stateArgs) {
         if (stateArgs.isCurrentPlayerActive) {
             this.playerHand = stateArgs.args["playerHand"];
             this.locationStatus = stateArgs.args["locationStatus"];
-            var charactersInHand = this.removeDamageFromHand(this.playerHand);
+            this.crystalForestInitialValue = parseInt(stateArgs.args["crystalForestCurrentValue"]);
+            this.crystalForestCurrentValue = parseInt(stateArgs.args["crystalForestCurrentValue"]);
             for (var _i = 0, _a = this.playerHand; _i < _a.length; _i++) {
                 var card = _a[_i];
                 if (card.type === "damage") {
@@ -1153,6 +1155,10 @@ var Explore = /** @class */ (function () {
         var _this = this;
         var cardId = card.id;
         var cardDivId = "card-" + cardId;
+        // If the card is already clickable, don't do anything
+        if (dojo.hasClass(cardDivId, "incal-clickable")) {
+            return;
+        }
         dojo.addClass(cardDivId, "incal-clickable");
         if (this.connections[cardId] === undefined) {
             this.connections[cardId] = dojo.connect(dojo.byId(cardDivId), "onclick", function () {
@@ -1167,7 +1173,9 @@ var Explore = /** @class */ (function () {
      */
     Explore.prototype.disableCard = function (card) {
         var cardId = card.id;
-        dojo.addClass("card-wrapper-" + cardId, "incal-card-disabled");
+        dojo.removeClass(card, "incal-clickable");
+        dojo.disconnect(this.connections[cardId]);
+        delete this.connections[cardId];
     };
     /**
      * Handle selecting a card to play.
@@ -1180,6 +1188,10 @@ var Explore = /** @class */ (function () {
      * @param {Card} card - The id of the card that was clicked
      */
     Explore.prototype.selectCard = function (card) {
+        if (this.locationStatus.location.key === "crystalforest") {
+            this.selectAtCrystalForest(card);
+            return;
+        }
         var cardDivId = "card-" + card.id;
         var cardDiv = dojo.byId(cardDivId);
         if (dojo.hasClass(cardDiv, "incal-card-selected")) {
@@ -1216,6 +1228,40 @@ var Explore = /** @class */ (function () {
             }
             this.enablePlayableCards(this.locationStatus, this.playerHand);
             dojo.addClass("confirm-play-cards-button", "incal-button-disabled");
+        }
+    };
+    Explore.prototype.selectAtCrystalForest = function (card) {
+        var _this = this;
+        var cardDivId = "card-" + card.id;
+        var cardDiv = dojo.byId(cardDivId);
+        if (dojo.hasClass(cardDiv, "incal-card-selected")) {
+            dojo.query(".incal-clickable").forEach(function (card) {
+                dojo.removeClass(card, "incal-card-selected");
+                _this.disableCard(card);
+            });
+            this.crystalForestCurrentValue = this.crystalForestInitialValue;
+            this.enablePlayableCards(this.locationStatus, this.playerHand);
+            dojo.addClass("confirm-play-cards-button", "incal-button-disabled");
+        }
+        else {
+            dojo.addClass(cardDiv, "incal-card-selected");
+            // Bump the current value of the Crystal Forest
+            if (this.crystalForestCurrentValue === 5) {
+                this.crystalForestCurrentValue = 1;
+            }
+            else {
+                this.crystalForestCurrentValue += 1;
+            }
+            if (card.type !== "johndifool") {
+                // If the card is not John Difool, set the selected character to the card type
+                this.selectedCharacter = card.type;
+            }
+            // Rerun enablePlaybleCards to check for cards next in the sequence
+            this.enablePlayableCards(this.locationStatus, this.playerHand);
+        }
+        var selectedCards = dojo.query(".incal-card-selected");
+        if (selectedCards.length > 0) {
+            dojo.removeClass("confirm-play-cards-button", "incal-button-disabled");
         }
     };
     /**
@@ -1263,7 +1309,6 @@ var Explore = /** @class */ (function () {
                 }
             }
         }
-        console.log(validCardClasses);
         for (var _b = 0, clickableCards_1 = clickableCards; _b < clickableCards_1.length; _b++) {
             var card = clickableCards_1[_b];
             var cardClasses = card.className.split(" ");
@@ -1361,9 +1406,6 @@ var Explore = /** @class */ (function () {
             if (playableCharacterCounts[cardInHand.type] > 0) {
                 this.createCardAction(cardInHand);
             }
-            else {
-                this.disableCard(cardInHand);
-            }
         }
     };
     /**
@@ -1410,9 +1452,6 @@ var Explore = /** @class */ (function () {
             if (playableCharacterCounts[cardInHand.type] > 0) {
                 this.createCardAction(cardInHand);
             }
-            else {
-                this.disableCard(cardInHand);
-            }
         }
     };
     /**
@@ -1449,7 +1488,6 @@ var Explore = /** @class */ (function () {
         }
         // John Difool is always playable
         playableCharacterCounts["johndifool"] = 1;
-        console.log(playableCharacterCounts);
         // Set the playable card counts so we handle unenabling/reenabling them later
         this.playableCardCounts = playableCharacterCounts;
         // Enable the cards that can be played
@@ -1458,13 +1496,48 @@ var Explore = /** @class */ (function () {
             if (playableCharacterCounts[cardInHand.type] > 0) {
                 this.createCardAction(cardInHand);
             }
-            else {
-                this.disableCard(cardInHand);
-            }
         }
     };
+    /**
+     * Get the cards which are playable at Crystal Forest.
+     *
+     * Crystal Forest contains an ascending sequence of cards from 1 to 5. 5 wraps back to 1.
+     * A player cannot explore Crystal Forest if:
+     *  - They do not have a character with a value that is next in the sequence from the current value
+     *
+     * @param {LocationStatus} locationStatus - The status of the location tile
+     * @param {Card[]} hand - The current player's hand with damage cards removed
+     */
     Explore.prototype.getPlayableCardsForCrystalForest = function (locationStatus, hand) {
-        console.log("Crystal Forest");
+        var nextValue = this.crystalForestCurrentValue === 5
+            ? 1
+            : this.crystalForestCurrentValue + 1;
+        var playableCharacterCounts = [];
+        // Add one of all characters for the time being
+        for (var characterKey in this.characterPool) {
+            var characterFromPool = this.characterPool[characterKey];
+            playableCharacterCounts[characterFromPool] = 1;
+        }
+        // John Difool is always playable
+        playableCharacterCounts["johndifool"] = 1;
+        // Set the playable card counts so we handle unenabling/reenabling them later
+        this.playableCardCounts = playableCharacterCounts;
+        // Enable the cards that can be played
+        for (var handKey in hand) {
+            var cardInHand = hand[handKey];
+            if (this.selectedCharacter !== "") {
+                if (this.selectedCharacter === cardInHand.type &&
+                    cardInHand.value === nextValue) {
+                    this.createCardAction(cardInHand);
+                }
+            }
+            else {
+                if (playableCharacterCounts[cardInHand.type] > 0 &&
+                    (cardInHand.value === nextValue || cardInHand.type === "johndifool")) {
+                    this.createCardAction(cardInHand);
+                }
+            }
+        }
     };
     /**
      * Get all the cards which are playable at Orgargan
@@ -1492,9 +1565,6 @@ var Explore = /** @class */ (function () {
             var cardInHand = hand[handKey];
             if (playableCharacterCounts[cardInHand.type] > 0) {
                 this.createCardAction(cardInHand);
-            }
-            else {
-                this.disableCard(cardInHand);
             }
         }
     };
@@ -1531,9 +1601,6 @@ var Explore = /** @class */ (function () {
             var cardInHand = hand[handKey];
             if (playableCharacterCounts[cardInHand.type] > 0) {
                 this.createCardAction(cardInHand);
-            }
-            else {
-                this.disableCard(cardInHand);
             }
         }
     };
@@ -1603,9 +1670,6 @@ var Explore = /** @class */ (function () {
             if (playableCharacterCounts[cardInHand.type] > 0) {
                 this.createCardAction(cardInHand);
             }
-            else {
-                this.disableCard(cardInHand);
-            }
         }
     };
     /**
@@ -1636,9 +1700,6 @@ var Explore = /** @class */ (function () {
             var cardInHand = hand[handKey];
             if (playableCharacterCounts[cardInHand.type] > 0) {
                 this.createCardAction(cardInHand);
-            }
-            else {
-                this.disableCard(cardInHand);
             }
         }
     };
