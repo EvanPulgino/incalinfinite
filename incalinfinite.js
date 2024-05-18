@@ -413,11 +413,16 @@ var GameBody = /** @class */ (function (_super) {
         this.notifqueue.setSynchronous("discardCard", 1000);
         this.notifqueue.setSynchronous("discardCardFromOtherPlayer", 1000);
         this.notifqueue.setSynchronous("discardShuffled", 1000);
+        this.notifqueue.setSynchronous("exploreLocation", 1000);
+        this.notifqueue.setSynchronous("exploreLocationPrivate", 1000);
         this.notifqueue.setSynchronous("gainDamageFromEnemy", 1000);
         this.notifqueue.setSynchronous("gainDamageFromEnemyPrivate", 1000);
         this.notifqueue.setSynchronous("moveEnemy", 1000);
         this.notifqueue.setSynchronous("moveMetaship", 1250);
         this.notifqueue.setIgnoreNotificationCheck("cardDrawn", function (notif) {
+            return notif.args.player_id == gameui.player_id;
+        });
+        this.notifqueue.setIgnoreNotificationCheck("exploreLocation", function (notif) {
             return notif.args.player_id == gameui.player_id;
         });
         this.notifqueue.setIgnoreNotificationCheck("gainDamageFromEnemy", function (notif) {
@@ -452,13 +457,17 @@ var GameBody = /** @class */ (function (_super) {
     GameBody.prototype.notif_discardShuffled = function (notif) {
         this.cardController.shuffleDiscardIntoDeck(notif.args.cards);
     };
+    GameBody.prototype.notif_exploreLocation = function (notif) {
+        this.cardController.moveCardsToLocation(notif.args.player_id, notif.args.cards, notif.args.location);
+    };
+    GameBody.prototype.notif_exploreLocationPrivate = function (notif) {
+        this.cardController.moveCardsToLocationActivePlayer(notif.args.cards, notif.args.location);
+    };
     GameBody.prototype.notif_gainDamageFromEnemy = function (notif) {
-        console.log("gainDamageFromEnemy", notif.args.card, notif.args.player_id);
         this.cardController.gainDamageFromEnemy(notif.args.card, notif.args.player_id);
         this.playerController.incrementHandCount(notif.args.player_id);
     };
     GameBody.prototype.notif_gainDamageFromEnemyPrivate = function (notif) {
-        console.log("gainDamageFromEnemyPrivate", notif.args.card, notif.args.player_id);
         this.cardController.gainDamageFromEnemyActivePlayer(notif.args.card, notif.args.player_id);
         this.playerController.incrementHandCount(notif.args.player_id);
     };
@@ -765,6 +774,58 @@ var CardController = /** @class */ (function () {
             dojo.removeAttr("incal-discard-count", "style");
         }
         this.counters["discard"].incValue(1);
+    };
+    CardController.prototype.moveCardsToLocation = function (playerId, cards, location) {
+        var cardContainer = "card-container-" + location.tilePosition;
+        var _loop_1 = function (card) {
+            var cardDivId = "card-" + card.id;
+            var cardElement = dojo.byId(cardDivId);
+            if (cardElement === null) {
+                var cardDiv = '<div id="' +
+                    cardDivId +
+                    '" class="card ' +
+                    this_1.getCardCssClass(card) +
+                    '"></div>';
+                this_1.ui.createHtml(cardDiv, "incal-player-panel-" + playerId);
+            }
+            else {
+                dojo.place(cardDivId, "incal-player-panel-" + playerId);
+            }
+            var animation = this_1.ui.slideToObject(cardDivId, cardContainer, 250);
+            dojo.connect(animation, "onEnd", function () {
+                dojo.removeAttr(cardDivId, "style");
+                dojo.place(cardDivId, cardContainer);
+            });
+            animation.play();
+            var cardWrapper = dojo.byId("card-wrapper-" + card.id);
+            dojo.destroy(cardWrapper);
+        };
+        var this_1 = this;
+        for (var _i = 0, cards_6 = cards; _i < cards_6.length; _i++) {
+            var card = cards_6[_i];
+            _loop_1(card);
+        }
+    };
+    CardController.prototype.moveCardsToLocationActivePlayer = function (cards, location) {
+        var cardContainer = "card-container-" + location.tilePosition;
+        var _loop_2 = function (card) {
+            var cardDivId = "card-" + card.id;
+            var cardElement = dojo.byId(cardDivId);
+            dojo.place(cardElement, "player-hand");
+            var animation = this_2.ui.slideToObject(cardDivId, cardContainer, 250);
+            dojo.connect(animation, "onEnd", function () {
+                dojo.removeAttr(cardElement, "style");
+                dojo.place(cardDivId, cardContainer);
+            });
+            animation.play();
+            var cardWrapper = dojo.byId("card-wrapper-" + card.id);
+            dojo.destroy(cardWrapper);
+        };
+        var this_2 = this;
+        for (var _i = 0, cards_7 = cards; _i < cards_7.length; _i++) {
+            var card = cards_7[_i];
+            _loop_2(card);
+        }
     };
     CardController.prototype.shuffleDiscardIntoDeck = function (cards) {
         var discards = dojo.query(".card", "incal-discard");
@@ -1130,7 +1191,9 @@ var Explore = /** @class */ (function () {
             this.enablePlayableCards(this.locationStatus, this.playerHand);
         }
     };
-    Explore.prototype.onLeavingState = function () { };
+    Explore.prototype.onLeavingState = function () {
+        this.resetUX();
+    };
     Explore.prototype.onUpdateActionButtons = function (stateArgs) {
         var _this = this;
         if (stateArgs.isCurrentPlayerActive) {
@@ -1144,7 +1207,34 @@ var Explore = /** @class */ (function () {
         }
     };
     Explore.prototype.confirmPlayCards = function () {
-        console.log("Confirm play cards");
+        var selectedCards = dojo.query(".incal-card-selected");
+        var cardIds = [];
+        for (var _i = 0, selectedCards_1 = selectedCards; _i < selectedCards_1.length; _i++) {
+            var card = selectedCards_1[_i];
+            cardIds.push(card.id.split("-")[1]);
+        }
+        this.game.ajaxcallwrapper("exploreLocation", {
+            cardIds: cardIds.join(","),
+            tilePosition: this.locationStatus.location.tilePosition,
+        });
+        this.resetUX();
+    };
+    Explore.prototype.resetUX = function () {
+        dojo.query(".incal-card-selected").forEach(function (card) {
+            dojo.removeClass(card, "incal-card-selected");
+        });
+        dojo.query(".incal-clickable").forEach(function (card) {
+            dojo.removeClass(card, "incal-clickable");
+        });
+        dojo.query(".incal-button").forEach(function (button) {
+            dojo.addClass(button, "incal-button-disabled");
+        });
+        for (var connection in this.connections) {
+            dojo.disconnect(this.connections[connection]);
+        }
+        this.connections = {};
+        this.selectedCharacter = "";
+        this.playableCardCounts = [];
     };
     /**
      * Create an action and highlight a card that can be played
@@ -1219,24 +1309,26 @@ var Explore = /** @class */ (function () {
             }
             this.disableCharacters();
         }
-        if (this.playableCardCounts.length > 0) {
-            var selectedCards = dojo.query(".incal-card-selected");
-            if (selectedCards.length > 0) {
-                dojo.removeClass("confirm-play-cards-button", "incal-button-disabled");
+        console.log(this.playableCardCounts.length);
+        // if (this.playableCardCounts.length > 0) {
+        var selectedCards = dojo.query(".incal-card-selected");
+        console.log(selectedCards);
+        if (selectedCards.length > 0) {
+            dojo.removeClass("confirm-play-cards-button", "incal-button-disabled");
+        }
+        else {
+            if (card.type === "johndifool") {
+                for (var characterKey in this.characterPool) {
+                    this.playableCardCounts[this.characterPool[characterKey]] += 1;
+                }
             }
             else {
-                if (card.type === "johndifool") {
-                    for (var characterKey in this.characterPool) {
-                        this.playableCardCounts[this.characterPool[characterKey]] += 1;
-                    }
-                }
-                else {
-                    this.playableCardCounts[card.type] += 1;
-                    this.selectedCharacter = "";
-                }
-                dojo.addClass("confirm-play-cards-button", "incal-button-disabled");
+                this.playableCardCounts[card.type] += 1;
+                this.selectedCharacter = "";
             }
+            dojo.addClass("confirm-play-cards-button", "incal-button-disabled");
         }
+        // }
     };
     Explore.prototype.selectAtCrystalForest = function (card) {
         var _this = this;
@@ -1279,8 +1371,8 @@ var Explore = /** @class */ (function () {
         var clickableCards = dojo.query(".incal-clickable");
         var selectedCards = dojo.query(".incal-card-selected");
         var selectedCardClasses = [];
-        for (var _i = 0, selectedCards_1 = selectedCards; _i < selectedCards_1.length; _i++) {
-            var card = selectedCards_1[_i];
+        for (var _i = 0, selectedCards_2 = selectedCards; _i < selectedCards_2.length; _i++) {
+            var card = selectedCards_2[_i];
             var cardClasses = card.className.split(" ");
             for (var _a = 0, cardClasses_1 = cardClasses; _a < cardClasses_1.length; _a++) {
                 var cardClass = cardClasses_1[_a];
@@ -1340,7 +1432,6 @@ var Explore = /** @class */ (function () {
     Explore.prototype.enablePlayableCards = function (locationStatus, playerHand) {
         var locationKey = locationStatus.location.key;
         var hand = this.removeDamageFromHand(playerHand);
-        console.log(locationKey);
         switch (locationKey) {
             case "acidlake":
                 this.enablePlayableCardsForAcidLake(locationStatus, hand);

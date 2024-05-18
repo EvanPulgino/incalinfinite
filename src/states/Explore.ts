@@ -65,7 +65,10 @@ class Explore implements State {
       this.enablePlayableCards(this.locationStatus, this.playerHand);
     }
   }
-  onLeavingState(): void {}
+  onLeavingState(): void {
+    this.resetUX();
+  }
+
   onUpdateActionButtons(stateArgs: StateArgs): void {
     if (stateArgs.isCurrentPlayerActive) {
       // Create action button for Confirm play cards action
@@ -81,7 +84,35 @@ class Explore implements State {
   }
 
   confirmPlayCards(): void {
-    console.log("Confirm play cards");
+    const selectedCards = dojo.query(".incal-card-selected");
+    var cardIds = [];
+    for (const card of selectedCards) {
+      cardIds.push(card.id.split("-")[1]);
+    }
+    this.game.ajaxcallwrapper("exploreLocation", {
+      cardIds: cardIds.join(","),
+      tilePosition: this.locationStatus.location.tilePosition,
+    });
+
+    this.resetUX();
+  }
+
+  resetUX(): void {
+    dojo.query(".incal-card-selected").forEach((card) => {
+      dojo.removeClass(card, "incal-card-selected");
+    });
+    dojo.query(".incal-clickable").forEach((card) => {
+      dojo.removeClass(card, "incal-clickable");
+    });
+    dojo.query(".incal-button").forEach((button) => {
+      dojo.addClass(button, "incal-button-disabled");
+    });
+    for (const connection in this.connections) {
+      dojo.disconnect(this.connections[connection]);
+    }
+    this.connections = {};
+    this.selectedCharacter = "";
+    this.playableCardCounts = [];
   }
 
   /**
@@ -165,22 +196,25 @@ class Explore implements State {
       this.disableCharacters();
     }
 
-    if (this.playableCardCounts.length > 0) {
-      const selectedCards = dojo.query(".incal-card-selected");
-      if (selectedCards.length > 0) {
-        dojo.removeClass("confirm-play-cards-button", "incal-button-disabled");
-      } else {
-        if (card.type === "johndifool") {
-          for (var characterKey in this.characterPool) {
-            this.playableCardCounts[this.characterPool[characterKey]] += 1;
-          }
-        } else {
-          this.playableCardCounts[card.type] += 1;
-          this.selectedCharacter = "";
+    console.log(this.playableCardCounts.length);
+
+    // if (this.playableCardCounts.length > 0) {
+    const selectedCards = dojo.query(".incal-card-selected");
+    console.log(selectedCards);
+    if (selectedCards.length > 0) {
+      dojo.removeClass("confirm-play-cards-button", "incal-button-disabled");
+    } else {
+      if (card.type === "johndifool") {
+        for (var characterKey in this.characterPool) {
+          this.playableCardCounts[this.characterPool[characterKey]] += 1;
         }
-        dojo.addClass("confirm-play-cards-button", "incal-button-disabled");
+      } else {
+        this.playableCardCounts[card.type] += 1;
+        this.selectedCharacter = "";
       }
+      dojo.addClass("confirm-play-cards-button", "incal-button-disabled");
     }
+    // }
   }
 
   selectAtCrystalForest(card: Card): void {
@@ -287,8 +321,6 @@ class Explore implements State {
   enablePlayableCards(locationStatus: LocationStatus, playerHand: Card[]) {
     const locationKey = locationStatus.location.key;
     const hand = this.removeDamageFromHand(playerHand);
-
-    console.log(locationKey);
 
     switch (locationKey) {
       case "acidlake":

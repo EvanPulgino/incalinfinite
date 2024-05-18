@@ -40,6 +40,22 @@ class action_incalinfinite extends APP_GameAction {
         self::ajaxResponse();
     }
 
+    public function exploreLocation() {
+        self::setAjaxMode();
+        $cardIdsRaw = self::getArg("cardIds", AT_numberlist, true);
+        $tilePosition = self::getArg("tilePosition", AT_alphanum, true);
+        if ($cardIdsRaw === "") {
+            $cardIds = [];
+        } else {
+            $cardIds = explode(",", $cardIdsRaw);
+        }
+        $this->game->states[STATE_EXPLORE]->exploreLocation(
+            $cardIds,
+            $tilePosition
+        );
+        self::ajaxResponse();
+    }
+
     public function moveMetaship() {
         self::setAjaxMode();
         $location = self::getArg("location", AT_alphanum, true);

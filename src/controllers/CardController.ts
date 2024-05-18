@@ -307,6 +307,51 @@ class CardController {
     this.counters["discard"].incValue(1);
   }
 
+  moveCardsToLocation(playerId, cards: Card[], location: LocationTile): void {
+    const cardContainer = "card-container-" + location.tilePosition;
+    for (const card of cards) {
+      const cardDivId = "card-" + card.id;
+      let cardElement = dojo.byId(cardDivId);
+      if (cardElement === null) {
+        const cardDiv =
+          '<div id="' +
+          cardDivId +
+          '" class="card ' +
+          this.getCardCssClass(card) +
+          '"></div>';
+        this.ui.createHtml(cardDiv, "incal-player-panel-" + playerId);
+      } else {
+        dojo.place(cardDivId, "incal-player-panel-" + playerId);
+      }
+
+      const animation = this.ui.slideToObject(cardDivId, cardContainer, 250);
+      dojo.connect(animation, "onEnd", () => {
+        dojo.removeAttr(cardDivId, "style");
+        dojo.place(cardDivId, cardContainer);
+      });
+      animation.play();
+      const cardWrapper = dojo.byId("card-wrapper-" + card.id);
+      dojo.destroy(cardWrapper);
+    }
+  }
+
+  moveCardsToLocationActivePlayer(cards: Card[], location: LocationTile): void {
+    const cardContainer = "card-container-" + location.tilePosition;
+    for (const card of cards) {
+      const cardDivId = "card-" + card.id;
+      const cardElement = dojo.byId(cardDivId);
+      dojo.place(cardElement, "player-hand");
+      const animation = this.ui.slideToObject(cardDivId, cardContainer, 250);
+      dojo.connect(animation, "onEnd", () => {
+        dojo.removeAttr(cardElement, "style");
+        dojo.place(cardDivId, cardContainer);
+      });
+      animation.play();
+      const cardWrapper = dojo.byId("card-wrapper-" + card.id);
+      dojo.destroy(cardWrapper);
+    }
+  }
+
   shuffleDiscardIntoDeck(cards: Card[]): void {
     const discards = dojo.query(".card", "incal-discard");
     for (const card of discards) {

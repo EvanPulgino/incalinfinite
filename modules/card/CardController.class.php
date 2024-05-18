@@ -404,6 +404,10 @@ class CardController extends APP_GameClass {
         return $handCounts;
     }
 
+    public function moveCards($cardIds, $location, $locationArg) {
+        $this->cards->moveCards($cardIds, $location, $locationArg);
+    }
+
     /**
      * Add a damage card to the discard pile
      *

@@ -76,6 +76,8 @@ class GameBody extends GameBasics {
     this.notifqueue.setSynchronous("discardCard", 1000);
     this.notifqueue.setSynchronous("discardCardFromOtherPlayer", 1000);
     this.notifqueue.setSynchronous("discardShuffled", 1000);
+    this.notifqueue.setSynchronous("exploreLocation", 1000);
+    this.notifqueue.setSynchronous("exploreLocationPrivate", 1000);
     this.notifqueue.setSynchronous("gainDamageFromEnemy", 1000);
     this.notifqueue.setSynchronous("gainDamageFromEnemyPrivate", 1000);
     this.notifqueue.setSynchronous("moveEnemy", 1000);
@@ -83,6 +85,13 @@ class GameBody extends GameBasics {
 
     this.notifqueue.setIgnoreNotificationCheck(
       "cardDrawn",
+      function (notif: any) {
+        return notif.args.player_id == gameui.player_id;
+      }
+    );
+
+    this.notifqueue.setIgnoreNotificationCheck(
+      "exploreLocation",
       function (notif: any) {
         return notif.args.player_id == gameui.player_id;
       }
@@ -134,8 +143,22 @@ class GameBody extends GameBasics {
     this.cardController.shuffleDiscardIntoDeck(notif.args.cards);
   }
 
+  notif_exploreLocation(notif: any): void {
+    this.cardController.moveCardsToLocation(
+      notif.args.player_id,
+      notif.args.cards,
+      notif.args.location
+    );
+  }
+
+  notif_exploreLocationPrivate(notif: any): void {
+    this.cardController.moveCardsToLocationActivePlayer(
+      notif.args.cards,
+      notif.args.location
+    );
+  }
+
   notif_gainDamageFromEnemy(notif: any): void {
-    console.log("gainDamageFromEnemy", notif.args.card, notif.args.player_id);
     this.cardController.gainDamageFromEnemy(
       notif.args.card,
       notif.args.player_id
@@ -144,11 +167,6 @@ class GameBody extends GameBasics {
   }
 
   notif_gainDamageFromEnemyPrivate(notif: any): void {
-    console.log(
-      "gainDamageFromEnemyPrivate",
-      notif.args.card,
-      notif.args.player_id
-    );
     this.cardController.gainDamageFromEnemyActivePlayer(
       notif.args.card,
       notif.args.player_id
