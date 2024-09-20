@@ -152,11 +152,6 @@ class LocationController extends APP_GameClass {
         // Base pool of chits
         $incalChitPool = [1, 2, 3, 4, 5, 6, 7];
 
-        // If The Darkness is the enemy add 8 and 9 to the pool
-        if ($enemy == ENEMY_DARKNESS) {
-            array_push($incalChitPool, 8, 9);
-        }
-
         // Shuffle the pool
         shuffle($incalChitPool);
 

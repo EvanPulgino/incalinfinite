@@ -199,9 +199,6 @@ class PlayerTurnState {
             case ENEMY_NECROBOT:
                 $this->activateNecrobot();
                 break;
-            case ENEMY_DARKNESS:
-                $this->activateDarkness();
-                break;
         }
     }
 
@@ -434,54 +431,4 @@ class PlayerTurnState {
         $this->game->gamestate->nextState(TRANSITION_EXPLORE_LOCATION);
     }
 
-    /**
-     * Activate the Darkness
-     *
-     * The Darkness moves one step counter-clockwise. A Damage card is added to the discard pile.
-     */
-    private function activateDarkness() {
-        $activePlayer = $this->game->getActivePlayer();
-
-        // Get enemy position
-        $enemyPosition = $this->game->getGameStateValue(
-            GAME_STATE_LABEL_ENEMY_LOCATION
-        );
-
-        // Determine destination position
-        if ($enemyPosition == 1) {
-            $destinationPosition = 11;
-        } else {
-            $destinationPosition = $enemyPosition - 2;
-        }
-
-        // Move the enemy
-        $this->game->setGameStateValue(
-            GAME_STATE_LABEL_ENEMY_LOCATION,
-            $destinationPosition
-        );
-
-        // Notify players of enemy move
-        $this->game->notifyAllPlayers(
-            "moveEnemy",
-            clienttranslate("The Great Darkness move one step counter-clockwise"),
-            [
-                "destinationPosition" => $destinationPosition,
-            ]
-        );
-
-        // Add damge card to the discard pile
-        $damageCard = $this->game->cardController->moveDamageToDiscard();
-
-        // Notify players
-        $this->game->notifyAllPlayers(
-            "addDamageToDiscard",
-            clienttranslate("A Damage card is added to the discard pile"),
-            [
-                "card" => $damageCard->getUiData(),
-                "player_id" => $activePlayer->getId(),
-            ]
-        );
-
-        $this->game->gamestate->nextState(TRANSITION_EXPLORE_LOCATION);
-    }
 }

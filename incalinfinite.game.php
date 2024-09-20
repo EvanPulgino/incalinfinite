@@ -46,8 +46,7 @@ class IncalInfinite extends Table {
             GAME_STATE_LABEL_POWER_TALK_AVAILABLE => GAME_STATE_LABEL_ID_POWER_TALK_AVAILABLE,
             GAME_STATE_LABEL_SELECTED_LOCATION => GAME_STATE_LABEL_ID_SELECTED_LOCATION,
             GAME_STATE_LABEL_CRYSTAL_FOREST_CURRENT_VALUE => GAME_STATE_LABEL_ID_CRYSTAL_FOREST_CURRENT_VALUE,
-            GAME_STATE_LABEL_ENEMY_REALTIME => GAME_STATE_LABEL_ID_ENEMY_REALTIME,
-            GAME_STATE_LABEL_ENEMY_ASYNC => GAME_STATE_LABEL_ID_ENEMY_ASYNC,
+            GAME_STATE_LABEL_ENEMY_SELECTED => GAME_STATE_LABEL_ID_ENEMY_SELECTED,
         ]);
 
         $this->cardController = new CardController(
@@ -399,8 +398,6 @@ class IncalInfinite extends Table {
                 return $this->getEnemyTooltipTextGorgo();
             case ENEMY_NECROBOT:
                 return $this->getEnemyTooltipTextNecrobot();
-            case ENEMY_DARKNESS:
-                return $this->getEnemyTooltipTextDarkness();
             default:
                 return "";
         }
@@ -599,60 +596,6 @@ class IncalInfinite extends Table {
         return $text;
     }
 
-    private function getEnemyTooltipTextDarkness() {
-        $text =
-            '<span class="text-bold">' .
-            clienttranslate("Incal Tokens: ") .
-            "</span>";
-        $text .= clienttranslate(
-            "The Incal Tokens range from 1 to 9 instead of 1 to 7."
-        );
-        $text .= "<br><br>";
-        $text .=
-            '<span class="text-bold">' .
-            clienttranslate("Initial Placement: ") .
-            "</span>";
-        $text .= clienttranslate(
-            "The Great Darkness is placed in the gap just before Suicide Alley clockwise"
-        );
-        $text .= "<br><br>";
-        $text .=
-            '<span class="text-bold">' .
-            clienttranslate("Damage Cards: ") .
-            "</span>";
-        $text .= clienttranslate("3 Damage cards in the initial deck");
-        $text .= "<br><br>";
-        $text .=
-            '<span class="text-bold">' .
-            clienttranslate("Activation: ") .
-            "</span>";
-        $text .= clienttranslate(
-            "When the Metacraft passes the Great Darkness, it moves one gap counterclockwise and a Damage card is added to the discard pile."
-        );
-        $text .= "<br><br>";
-        $text .=
-            '<span class="text-warning">' .
-            clienttranslate("Special Rules:") .
-            "</span>";
-        $text .= "<br><br>";
-        $text .=
-            '<span class="text-bold">' .
-            clienttranslate("Revelation: ") .
-            "</span>";
-        $text .= clienttranslate(
-            "During a Revelation, the player who looks at the Incal token consults it as normal but then keeps it face-down in front of them. Each player may not possess more than 2 (or 3 in a 2-player game) Incal tokens in front of them. Communication rules still apply as normal."
-        );
-        $text .= "<br><br>";
-        $text .=
-            '<span class="text-bold">' .
-            clienttranslate("Transfiguration Ritual: ") .
-            "</span>";
-        $text .= clienttranslate(
-            "Attempting the Transgiguration Ritual cannot be taken as an action. The ritual is triggered automatically when all Incal tokens have been taken by the players. Players must reveal their Incal tokens in ascending order. There is no turn order during the ritual and players are not aloud to speak before or during the ritual. Victory and defeat conditions remain the same."
-        );
-        return $text;
-    }
-
     private function buildPowerObject($powerId) {
         $powerAvailable = self::getGameStateValue(
             POWER_GAME_STATE_KEYS[$powerId]
@@ -731,39 +674,18 @@ class IncalInfinite extends Table {
         }
     }
 
-    public function isAsync() {
-        if (self::getGameStateValue(GAME_STATE_LABEL_ENEMY_REALTIME) == null) {
-            return true;
-        }
-        return false;
-    }
-
     private function determineEnemy() {
-        if (self::isAsync()) {
-            self::setGameStateValue(
-                GAME_STATE_LABEL_ENEMY,
-                self::getGameStateValue(GAME_STATE_LABEL_ENEMY_ASYNC)
-            );
-        } else {
-            self::setGameStateValue(
-                GAME_STATE_LABEL_ENEMY,
-                self::getGameStateValue(GAME_STATE_LABEL_ENEMY_REALTIME)
-            );
-        }
+        self::setGameStateValue(
+            GAME_STATE_LABEL_ENEMY,
+            self::getGameStateValue(GAME_STATE_LABEL_ENEMY_SELECTED)
+        );
     }
 
     private function randomizeEnemy() {
-        if (self::isAsync()) {
-            self::setGameStateValue(
-                GAME_STATE_LABEL_ENEMY,
-                rand(ENEMY_BERGS, ENEMY_NECROBOT)
-            );
-        } else {
-            self::setGameStateValue(
-                GAME_STATE_LABEL_ENEMY,
-                rand(ENEMY_BERGS, ENEMY_DARKNESS)
-            );
-        }
+        self::setGameStateValue(
+            GAME_STATE_LABEL_ENEMY,
+            rand(ENEMY_BERGS, ENEMY_NECROBOT)
+        );
     }
 
     public function argExplore() {

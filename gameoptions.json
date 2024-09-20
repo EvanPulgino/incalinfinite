@@ -27,67 +27,12 @@
         "nobeginner": true
       },
       "6": {
-        "name": "The Darkness",
-        "tmdisplay": "The Darkness",
-        "nobeginner": true
-      },
-      "7": {
         "name": "Random",
         "tmdisplay": "Random",
         "description": "A randomly selected enemy (excluding the depleted version of The Bergs)",
         "nobeginner": true
       }
     },
-    "displaycondition": [
-      {
-        "type": "otheroption",
-        "id": 200,
-        "value": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 20]
-      }
-    ],
-    "default": "1"
-  },
-  "101": {
-    "name": "Enemy",
-    "values": {
-      "1": {
-        "name": "The Bergs - Depleted",
-        "tmdisplay": "The Bergs - Depleted"
-      },
-      "2": {
-        "name": "The Bergs",
-        "tmdisplay": "The Bergs",
-        "nobeginner": true
-      },
-      "3": {
-        "name": "The President's Hunchbacks",
-        "tmdisplay": "The President's Hunchbacks",
-        "nobeginner": true
-      },
-      "4": {
-        "name": "Gorgo-the-dirty",
-        "tmdisplay": "Gorgo-the-dirty",
-        "nobeginner": true
-      },
-      "5": {
-        "name": "The Necrobot",
-        "tmdisplay": "The Necrobot",
-        "nobeginner": true
-      },
-      "7": {
-        "name": "Random",
-        "tmdisplay": "Random",
-        "description": "A randomly selected enemy (excluding the depleted version of The Bergs)",
-        "nobeginner": true
-      }
-    },
-    "displaycondition": [
-      {
-        "type": "otheroption",
-        "id": 200,
-        "value": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21]
-      }
-    ],
-    "default": "1"
+    "default": 1
   }
 }

@@ -567,9 +567,6 @@ class CardController extends APP_GameClass {
             case ENEMY_NECROBOT:
                 $numberOfDamage = 1;
                 break;
-            case ENEMY_DARKNESS:
-                $numberOfDamage = 3;
-                break;
         }
 
         // Add the damage cards to the deck

@@ -68,8 +68,7 @@ define("ENEMY_BERGS", 2);
 define("ENEMY_PRESIDENTS_HUNCHBACKS", 3);
 define("ENEMY_GORGO_THE_DIRTY", 4);
 define("ENEMY_NECROBOT", 5);
-define("ENEMY_DARKNESS", 6);
-define("ENEMY_RANDOM", 7);
+define("ENEMY_RANDOM", 6);
 
 /** Enemy Names */
 define("ENEMY_NAME_BERGS", clienttranslate("The Bergs"));
@@ -79,7 +78,6 @@ define(
 );
 define("ENEMY_NAME_GORGO_THE_DIRTY", clienttranslate("Gorgo the Fool"));
 define("ENEMY_NAME_NECROBOT", clienttranslate("The Necrodroid"));
-define("ENEMY_NAME_DARKNESS", clienttranslate("The Great Darkness"));
 
 /** Enemy Map */
 define("ENEMIES", [
@@ -88,7 +86,6 @@ define("ENEMIES", [
     ENEMY_PRESIDENTS_HUNCHBACKS => ENEMY_NAME_PRESIDENTS_HUNCHBACKS,
     ENEMY_GORGO_THE_DIRTY => ENEMY_NAME_GORGO_THE_DIRTY,
     ENEMY_NECROBOT => ENEMY_NAME_NECROBOT,
-    ENEMY_DARKNESS => ENEMY_NAME_DARKNESS,
 ]);
 
 define("ENEMY_KEYS", [
@@ -97,15 +94,13 @@ define("ENEMY_KEYS", [
     ENEMY_PRESIDENTS_HUNCHBACKS => "presidentshunchbacks",
     ENEMY_GORGO_THE_DIRTY => "gorgothedirty",
     ENEMY_NECROBOT => "necrobot",
-    ENEMY_DARKNESS => "darkness",
 ]);
 
 /** Game State Labels */
 define("GAME_STATE_LABEL_CRYSTAL_FOREST_CURRENT_VALUE", "crystalForestCurrentValue");
 define("GAME_STATE_LABEL_ENEMY", "enemy");
-define("GAME_STATE_LABEL_ENEMY_ASYNC", "enemyAsync");
 define("GAME_STATE_LABEL_ENEMY_LOCATION", "enemyLocation");
-define("GAME_STATE_LABEL_ENEMY_REALTIME", "enemyRealtime");
+define("GAME_STATE_LABEL_ENEMY_SELECTED", "enemySelected");
 define("GAME_STATE_LABEL_METASHIP_LOCATION", "metashipLocation");
 define("GAME_STATE_LABEL_PLAYER_COUNT", "playerCount");
 define("GAME_STATE_LABEL_POWER_DESTROY_AVAILABLE", "powerDestroyAvailable");
@@ -125,8 +120,7 @@ define("GAME_STATE_LABEL_ID_POWER_MOVE_AVAILABLE", 16);
 define("GAME_STATE_LABEL_ID_POWER_TALK_AVAILABLE", 17);
 define("GAME_STATE_LABEL_ID_SELECTED_LOCATION", 18);
 define("GAME_STATE_LABEL_ID_CRYSTAL_FOREST_CURRENT_VALUE", 19);
-define("GAME_STATE_LABEL_ID_ENEMY_REALTIME", 100);
-define("GAME_STATE_LABEL_ID_ENEMY_ASYNC", 101);
+define("GAME_STATE_LABEL_ID_ENEMY_SELECTED", 100);
 
 /** Location IDs */
 define("LOCATION_ACID_LAKE", 1);
@@ -240,7 +234,6 @@ define("STATE_EXPLORE", 12);
 define("STATE_PASS_TURN", 13);
 define("STATE_NEXT_PLAYER", 20);
 define("STATE_TRANSFIGURATION_RITUAL", 30);
-define("STATE_TRANSFIGURATION_RITUAL_DARKNESS", 40);
 define("STATE_GAME_END", 99);
 
 /** State Names */
@@ -252,10 +245,6 @@ define("STATE_NAME_NEXT_PLAYER", "nextPlayer");
 define("STATE_NAME_PASS_TURN", "passTurn");
 define("STATE_NAME_PLAYER_TURN", "playerTurn");
 define("STATE_NAME_TRANSFIGURATION_RITUAL", "transfigurationRitual");
-define(
-    "STATE_NAME_TRANSFIGURATION_RITUAL_DARKNESS",
-    "transfigurationRitualDarkness"
-);
 
 /** State Types */
 define("STATE_TYPE_ACTIVE_PLAYER", "activeplayer");
@@ -265,10 +254,6 @@ define("STATE_TYPE_MULTIPLE_ACTIVE_PLAYER", "multipleactiveplayer");
 
 /** Transitions */
 define("TRANSITION_BEGIN_TRANSFIGURATION_RITUAL", "beginTransfigurationRitual");
-define(
-    "TRANSITION_BEGIN_TRANSFIGURATION_RITUAL_DARKNESS",
-    "beginTransfigurationRitualDarkness"
-);
 define("TRANSITION_END_GAME", "endGame");
 define("TRANSITION_END_TURN", "endTurn");
 define("TRANSITION_EXPLORE_LOCATION", "exploreLocation");
