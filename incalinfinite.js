@@ -459,9 +459,15 @@ var GameBody = /** @class */ (function (_super) {
     };
     GameBody.prototype.notif_exploreLocation = function (notif) {
         this.cardController.moveCardsToLocation(notif.args.player_id, notif.args.cards, notif.args.location);
+        for (var i = 0; i < notif.args.cards.length; i++) {
+            this.playerController.decrementHandCount(notif.args.player_id);
+        }
     };
     GameBody.prototype.notif_exploreLocationPrivate = function (notif) {
         this.cardController.moveCardsToLocationActivePlayer(notif.args.cards, notif.args.location);
+        for (var i = 0; i < notif.args.cards.length; i++) {
+            this.playerController.decrementHandCount(notif.args.player_id);
+        }
     };
     GameBody.prototype.notif_gainDamageFromEnemy = function (notif) {
         this.cardController.gainDamageFromEnemy(notif.args.card, notif.args.player_id);

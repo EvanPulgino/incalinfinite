@@ -149,6 +149,10 @@ class GameBody extends GameBasics {
       notif.args.cards,
       notif.args.location
     );
+
+    for (let i = 0; i < notif.args.cards.length; i++) {
+      this.playerController.decrementHandCount(notif.args.player_id);
+    }
   }
 
   notif_exploreLocationPrivate(notif: any): void {
@@ -156,6 +160,10 @@ class GameBody extends GameBasics {
       notif.args.cards,
       notif.args.location
     );
+
+    for (let i = 0; i < notif.args.cards.length; i++) {
+      this.playerController.decrementHandCount(notif.args.player_id);
+    }
   }
 
   notif_gainDamageFromEnemy(notif: any): void {
